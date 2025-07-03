@@ -137,6 +137,8 @@ function initAnimations() {
     return;
   }
 
+  console.log('Initializing canvas animations:', { gridCanvas, brainCircuit });
+
   let width = window.innerWidth;
   let height = window.innerHeight;
   const dpr = window.devicePixelRatio || 1;
@@ -188,7 +190,7 @@ function initAnimations() {
   let neuronId = 0;
 
   try {
-    worker = new Worker('assets/scripts/neuronWorker.js');
+    worker = new Worker('/assets/scripts/neuronWorker.js');
     worker.onerror = (error) => {
       console.warn('Web Worker failed to load:', error);
       useWorker = false;
