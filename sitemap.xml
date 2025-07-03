@@ -1,53 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Define sitemap compliant with sitemap.org protocol -->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <!-- Specify homepage URL -->
   <url>
     <loc>https://shimtimultimedia.github.io/Shimti-Multimedia-Website/</loc>
-    <lastmod>2025-07-03</lastmod>
+    <lastmod>2025-07-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>1.0</priority>
-  </url>
-  <!-- Specify contact page URL -->
-  <url>
-    <loc>https://shimtimultimedia.github.io/Shimti-Multimedia-Website/contact.html</loc>
-    <lastmod>2025-07-03</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <!-- Specify media page URL -->
-  <url>
-    <loc>https://shimtimultimedia.github.io/Shimti-Multimedia-Website/media.html</loc>
-    <lastmod>2025-07-03</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <!-- Specify AI page URL (if exists) -->
-  <url>
-    <loc>https://shimtimultimedia.github.io/Shimti-Multimedia-Website/ai.html</loc>
-    <lastmod>2025-07-03</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <!-- Specify work page URL (if exists) -->
-  <url>
-    <loc>https://shimtimultimedia.github.io/Shimti-Multimedia-Website/work.html</loc>
-    <lastmod>2025-07-03</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <!-- Specify shop page URL (if exists) -->
-  <url>
-    <loc>https://shimtimultimedia.github.io/Shimti-Multimedia-Website/shop.html</loc>
-    <lastmod>2025-07-03</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <!-- Specify about page URL (if exists) -->
-  <url>
-    <loc>https://shimtimultimedia.github.io/Shimti-Multimedia-Website/about.html</loc>
-    <lastmod>2025-07-03</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
   </url>
 </urlset>
