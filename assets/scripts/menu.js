@@ -74,7 +74,9 @@ function createSector(pos, label, color, fragment) {
   group.dataset.label = label;
 
   const icon = document.createElementNS(SVG_NS, 'image');
-  icon.setAttribute('href', `assets/images/${label.toLowerCase()}.svg`);
+  // Capitalize first letter to match file names
+  const capitalizedLabel = label.charAt(0).toUpperCase() + label.slice(1);
+  icon.setAttribute('href', `/assets/images/${capitalizedLabel}.svg`);
   icon.setAttribute('x', iconPos.x - 25);
   icon.setAttribute('y', iconPos.y - 25);
   icon.setAttribute('width', '50');
@@ -132,10 +134,12 @@ async function initWelcomeCarousel() {
     return;
   }
 
+  console.log('Initializing welcome text carousel');
+
   // Load languages from XML with fallback
   let languages = CONFIG.FALLBACK_LANGUAGES;
   try {
-    const response = await fetch('assets/data/languages.xml');
+    const response = await fetch('/assets/data/languages.xml');
     if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
     const xmlText = await response.text();
     const parser = new DOMParser();
@@ -144,9 +148,9 @@ async function initWelcomeCarousel() {
     if (languageNodes.length === 0) throw new Error('No languages found in XML');
     languages = Array.from(languageNodes).map(node => ({
       lang: node.getAttribute('lang'),
-      text: node.getAttribute('text')
+      text: node.getAttribute('text') || 'Welcome' // Fallback text
     }));
-    console.log('Loaded languages from XML:', languages.length);
+    console.log('Loaded languages from XML:', languages.length, languages);
   } catch (error) {
     console.warn('Failed to load languages.xml, using fallback:', error);
   }
@@ -167,7 +171,9 @@ async function initWelcomeCarousel() {
     welcomeText.classList.remove('fade-in');
     welcomeText.classList.add('fade-out');
     setTimeout(() => {
-      welcomeText.textContent = languages[currentIndex].text || 'Welcome'; // Fallback text
+      const newText = languages[currentIndex].text || 'Welcome';
+      console.log('Updating welcomeText to:', newText, 'Index:', currentIndex);
+      welcomeText.textContent = newText;
       welcomeText.classList.remove('fade-out');
       welcomeText.classList.add('fade-in');
       if (languages[currentIndex].lang === 'English') {
@@ -179,7 +185,9 @@ async function initWelcomeCarousel() {
   };
 
   // Start carousel
-  welcomeText.textContent = languages[0].text || 'Welcome';
+  const initialText = languages[0].text || 'Welcome';
+  console.log('Setting initial welcomeText:', initialText);
+  welcomeText.textContent = initialText;
   welcomeText.classList.add('fade-in');
   timeoutId = setTimeout(cycleText, CONFIG.WELCOME_INTERVAL);
 
@@ -192,7 +200,9 @@ async function initWelcomeCarousel() {
       welcomeText.classList.add('fade-out');
       setTimeout(() => {
         const labelMatch = sector.getAttribute('aria-label').match(/Navigate to (\w+) section/);
-        welcomeText.textContent = labelMatch ? labelMatch[1] : '';
+        const labelText = labelMatch ? labelMatch[1] : '';
+        console.log('Hover: Setting welcomeText to:', labelText);
+        welcomeText.textContent = labelText;
         welcomeText.classList.remove('fade-out');
         welcomeText.classList.add('fade-in');
       }, 500);
@@ -203,7 +213,9 @@ async function initWelcomeCarousel() {
       welcomeText.classList.remove('fade-in');
       welcomeText.classList.add('fade-out');
       setTimeout(() => {
-        welcomeText.textContent = languages[currentIndex].text || 'Welcome';
+        const resumeText = languages[currentIndex].text || 'Welcome';
+        console.log('Hover end: Resuming welcomeText:', resumeText, 'Index:', currentIndex);
+        welcomeText.textContent = resumeText;
         welcomeText.classList.remove('fade-out');
         welcomeText.classList.add('fade-in');
         timeoutId = setTimeout(cycleText, CONFIG.WELCOME_INTERVAL);
