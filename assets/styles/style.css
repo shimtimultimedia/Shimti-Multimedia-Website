@@ -114,7 +114,6 @@ canvas {
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: rgba(255, 0, 0, 0.2);
 }
 
 /* Welcome Text */
@@ -129,7 +128,6 @@ canvas {
   transition: opacity 0.5s ease;
   opacity: 1;
   visibility: visible;
-  background-color: yellow; /* Debug */
 }
 
 /* Fade animations */
@@ -310,7 +308,7 @@ canvas {
   50% { opacity: 1; }
 }
 
-@-moz-keyframes neuronFade {
+@-moz@keyframes neuronFade {
   0%, 100% { opacity: 0; }
   50% { opacity: 1; }
 }
