@@ -3,7 +3,7 @@
  * Handles neuron updates for smooth animations in the main thread.
  */
 const NEURON_CONFIG = {
-  MAX_NEURONS: 40, // Maximum number of neurons (mirrors main thread config)
+  MAX_NEURONS: 30, // Aligned with animations.js
   TURN_PROBABILITY: 0.01, // Probability of a neuron changing direction
   DIRECTION_ANGLES: [0, Math.PI / 2, Math.PI, 3 * Math.PI / 2], // Allowed movement angles (radians)
 };
@@ -110,6 +110,7 @@ self.onmessage = (event) => {
     width = data.width;
     height = data.height;
     neurons = data.neurons.map((n, i) => new Neuron(n.depth, width, height, i));
+    console.log('Worker initialized with', neurons.length, 'neurons');
     self.postMessage({ type: 'init', neurons: neurons.map(n => n.update()) });
   } else if (type === 'update') {
     width = data.width;
@@ -119,6 +120,7 @@ self.onmessage = (event) => {
       n.height = height;
     });
     const updatedNeurons = neurons.map(n => n.update());
+    console.log('Worker updated', updatedNeurons.length, 'neurons');
     self.postMessage({ type: 'update', neurons: updatedNeurons });
   }
 };
