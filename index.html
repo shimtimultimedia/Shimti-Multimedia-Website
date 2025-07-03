@@ -9,8 +9,8 @@
   <meta name="author" content="Shimti Multimedia">
   <meta name="theme-color" content="#000000">
   <title>Shimti Multimedia</title>
-  <link rel="icon" type="image/x-icon" href="/assets/images/favicon/favicon.ico">
-  <link rel="stylesheet" href="/assets/styles/style.css" onerror="console.error('Failed to load style.css')">
+  <link rel="icon" type="image/x-icon" href="assets/images/favicon/favicon.ico">
+  <link rel="stylesheet" href="assets/styles/style.css" onerror="console.error('Failed to load style.css')">
   <!-- Fallback styles for debugging -->
   <style>
     body { background: #000; font-family: Arial, sans-serif; }
@@ -32,7 +32,7 @@
       </svg>
     </div>
     <div id="shimtiPanel" role="region" aria-label="Shimti Multimedia branding">
-      <img src="/assets/images/Logo.svg" alt="Shimti Multimedia Logo" onerror="console.error('Failed to load Logo.svg')">
+      <img src="assets/images/Logo.svg" alt="Shimti Multimedia Logo" onerror="console.error('Failed to load Logo.svg')">
       <span>SHIMTI MULTIMEDIA</span>
     </div>
   </header>
@@ -50,21 +50,21 @@
     console.log('Starting script loading...');
     try {
       const menuScript = document.createElement('script');
-      menuScript.src = '/assets/scripts/menu.js';
+      menuScript.src = 'assets/scripts/menu.js';
       menuScript.defer = true;
       menuScript.onerror = () => console.error('Failed to load menu.js');
       menuScript.onload = () => console.log('menu.js loaded successfully');
       document.body.appendChild(menuScript);
 
       const animationsScript = document.createElement('script');
-      animationsScript.src = '/assets/scripts/animations.js';
+      animationsScript.src = 'assets/scripts/animations.js';
       animationsScript.defer = true;
       animationsScript.onerror = () => console.error('Failed to load animations.js');
       animationsScript.onload = () => console.log('animations.js loaded successfully');
       document.body.appendChild(animationsScript);
 
       const mainScript = document.createElement('script');
-      mainScript.src = '/assets/scripts/main.js';
+      mainScript.src = 'assets/scripts/main.js';
       mainScript.defer = true;
       mainScript.onerror = () => console.error('Failed to load main.js');
       mainScript.onload = () => console.log('main.js loaded successfully');
