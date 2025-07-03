@@ -1,4 +1,4 @@
 # Define robots.txt rules for web crawlers
 User-agent: *
 Allow: /
-Sitemap: https://www.shimtimultimedia.com/sitemap.xml
+Sitemap: https://shimtimultimedia.github.io/Shimti-Multimedia-Website/sitemap.xml
