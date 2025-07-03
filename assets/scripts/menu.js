@@ -75,7 +75,7 @@ function createSector(pos, label, color, fragment) {
 
   const icon = document.createElementNS(SVG_NS, 'image');
   const capitalizedLabel = label.charAt(0).toUpperCase() + label.slice(1);
-  icon.setAttribute('href', `../images/${capitalizedLabel}.svg`);
+  icon.setAttribute('href', `assets/images/${capitalizedLabel}.svg`); // Updated path
   icon.setAttribute('x', iconPos.x - 25);
   icon.setAttribute('y', iconPos.y - 25);
   icon.setAttribute('width', '50');
@@ -123,7 +123,6 @@ class GridNeuron {
  * Loads languages from XML and manages the welcome text carousel and button hover interactions.
  */
 async function initWelcomeCarousel() {
-  await new Promise(resolve => setTimeout(resolve, 100));
   const welcomeText = document.getElementById('welcomeText');
   const wheelMenu = document.getElementById('wheelMenu');
   if (!welcomeText || !wheelMenu) {
@@ -131,11 +130,14 @@ async function initWelcomeCarousel() {
     return;
   }
 
+  // Set initial text to "Loading..." immediately
+  welcomeText.textContent = 'Loading...';
+
   console.log('Initializing welcome text carousel');
 
   let languages = CONFIG.FALLBACK_LANGUAGES;
   try {
-    const response = await fetch('../data/languages.xml');
+    const response = await fetch('assets/data/languages.xml'); // Updated path
     if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
     const xmlText = await response.text();
     const parser = new DOMParser();
@@ -167,7 +169,8 @@ async function initWelcomeCarousel() {
     welcomeText.classList.add('fade-out');
     setTimeout(() => {
       const newText = languages[currentIndex].text || 'Welcome';
-      console.log('Updating welcomeText to:', newText, 'Index:', currentIndex);
+      // Commented out to reduce logging
+      // console.log('Updating welcomeText to:', newText, 'Index:', currentIndex);
       welcomeText.textContent = newText;
       welcomeText.classList.remove('fade-out');
       welcomeText.classList.add('fade-in');
@@ -194,7 +197,8 @@ async function initWelcomeCarousel() {
       setTimeout(() => {
         const labelMatch = sector.getAttribute('aria-label').match(/Navigate to (\w+) section/);
         const labelText = labelMatch ? labelMatch[1] : '';
-        console.log('Hover: Setting welcomeText to:', labelText);
+        // Commented out to reduce logging
+        // console.log('Hover: Setting welcomeText to:', labelText);
         welcomeText.textContent = labelText;
         welcomeText.classList.remove('fade-out');
         welcomeText.classList.add('fade-in');
@@ -207,7 +211,8 @@ async function initWelcomeCarousel() {
       welcomeText.classList.add('fade-out');
       setTimeout(() => {
         const resumeText = languages[currentIndex].text || 'Welcome';
-        console.log('Hover end: Resuming welcomeText:', resumeText, 'Index:', currentIndex);
+        // Commented out to reduce logging
+        // console.log('Hover end: Resuming welcomeText:', resumeText, 'Index:', currentIndex);
         welcomeText.textContent = resumeText;
         welcomeText.classList.remove('fade-out');
         welcomeText.classList.add('fade-in');
