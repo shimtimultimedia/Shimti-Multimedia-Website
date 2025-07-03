@@ -3,42 +3,42 @@
 /* Font Definitions */
 @font-face {
   font-family: 'Orbitron';
-  src: url('assets/fonts/Orbitron-Black.ttf') format('truetype');
+  src: url('/assets/fonts/Orbitron-Black.ttf') format('truetype');
   font-weight: 900;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
   font-family: 'Orbitron';
-  src: url('assets/fonts/Orbitron-Bold.ttf') format('truetype');
+  src: url('/assets/fonts/Orbitron-Bold.ttf') format('truetype');
   font-weight: 700;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
   font-family: 'Orbitron';
-  src: url('assets/fonts/Orbitron-ExtraBold.ttf') format('truetype');
+  src: url('/assets/fonts/Orbitron-ExtraBold.ttf') format('truetype');
   font-weight: 800;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
   font-family: 'Orbitron';
-  src: url('assets/fonts/Orbitron-Medium.ttf') format('truetype');
+  src: url('/assets/fonts/Orbitron-Medium.ttf') format('truetype');
   font-weight: 500;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
   font-family: 'Orbitron';
-  src: url('assets/fonts/Orbitron-Regular.ttf') format('truetype');
+  src: url('/assets/fonts/Orbitron-Regular.ttf') format('truetype');
   font-weight: 400;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
   font-family: 'Orbitron';
-  src: url('assets/fonts/Orbitron-SemiBold.ttf') format('truetype');
+  src: url('/assets/fonts/Orbitron-SemiBold.ttf') format('truetype');
   font-weight: 600;
   font-style: normal;
   font-display: swap;
@@ -66,7 +66,7 @@ html, body {
   height: 100%;
   background-color: var(--primary-bg);
   overflow: hidden;
-  font-family: 'Orbitron', sans-serif;
+  font-family: 'Orbitron', Arial, sans-serif; /* Added fallback */
   user-select: none;
 }
 
@@ -107,33 +107,58 @@ canvas {
   padding: 8px 16px;
   border-radius: 10px;
   border: 1px solid var(--border-color);
-  width: 170px; /* Fixed width to match #shimtiPanel */
-  height: 24px; /* Fixed height to accommodate text */
+  width: 170px; /* Kept your fixed width */
+  height: 24px; /* Kept your fixed height */
   z-index: 10;
   user-select: none;
   display: flex;
   align-items: center;
   justify-content: center;
+  background-color: rgba(255, 0, 0, 0.2); /* Temporary debug background */
 }
 
-/* Welcome Text */
+/* Welcome Text (Inside #shimtiPanelBottom) */
 #shimtiPanelBottom #welcomeText {
-  font-size: 1.2em; /* Fixed size to match #shimtiPanel span */
+  font-family: 'Orbitron', Arial, sans-serif; /* Added fallback */
+  font-size: 1.2em; /* Kept your size */
   color: var(--text-color);
   letter-spacing: 0.1em;
   font-weight: 600;
   animation: glowPulse 3s ease-in-out infinite;
   text-align: center;
-  transition: opacity 0.5s ease; /* Smooth fade for language changes */
-  opacity: 1; /* Ensure initial visibility */
+  transition: opacity 0.5s ease;
+  opacity: 1; /* Ensure visibility */
+  visibility: visible; /* Explicit visibility */
 }
 
-/* Fade animations for welcome text */
-#shimtiPanelBottom #welcomeText.fade-out {
+/* Fallback for #welcomeText if outside #shimtiPanelBottom */
+#welcomeText {
+  position: absolute;
+  bottom: 20px; /* Align with #shimtiPanelBottom */
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: 'Orbitron', Arial, sans-serif; /* Fallback */
+  font-size: 1.2em;
+  color: var(--text-color);
+  letter-spacing: 0.1em;
+  font-weight: 600;
+  animation: glowPulse 3s ease-in-out infinite;
+  text-align: center;
+  transition: opacity 0.5s ease;
+  opacity: 1;
+  visibility: visible;
+  z-index: 10;
+  background-color: rgba(255, 0, 0, 0.2); /* Temporary debug background */
+}
+
+/* Fade animations */
+#shimtiPanelBottom #welcomeText.fade-out,
+#welcomeText.fade-out {
   opacity: 0;
 }
 
-#shimtiPanelBottom #welcomeText.fade-in {
+#shimtiPanelBottom #welcomeText.fade-in,
+#welcomeText.fade-in {
   opacity: 1;
 }
 
@@ -253,7 +278,7 @@ canvas {
   to { -webkit-transform: rotate(360deg); }
 }
 
-@-moz-keyframes orbit {
+@-moz@keyframes orbit {
   from { -moz-transform: rotate(0deg); }
   to { -moz-transform: rotate(360deg); }
 }
@@ -263,7 +288,7 @@ canvas {
   to { transform: rotate(360deg); }
 }
 
-@-webkit-keyframes selfRotate {
+@-webkit@keyframes selfRotate {
   from { -webkit-transform: rotate(0deg); }
   to { -webkit-transform: rotate(360deg); }
 }
@@ -278,12 +303,12 @@ canvas {
   to { transform: rotate(-360deg); }
 }
 
-@-webkit-keyframes counterRotate {
+@-webkit@keyframes counterRotate {
   from { -webkit-transform: rotate(0deg); }
   to { -webkit-transform: rotate(-360deg); }
 }
 
-@-moz-keyframes counterRotate {
+@-moz@keyframes counterRotate {
   from { -moz-transform: rotate(0deg); }
   to { -moz-transform: rotate(-360deg); }
 }
@@ -301,12 +326,12 @@ canvas {
   50% { opacity: 1; }
 }
 
-@-webkit-keyframes neuronFade {
+@-webkit@keyframes neuronFade {
   0%, 100% { opacity: 0; }
   50% { opacity: 1; }
 }
 
-@-moz-keyframes neuronFade {
+@-moz@keyframes neuronFade {
   0%, 100% { opacity: 0; }
   50% { opacity: 1; }
 }
