@@ -3,21 +3,18 @@
  * Manages canvas rendering and neuron movement with Web Worker fallback for performance.
  */
 const ANIMATION_CONFIG = {
-  MAX_NEURONS: 30, // Reduced for performance
+  MAX_NEURONS: 30,
   TURN_PROBABILITY: 0.01,
   DIRECTION_ANGLES: [0, Math.PI / 2, Math.PI, 3 * Math.PI / 2],
   GRID_SPACING: 80,
-  GRID_STROKE: 'rgba(100, 150, 255, 0.1)', // Increased opacity for visibility
+  GRID_STROKE: 'rgba(100, 150, 255, 0.1)',
   NEURON_STROKE: 'rgba(180, 220, 255, {alpha})',
   NEURON_SHADOW: '#8cf',
   NEURON_FILL: 'rgba(234, 255, 255, {depth})',
-  TARGET_FPS: 30, // Optimized for performance
-  WORKER_UPDATE_INTERVAL: 100, // Throttle Web Worker updates
+  TARGET_FPS: 30,
+  WORKER_UPDATE_INTERVAL: 100,
 };
 
-/**
- * Represents a single neuron with position, trail, and rendering logic.
- */
 class Neuron {
   constructor(depth = 1, id, useWorker = false, width, height) {
     this.id = id;
@@ -119,9 +116,6 @@ class Neuron {
   }
 }
 
-/**
- * Initializes canvas animations for the background grid and neurons.
- */
 function initAnimations() {
   const gridCanvas = document.getElementById('gridLayer');
   const brainCircuit = document.getElementById('circuitBrain');
@@ -158,9 +152,6 @@ function initAnimations() {
     context.setTransform(dpr, 0, 0, dpr, 0, 0);
   });
 
-  /**
-   * Draws the background grid on the offscreen canvas.
-   */
   function drawGrid() {
     offscreenCtx.clearRect(0, 0, width, height);
     offscreenCtx.strokeStyle = ANIMATION_CONFIG.GRID_STROKE;
@@ -190,7 +181,7 @@ function initAnimations() {
   let neuronId = 0;
 
   try {
-    worker = new Worker('/assets/scripts/neuronWorker.js');
+    worker = new Worker('neuronWorker.js');
     worker.onerror = (error) => {
       console.warn('Web Worker failed to load:', error);
       useWorker = false;
@@ -294,5 +285,4 @@ function initAnimations() {
   animate();
 }
 
-// Initialize on DOM load
 window.addEventListener('load', initAnimations);
