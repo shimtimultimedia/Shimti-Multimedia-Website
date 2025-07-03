@@ -1,78 +1,53 @@
 <!DOCTYPE html>
-  <!-- Shimti Multimedia: A futuristic portfolio showcasing music, video, and AI projects -->
-  <html lang="en">
-  <head>
-    <!-- Character encoding for universal compatibility -->
-    <meta charset="UTF-8">
-    <!-- Responsive viewport configuration for mobile-first design -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- SEO metadata for search engine visibility -->
-    <meta name="description" content="Shimti Multimedia offers innovative music, video, and AI projects with a futuristic sci-fi aesthetic.">
-    <meta name="keywords" content="multimedia, AI, music, video, futuristic, sci-fi, Shimti">
-    <meta name="author" content="Shimti Multimedia">
-    <!-- Open Graph metadata for social media sharing -->
-    <meta property="og:title" content="Shimti Multimedia">
-    <meta property="og:description" content="Discover cutting-edge multimedia and AI solutions with a sci-fi flair.">
-    <meta property="og:image" content="/assets/images/logo.png">
-    <meta property="og:url" content="https://www.shimtimultimedia.com">
-    <meta property="og:type" content="website">
-    <!-- Twitter Card metadata for enhanced Twitter sharing -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Shimti Multimedia">
-    <meta name="twitter:description" content="Discover cutting-edge multimedia and AI solutions with a sci-fi flair.">
-    <meta name="twitter:image" content="/assets/images/logo.png">
-    <!-- Content Security Policy for enhanced security -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; script-src 'self' 'unsafe-inline'; worker-src 'self'">
-    <!-- Favicon and manifest for browser icons -->
-    <link rel="icon" type="image/x-icon" href="/assets/images/favicon/favicon.ico">
-    <link rel="apple-touch-icon" href="/assets/images/favicon/apple-touch-icon.png">
-    <link rel="manifest" href="/assets/images/favicon/site.webmanifest">
-    <!-- Preload critical font to reduce layout shift -->
-    <link rel="preload" href="/assets/fonts/Orbitron-Regular.ttf" as="font" type="font/ttf" crossorigin>
-    <!-- Theme color for browser UI -->
-    <meta name="theme-color" content="#000000">
-    <!-- Page title for browser tab and SEO -->
-    <title>Shimti Multimedia</title>
-    <!-- External stylesheet for consistent styling -->
-    <link rel="stylesheet" href="/assets/styles/style.css">
-  </head>
-  <body>
-    <!-- Connection lines SVG, layered behind interactive elements -->
-    <svg id="connectionLines" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none;" aria-hidden="true"></svg>
-    <!-- Header containing branding -->
-    <header role="banner">
-      <!-- Loading spinner, hidden by default for asynchronous content -->
-      <div id="loadingSpinner" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 100; display: none;" aria-hidden="true">
-        <svg width="50" height="50" viewBox="0 0 50 50">
-          <circle cx="25" cy="25" r="20" stroke="#8cf" stroke-width="5" fill="none" stroke-dasharray="31.4" stroke-dashoffset="0">
-            <animateTransform attributeName="transform" type="rotate" from="0 25 25" to="360 25 25" dur="1s" repeatCount="indefinite" />
-          </circle>
-        </svg>
-      </div>
-      <!-- Branding panel with logo and title -->
-      <div id="shimtiPanel" role="region" aria-label="Shimti Multimedia branding">
-        <img src="/assets/images/Logo.svg" alt="Shimti Multimedia Logo">
-        <span>SHIMTI MULTIMEDIA</span>
-      </div>
-    </header>
-    <!-- Main content area with interactive radial menu and animations -->
-    <main role="main">
-      <!-- Bottom panel for welcome text carousel -->
-      <div id="shimtiPanelBottom">
-        <span id="welcomeText">Loading...</span>
-      </div>
-      <!-- Radial menu SVG for navigation -->
-      <svg id="radialMenu" viewBox="0 0 400 400" role="navigation" aria-label="Interactive radial menu">
-        <g id="wheelMenu"></g>
+<!-- Shimti Multimedia: A futuristic portfolio showcasing music, video, and AI projects -->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Shimti Multimedia offers innovative music, video, and AI projects with a futuristic sci-fi aesthetic.">
+  <meta name="keywords" content="multimedia, AI, music, video, futuristic, sci-fi, Shimti">
+  <meta name="author" content="Shimti Multimedia">
+  <meta name="theme-color" content="#000000">
+  <title>Shimti Multimedia</title>
+  <link rel="icon" type="image/x-icon" href="/assets/images/favicon/favicon.ico">
+  <link rel="stylesheet" href="/assets/styles/style.css">
+  <!-- Fallback styles for debugging -->
+  <style>
+    body { background: #000; font-family: Arial, sans-serif; }
+    #shimtiPanel { position: absolute; top: 20px; left: 20px; background: rgba(180, 220, 255, 0.15); padding: 8px 16px; border-radius: 10px; border: 1px solid #fff; display: flex; align-items: center; gap: 10px; z-index: 10; }
+    #shimtiPanel img { height: 1.5em; }
+    #shimtiPanel span { font-size: 1.2em; color: #eaffff; }
+    #shimtiPanelBottom { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); background: rgba(180, 220, 255, 0.15); padding: 8px 16px; border-radius: 10px; border: 1px solid #fff; width: 170px; height: 24px; z-index: 10; display: flex; align-items: center; justify-content: center; background-color: rgba(255, 0, 0, 0.2); }
+    #shimtiPanelBottom #welcomeText { font-size: 1.2em; color: #eaffff; }
+  </style>
+</head>
+<body>
+  <svg id="connectionLines" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none;" aria-hidden="true"></svg>
+  <header role="banner">
+    <div id="loadingSpinner" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 100; display: none;" aria-hidden="true">
+      <svg width="50" height="50" viewBox="0 0 50 50">
+        <circle cx="25" cy="25" r="20" stroke="#8cf" stroke-width="5" fill="none" stroke-dasharray="31.4" stroke-dashoffset="0">
+          <animateTransform attributeName="transform" type="rotate" from="0 25 25" to="360 25 25" dur="1s" repeatCount="indefinite" />
+        </circle>
       </svg>
-      <!-- Canvas for background grid animation -->
-      <canvas id="gridLayer" role="img" aria-label="Futuristic background grid animation"></canvas>
-      <!-- Canvas for neural network visualization -->
-      <canvas id="circuitBrain" role="img" aria-label="Animated neural network visualization"></canvas>
-    </main>
-    <!-- JavaScript files for interactivity, deferred to prevent render-blocking -->
-    <script defer src="/assets/scripts/menu.js"></script>
-    <script defer src="/assets/scripts/animations.js"></script>
-    <script defer src="/assets/scripts/main.js"></script>
-  </body>
-  </html>
+    </div>
+    <div id="shimtiPanel" role="region" aria-label="Shimti Multimedia branding">
+      <img src="/assets/images/Logo.svg" alt="Shimti Multimedia Logo">
+      <span>SHIMTI MULTIMEDIA</span>
+    </div>
+  </header>
+  <main role="main">
+    <div id="shimtiPanelBottom">
+      <span id="welcomeText">Loading...</span>
+    </div>
+    <svg id="radialMenu" viewBox="0 0 400 400" role="navigation" aria-label="Interactive radial menu">
+      <g id="wheelMenu"></g>
+    </svg>
+    <canvas id="gridLayer" role="img" aria-label="Futuristic background grid animation"></canvas>
+    <canvas id="circuitBrain" role="img" aria-label="Animated neural network visualization"></canvas>
+  </main>
+  <script defer src="/assets/scripts/menu.js"></script>
+  <script defer src="/assets/scripts/animations.js"></script>
+  <script defer src="/assets/scripts/main.js"></script>
+</body>
+</html>
