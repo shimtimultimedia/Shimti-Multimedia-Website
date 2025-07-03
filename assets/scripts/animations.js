@@ -186,6 +186,7 @@ function initAnimations() {
       console.warn('Web Worker failed to load:', error);
       useWorker = false;
     };
+    worker.onload = () => console.log('neuronWorker.js loaded successfully');
   } catch (error) {
     console.warn('Web Worker not supported:', error);
     useWorker = false;
