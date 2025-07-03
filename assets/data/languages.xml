@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Language entries for the welcome text carousel -->
 <languages>
   <language lang="English" text="Welcome" /> <!-- Shown once -->
   <language lang="Spanish" text="Bienvenido" />
