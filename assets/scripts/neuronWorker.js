@@ -3,7 +3,7 @@
  * Handles neuron updates for smooth animations in the main thread.
  */
 const NEURON_CONFIG = {
-  MAX_NEURONS: 71, // Aligned with animations.js
+  MAX_NEURONS: 168, // Aligned with animations.js
   TURN_PROBABILITY: 0.01,
   DIRECTION_ANGLES: [0, Math.PI / 2, Math.PI, 3 * Math.PI / 2],
 };
