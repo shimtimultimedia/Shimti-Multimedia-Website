@@ -131,8 +131,7 @@ async function initWelcomeCarousel() {
     return;
   }
 
-  welcomeText.textContent = 'Loading...'; // Set initial text to "Loading..."
-  console.log('Initializing welcome text carousel');
+  welcomeText.textContent = 'Loading...';
 
   let languages = CONFIG.FALLBACK_LANGUAGES;
   try {
@@ -147,7 +146,6 @@ async function initWelcomeCarousel() {
       lang: node.getAttribute('lang'),
       text: node.getAttribute('text') || 'Welcome'
     }));
-    console.log('Loaded languages from XML:', languages.length);
   } catch (error) {
     console.warn('Failed to load languages.xml, using fallback:', error);
   }
@@ -179,7 +177,6 @@ async function initWelcomeCarousel() {
     }, 500);
   };
 
-  console.log('Setting initial welcomeText:', languages[0].text || 'Welcome');
   welcomeText.textContent = languages[0].text || 'Welcome';
   welcomeText.classList.add('fade-in');
   timeoutId = setTimeout(cycleText, CONFIG.WELCOME_INTERVAL);
