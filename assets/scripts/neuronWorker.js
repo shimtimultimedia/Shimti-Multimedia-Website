@@ -1,16 +1,12 @@
 /**
- * Shimti Multimedia: Web Worker for offloading neuron calculations.
- * Handles neuron updates for smooth animations in the main thread.
+ * Web Worker for offloading neuron calculations.
  */
 const NEURON_CONFIG = {
-  MAX_NEURONS: 168, // Aligned with animations.js
+  MAX_NEURONS: 168, // Matches animations.js
   TURN_PROBABILITY: 0.01,
   DIRECTION_ANGLES: [0, Math.PI / 2, Math.PI, 3 * Math.PI / 2],
 };
 
-/**
- * Represents a single neuron with position and trail logic.
- */
 class Neuron {
   constructor(depth = 1, width, height, id) {
     this.depth = depth;
@@ -34,14 +30,14 @@ class Neuron {
   }
 
   setRandomDirection() {
-    this.angle = NEURON_CONFIG.DIRECTION_ANGLES[Math.floor(Math.random() * NEURON_CONFIG.DIRECTION_ANGLES.length)];
+    this.angle = NEURON_CONFIG.DIRECTION_ANGLES[Math.floor(Math.random() * 4)];
   }
 
   maybeTurn() {
     if (Math.random() < NEURON_CONFIG.TURN_PROBABILITY) {
       const directionIndex = NEURON_CONFIG.DIRECTION_ANGLES.indexOf(this.angle);
       const turn = Math.random() < 0.5 ? -1 : 1;
-      const newIndex = (directionIndex + turn + NEURON_CONFIG.DIRECTION_ANGLES.length) % NEURON_CONFIG.DIRECTION_ANGLES.length;
+      const newIndex = (directionIndex + turn + 4) % 4;
       this.angle = NEURON_CONFIG.DIRECTION_ANGLES[newIndex];
     }
   }
@@ -49,53 +45,35 @@ class Neuron {
   update() {
     this.maybeTurn();
     this.trail.push({ x: this.x, y: this.y });
-    if (this.trail.length > this.maxTrailLength) {
-      this.trail.shift();
-    }
+    if (this.trail.length > this.maxTrailLength) this.trail.shift();
     this.x += Math.cos(this.angle) * this.speed;
     this.y += Math.sin(this.angle) * this.speed;
 
     this.fadeCounter++;
-    if (
-      this.fadeCounter > this.fadeLimit ||
-      this.x < -50 ||
-      this.x > this.width + 50 ||
-      this.y < -50 ||
-      this.y > this.height + 50
-    ) {
+    if (this.fadeCounter > this.fadeLimit || this.x < -50 || this.x > this.width + 50 || this.y < -50 || this.y > this.height + 50) {
       this.reset();
     }
 
-    return {
-      id: this.id,
-      x: this.x,
-      y: this.y,
-      size: this.size,
-      depth: this.depth,
-      trail: [...this.trail],
-    };
+    return { id: this.id, x: this.x, y: this.y, size: this.size, depth: this.depth, trail: [...this.trail] };
   }
 }
 
-// Web Worker logic
 let neurons = [];
 let width, height;
 
 self.onmessage = (event) => {
   const { type, data } = event.data;
-  if (type === 'init') {
+  if (type === 'checkReady') {
+    self.postMessage({ type: 'ready' });
+  } else if (type === 'init') {
     width = data.width;
     height = data.height;
-    neurons = data.neurons.map((n) => new Neuron(n.depth, width, height, n.id));
+    neurons = data.neurons.map(n => new Neuron(n.depth, width, height, n.id));
     self.postMessage({ type: 'init', neurons: neurons.map(n => n.update()) });
   } else if (type === 'update') {
     width = data.width;
     height = data.height;
-    neurons.forEach(n => {
-      n.width = width;
-      n.height = height;
-    });
-    const updatedNeurons = neurons.map(n => n.update());
-    self.postMessage({ type: 'update', neurons: updatedNeurons });
+    neurons.forEach(n => { n.width = width; n.height = height; });
+    self.postMessage({ type: 'update', neurons: neurons.map(n => n.update()) });
   }
 };
