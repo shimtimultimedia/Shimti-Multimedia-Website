@@ -109,7 +109,7 @@ self.onmessage = (event) => {
   if (type === 'init') {
     width = data.width;
     height = data.height;
-    neurons = data.neurons.map((n, i) => new Neuron(n.depth, width, height, i));
+    neurons = data.neurons.map((n) => new Neuron(n.depth, width, height, n.id));
     console.log('Worker initialized with', neurons.length, 'neurons');
     self.postMessage({ type: 'init', neurons: neurons.map(n => n.update()) });
   } else if (type === 'update') {
@@ -120,7 +120,6 @@ self.onmessage = (event) => {
       n.height = height;
     });
     const updatedNeurons = neurons.map(n => n.update());
-    console.log('Worker updated', updatedNeurons.length, 'neurons');
     self.postMessage({ type: 'update', neurons: updatedNeurons });
   }
 };
