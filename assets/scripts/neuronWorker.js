@@ -3,21 +3,15 @@
  * Handles neuron updates for smooth animations in the main thread.
  */
 const NEURON_CONFIG = {
-  MAX_NEURONS: 30, // Aligned with animations.js
-  TURN_PROBABILITY: 0.01, // Probability of a neuron changing direction
-  DIRECTION_ANGLES: [0, Math.PI / 2, Math.PI, 3 * Math.PI / 2], // Allowed movement angles (radians)
+  MAX_NEURONS: 71, // Aligned with animations.js
+  TURN_PROBABILITY: 0.01,
+  DIRECTION_ANGLES: [0, Math.PI / 2, Math.PI, 3 * Math.PI / 2],
 };
 
 /**
  * Represents a single neuron with position and trail logic.
  */
 class Neuron {
-  /**
-   * @param {number} depth - Visual depth for scaling (0.3 to 1.0)
-   * @param {number} width - Canvas width for movement bounds
-   * @param {number} height - Canvas height for movement bounds
-   * @param {number} id - Unique identifier for the neuron
-   */
   constructor(depth = 1, width, height, id) {
     this.depth = depth;
     this.width = width;
@@ -26,9 +20,6 @@ class Neuron {
     this.reset();
   }
 
-  /**
-   * Resets neuron position, speed, and trail.
-   */
   reset() {
     this.x = Math.random() * this.width;
     this.y = Math.random() * this.height;
@@ -42,16 +33,10 @@ class Neuron {
     this.fadeLimit = Math.random() * 400 + 100;
   }
 
-  /**
-   * Sets a random movement direction from allowed angles.
-   */
   setRandomDirection() {
     this.angle = NEURON_CONFIG.DIRECTION_ANGLES[Math.floor(Math.random() * NEURON_CONFIG.DIRECTION_ANGLES.length)];
   }
 
-  /**
-   * Randomly changes direction based on turn probability.
-   */
   maybeTurn() {
     if (Math.random() < NEURON_CONFIG.TURN_PROBABILITY) {
       const directionIndex = NEURON_CONFIG.DIRECTION_ANGLES.indexOf(this.angle);
@@ -61,10 +46,6 @@ class Neuron {
     }
   }
 
-  /**
-   * Updates neuron position and trail, returning serialized data.
-   * @returns {Object} Neuron data {id, x, y, size, depth, trail}
-   */
   update() {
     this.maybeTurn();
     this.trail.push({ x: this.x, y: this.y });
@@ -100,17 +81,12 @@ class Neuron {
 let neurons = [];
 let width, height;
 
-/**
- * Handles messages from the main thread to initialize or update neurons.
- * @param {MessageEvent} event - The message event containing type and data
- */
 self.onmessage = (event) => {
   const { type, data } = event.data;
   if (type === 'init') {
     width = data.width;
     height = data.height;
     neurons = data.neurons.map((n) => new Neuron(n.depth, width, height, n.id));
-    console.log('Worker initialized with', neurons.length, 'neurons');
     self.postMessage({ type: 'init', neurons: neurons.map(n => n.update()) });
   } else if (type === 'update') {
     width = data.width;
