@@ -64,7 +64,7 @@ class Neuron {
 
   update(data) {
     if (this.useWorker) {
-      if (!data || !('x' in data)) {
+      if (!data || !('x' in data) || !('id' in data)) {
         if (!this.invalidDataLogged) {
           console.warn('Invalid Web Worker data for neuron:', this.id, 'Switching to main-thread updates.');
           this.invalidDataLogged = true;
@@ -136,8 +136,6 @@ function initAnimations() {
     console.error('Canvas contexts not available:', { gridCtx, ctx });
     return;
   }
-
-  console.log('Initializing canvas animations:', { gridCanvas, brainCircuit });
 
   let width = window.innerWidth;
   let height = window.innerHeight;
@@ -231,7 +229,7 @@ function initAnimations() {
           return;
         }
         updatedNeurons.forEach((data, i) => {
-          if (neurons[i] && data && 'x' in data) {
+          if (neurons[i] && data && 'x' in data && 'id' in data && data.id === neurons[i].id) {
             neurons[i].update(data);
           }
         });
