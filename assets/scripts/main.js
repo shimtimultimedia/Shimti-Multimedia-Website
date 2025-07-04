@@ -1,9 +1,16 @@
 /**
- * Shimti Multimedia: Renders connection lines between branding panels and radial menu.
- * Uses SVG for dynamic, curved lines with responsive resizing.
+ * @module ConnectionLines
+ * @description Renders SVG connection lines between branding panels and radial menu.
+ * Supports dynamic, curved lines with responsive resizing for a sci-fi aesthetic.
  */
-const SVG_NS = 'http://www.w3.org/2000/svg';
 
+/** @constant {string} CONNECTION_SVG_NS - SVG namespace for connection elements */
+const CONNECTION_SVG_NS = 'http://www.w3.org/2000/svg';
+
+/**
+ * @function renderConnectionLines
+ * @description Initializes and updates SVG connection lines
+ */
 function renderConnectionLines() {
   const brandingPanel = document.getElementById('shimtiPanel');
   const welcomePanel = document.getElementById('shimtiPanelBottom');
@@ -15,6 +22,7 @@ function renderConnectionLines() {
     return;
   }
 
+  /** @function updateLines - Updates SVG line positions and styles */
   const updateLines = () => {
     connectionLayer.innerHTML = ''; // Clear existing lines
 
@@ -34,7 +42,7 @@ function renderConnectionLines() {
     };
 
     // Top curved connection line
-    const pathTop = document.createElementNS(SVG_NS, 'path');
+    const pathTop = document.createElementNS(CONNECTION_SVG_NS, 'path');
     pathTop.setAttribute('d', `M${topPoints.startPoint.x},${topPoints.startPoint.y} Q${topPoints.controlPoint.x},${topPoints.controlPoint.y} ${topPoints.endPoint.x},${topPoints.endPoint.y}`);
     pathTop.setAttribute('stroke', 'rgba(255, 255, 255, 0.5)');
     pathTop.setAttribute('stroke-width', '2');
@@ -42,14 +50,14 @@ function renderConnectionLines() {
     connectionLayer.appendChild(pathTop);
 
     // Top connection points
-    const topStartCircle = document.createElementNS(SVG_NS, 'circle');
+    const topStartCircle = document.createElementNS(CONNECTION_SVG_NS, 'circle');
     topStartCircle.setAttribute('cx', topPoints.startPoint.x);
     topStartCircle.setAttribute('cy', topPoints.startPoint.y);
     topStartCircle.setAttribute('r', '4');
     topStartCircle.setAttribute('fill', 'rgba(255, 255, 255, 0.7)');
     connectionLayer.appendChild(topStartCircle);
 
-    const topEndCircle = document.createElementNS(SVG_NS, 'circle');
+    const topEndCircle = document.createElementNS(CONNECTION_SVG_NS, 'circle');
     topEndCircle.setAttribute('cx', topPoints.endPoint.x);
     topEndCircle.setAttribute('cy', topPoints.endPoint.y);
     topEndCircle.setAttribute('r', '4');
@@ -57,7 +65,7 @@ function renderConnectionLines() {
     connectionLayer.appendChild(topEndCircle);
 
     // Bottom straight connection line
-    const pathBottom = document.createElementNS(SVG_NS, 'path');
+    const pathBottom = document.createElementNS(CONNECTION_SVG_NS, 'path');
     pathBottom.setAttribute('d', `M${bottomPoints.startPoint.x},${bottomPoints.startPoint.y} L${bottomPoints.endPoint.x},${bottomPoints.endPoint.y}`);
     pathBottom.setAttribute('stroke', 'rgba(255, 255, 255, 0.5)');
     pathBottom.setAttribute('stroke-width', '2');
@@ -65,14 +73,14 @@ function renderConnectionLines() {
     connectionLayer.appendChild(pathBottom);
 
     // Bottom connection points
-    const bottomStartCircle = document.createElementNS(SVG_NS, 'circle');
+    const bottomStartCircle = document.createElementNS(CONNECTION_SVG_NS, 'circle');
     bottomStartCircle.setAttribute('cx', bottomPoints.startPoint.x);
     bottomStartCircle.setAttribute('cy', bottomPoints.startPoint.y);
     bottomStartCircle.setAttribute('r', '4');
     bottomStartCircle.setAttribute('fill', 'rgba(255, 255, 255, 0.7)');
     connectionLayer.appendChild(bottomStartCircle);
 
-    const bottomEndCircle = document.createElementNS(SVG_NS, 'circle');
+    const bottomEndCircle = document.createElementNS(CONNECTION_SVG_NS, 'circle');
     bottomEndCircle.setAttribute('cx', bottomPoints.endPoint.x);
     bottomEndCircle.setAttribute('cy', bottomPoints.endPoint.y);
     bottomEndCircle.setAttribute('r', '4');
