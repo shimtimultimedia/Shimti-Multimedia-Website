@@ -32,7 +32,8 @@ function renderConnectionLines() {
 
     const topPoints = {
       startPoint: { x: topRect.right, y: topRect.top + topRect.height / 2 }, // Right side of brandingPanel
-      controlPoint: { x: topRect.right + 50, y: topRect.top + topRect.height / 2 }, // Control for curve
+      controlPoint1: { x: topRect.right + 100, y: topRect.top + topRect.height / 2 }, // Horizontal extension
+      controlPoint2: { x: radialRect.left + radialRect.width / 2, y: radialRect.top - 100 }, // Downward bend
       endPoint: { x: radialRect.left + radialRect.width / 2, y: radialRect.top }, // Top of radialMenu
     };
 
@@ -41,9 +42,9 @@ function renderConnectionLines() {
       endPoint: { x: radialRect.left + radialRect.width / 2, y: radialRect.bottom },
     };
 
-    // Top curved connection line
+    // Top curved connection line (horizontal then downward)
     const pathTop = document.createElementNS(CONNECTION_SVG_NS, 'path');
-    pathTop.setAttribute('d', `M${topPoints.startPoint.x},${topPoints.startPoint.y} Q${topPoints.controlPoint.x},${topPoints.controlPoint.y} ${topPoints.endPoint.x},${topPoints.endPoint.y}`);
+    pathTop.setAttribute('d', `M${topPoints.startPoint.x},${topPoints.startPoint.y} C${topPoints.controlPoint1.x},${topPoints.controlPoint1.y} ${topPoints.controlPoint2.x},${topPoints.controlPoint2.y} ${topPoints.endPoint.x},${topPoints.endPoint.y}`);
     pathTop.setAttribute('stroke', 'rgba(255, 255, 255, 0.5)');
     pathTop.setAttribute('stroke-width', '2');
     pathTop.setAttribute('fill', 'none');
