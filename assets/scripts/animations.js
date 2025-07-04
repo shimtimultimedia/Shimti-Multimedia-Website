@@ -3,7 +3,7 @@
  * Manages canvas rendering and neuron movement with Web Worker fallback for performance.
  */
 const ANIMATION_CONFIG = {
-  MAX_NEURONS: 30,
+  MAX_NEURONS: 71, // Aligned with neuronWorker.js
   TURN_PROBABILITY: 0.01,
   DIRECTION_ANGLES: [0, Math.PI / 2, Math.PI, 3 * Math.PI / 2],
   GRID_SPACING: 80,
@@ -202,7 +202,7 @@ function initAnimations() {
   }
 
   for (let depth = 0.3; depth <= 1.0; depth += 0.2) {
-    const count = Math.floor(ANIMATION_CONFIG.MAX_NEURONS * depth);
+    const count = Math.floor(ANIMATION_CONFIG.MAX_NEURONS * (depth / 1.0));
     for (let i = 0; i < count; i++) {
       neurons.push(new Neuron(depth, neuronId, useWorker, width, height));
       if (useWorker) {
@@ -300,4 +300,4 @@ function initAnimations() {
   animate();
 }
 
-window.addEventListener('load', initAnimations); // Corrected from initAnimations开创
+window.addEventListener('load', initAnimations);
