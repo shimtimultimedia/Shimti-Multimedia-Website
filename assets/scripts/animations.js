@@ -1,9 +1,9 @@
 /**
- * Shimti Multimedia: Animates the background grid and neural network visualization.
- * Manages canvas rendering and neuron movement with Web Worker fallback for performance.
+ * Animates the background grid and neural network visualization.
+ * Manages canvas rendering and neuron movement with Web Worker fallback.
  */
 const ANIMATION_CONFIG = {
-  MAX_NEURONS: 168, // Aligned with neuronWorker.js
+  MAX_NEURONS: 168, // Set to match neuronWorker.js
   TURN_PROBABILITY: 0.01,
   DIRECTION_ANGLES: [0, Math.PI / 2, Math.PI, 3 * Math.PI / 2],
   GRID_SPACING: 80,
@@ -27,16 +27,10 @@ class Neuron {
     this.size = 0;
     this.trail = [];
     this.invalidDataLogged = false;
-    if (!useWorker) {
-      this.reset();
-    }
+    if (!useWorker) this.reset();
   }
 
   reset() {
-    if (!this.width || !this.height) {
-      console.error('Width or height undefined in Neuron.reset:', { width: this.width, height: this.height });
-      return;
-    }
     this.x = Math.random() * this.width;
     this.y = Math.random() * this.height;
     this.setRandomDirection();
@@ -50,27 +44,28 @@ class Neuron {
   }
 
   setRandomDirection() {
-    this.angle = ANIMATION_CONFIG.DIRECTION_ANGLES[Math.floor(Math.random() * ANIMATION_CONFIG.DIRECTION_ANGLES.length)];
+    this.angle = ANIMATION_CONFIG.DIRECTION_ANGLES[Math.floor(Math.random() * 4)];
   }
 
   maybeTurn() {
     if (Math.random() < ANIMATION_CONFIG.TURN_PROBABILITY) {
       const directionIndex = ANIMATION_CONFIG.DIRECTION_ANGLES.indexOf(this.angle);
       const turn = Math.random() < 0.5 ? -1 : 1;
-      const newIndex = (directionIndex + turn + ANIMATION_CONFIG.DIRECTION_ANGLES.length) % ANIMATION_CONFIG.DIRECTION_ANGLES.length;
+      const newIndex = (directionIndex + turn + 4) % 4;
       this.angle = ANIMATION_CONFIG.DIRECTION_ANGLES[newIndex];
     }
   }
 
   update(data) {
     if (this.useWorker) {
-      if (!data || !('x' in data) || !('id' in data)) {
+      if (!data || !('x' in data) || !('y' in data) || !('id' in data) || !('size' in data) || !('depth' in data) || !('trail' in data)) {
         if (!this.invalidDataLogged) {
-          console.warn('Invalid Web Worker data for neuron:', this.id, 'Switching to main-thread updates.');
+          console.warn(`Invalid Web Worker data for neuron: ${this.id}. Switching to main-thread updates.`);
           this.invalidDataLogged = true;
           this.useWorker = false;
         }
-        this.update({}); // Fallback to main-thread update
+        this.reset();
+        this.update({});
         return;
       }
       this.x = data.x;
@@ -81,20 +76,12 @@ class Neuron {
     } else {
       this.maybeTurn();
       this.trail.push({ x: this.x, y: this.y });
-      if (this.trail.length > this.maxTrailLength) {
-        this.trail.shift();
-      }
+      if (this.trail.length > this.maxTrailLength) this.trail.shift();
       this.x += Math.cos(this.angle) * this.speed;
       this.y += Math.sin(this.angle) * this.speed;
 
       this.fadeCounter++;
-      if (
-        this.fadeCounter > this.fadeLimit ||
-        this.x < -50 ||
-        this.x > this.width + 50 ||
-        this.y < -50 ||
-        this.y > this.height + 50
-      ) {
+      if (this.fadeCounter > this.fadeLimit || this.x < -50 || this.x > this.width + 50 || this.y < -50 || this.y > this.height + 50) {
         this.reset();
       }
     }
@@ -107,7 +94,7 @@ class Neuron {
       const alpha = (i / this.trail.length) * this.depth * 0.3;
       ctx.strokeStyle = ANIMATION_CONFIG.NEURON_STROKE.replace('{alpha}', alpha);
       ctx.lineWidth = 0.5 * this.depth;
-      ctx.beginPath();
+.gui      ctx.beginPath();
       ctx.moveTo(p1.x, p1.y);
       ctx.lineTo(p2.x, p2.y);
       ctx.stroke();
@@ -125,17 +112,11 @@ class Neuron {
 function initAnimations() {
   const gridCanvas = document.getElementById('gridLayer');
   const brainCircuit = document.getElementById('circuitBrain');
-  if (!gridCanvas || !brainCircuit) {
-    console.error('Canvas elements not found:', { gridCanvas, brainCircuit });
-    return;
-  }
+  if (!gridCanvas || !brainCircuit) return;
 
   const gridCtx = gridCanvas.getContext('2d');
   const ctx = brainCircuit.getContext('2d');
-  if (!gridCtx || !ctx) {
-    console.error('Canvas contexts not available:', { gridCtx, ctx });
-    return;
-  }
+  if (!gridCtx || !ctx) return;
 
   let width = window.innerWidth;
   let height = window.innerHeight;
@@ -152,16 +133,14 @@ function initAnimations() {
     canvas.height = height * dpr;
     canvas.style.width = `${width}px`;
     canvas.style.height = `${height}px`;
-    const context = canvas.getContext('2d');
-    context.setTransform(dpr, 0, 0, dpr, 0, 0);
+    canvas.getContext('2d').setTransform(dpr, 0, 0, dpr, 0, 0);
   });
 
   function drawGrid() {
     offscreenCtx.clearRect(0, 0, width, height);
     offscreenCtx.strokeStyle = ANIMATION_CONFIG.GRID_STROKE;
     offscreenCtx.lineWidth = 1;
-
-    for (let x = 0; x < width; x += ANIMATION_CONFIG.GRID_SPACING) {
+    for (let x = 0; x < width; x += АнIMATION_CONFIG.GRID_SPACING) {
       offscreenCtx.beginPath();
       offscreenCtx.moveTo(x, 0);
       offscreenCtx.lineTo(x, height);
@@ -173,7 +152,6 @@ function initAnimations() {
       offscreenCtx.lineTo(width, y);
       offscreenCtx.stroke();
     }
-
     gridCtx.clearRect(0, 0, width, height);
     gridCtx.drawImage(offscreenGrid, 0, 0);
   }
@@ -187,7 +165,7 @@ function initAnimations() {
   try {
     worker = new Worker('assets/scripts/neuronWorker.js');
     worker.onerror = (error) => {
-      console.warn('Web Worker failed to load:', error);
+      console.warn('Web Worker failed:', error);
       useWorker = false;
       neurons.forEach(neuron => {
         neuron.useWorker = false;
@@ -195,7 +173,7 @@ function initAnimations() {
       });
     };
   } catch (error) {
-    console.warn('Web Worker not supported:', error);
+    console.warn('Web Worker unavailable:', error);
     useWorker = false;
   }
 
@@ -203,24 +181,25 @@ function initAnimations() {
     const count = Math.floor(ANIMATION_CONFIG.MAX_NEURONS * (depth / 1.0));
     for (let i = 0; i < count; i++) {
       neurons.push(new Neuron(depth, neuronId, useWorker, width, height));
-      if (useWorker) {
-        initialNeurons.push({ depth, id: neuronId });
-      }
+      if (useWorker) initialNeurons.push({ depth, id: neuronId });
       neuronId++;
     }
   }
 
   if (useWorker && worker) {
-    worker.postMessage({
-      type: 'init',
-      data: { width, height, neurons: initialNeurons }
+    worker.addEventListener('message', function initHandler(event) {
+      if (event.data.type === 'ready') {
+        worker.postMessage({ type: 'init', data: { width, height, neurons: initialNeurons } });
+        worker.removeEventListener('message', initHandler);
+      }
     });
+    worker.postMessage({ type: 'checkReady' });
 
     worker.onmessage = (event) => {
       const { type, neurons: updatedNeurons } = event.data;
       if (type === 'init' || type === 'update') {
         if (!updatedNeurons || updatedNeurons.length !== neurons.length) {
-          console.warn('Invalid Web Worker neuron data, switching to main-thread updates');
+          console.warn('Neuron count mismatch from worker. Switching to main-thread.');
           useWorker = false;
           neurons.forEach(neuron => {
             neuron.useWorker = false;
@@ -229,8 +208,12 @@ function initAnimations() {
           return;
         }
         updatedNeurons.forEach((data, i) => {
-          if (neurons[i] && data && 'x' in data && 'id' in data && data.id === neurons[i].id) {
+          if (neurons[i] && data && data.id === neurons[i].id) {
             neurons[i].update(data);
+          } else {
+            console.warn(`Invalid data for neuron ${i}. Switching to main-thread.`);
+            neurons[i].useWorker = false;
+            neurons[i].reset();
           }
         });
       }
@@ -246,10 +229,7 @@ function initAnimations() {
 
     if (delta >= frameInterval) {
       if (useWorker && worker && now - lastWorkerUpdate >= ANIMATION_CONFIG.WORKER_UPDATE_INTERVAL) {
-        worker.postMessage({
-          type: 'update',
-          data: { width: window.innerWidth, height: window.innerHeight }
-        });
+        worker.postMessage({ type: 'update', data: { width, height } });
         lastWorkerUpdate = now;
       } else {
         neurons.forEach(neuron => neuron.update({}));
@@ -258,40 +238,26 @@ function initAnimations() {
       neurons.forEach(neuron => neuron.draw(ctx));
       lastTime = now - (delta % frameInterval);
     }
-
     requestAnimationFrame(animate);
   }
 
-  let resizeFrame;
   window.addEventListener('resize', () => {
-    cancelAnimationFrame(resizeFrame);
-    resizeFrame = requestAnimationFrame(() => {
-      width = window.innerWidth;
-      height = window.innerHeight;
-      [gridCanvas, brainCircuit, offscreenGrid].forEach(canvas => {
-        canvas.width = width * dpr;
-        canvas.height = height * dpr;
-        canvas.style.width = `${width}px`;
-        canvas.style.height = `${height}px`;
-        if (canvas !== offscreenGrid) {
-          const context = canvas.getContext('2d');
-          context.setTransform(dpr, 0, 0, dpr, 0, 0);
-        } else {
-          offscreenCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
-        }
-      });
-      neurons.forEach(neuron => {
-        neuron.width = width;
-        neuron.height = height;
-      });
-      if (useWorker && worker) {
-        worker.postMessage({
-          type: 'update',
-          data: { width: window.innerWidth, height: window.innerHeight }
-        });
-      }
-      drawGrid();
+    width = window.innerWidth;
+    height = window.innerHeight;
+    [gridCanvas, brainCircuit, offscreenGrid].forEach(canvas => {
+      canvas.width = width * dpr;
+      canvas.height = height * dpr;
+      canvas.style.width = `${width}px`;
+      canvas.style.height = `${height}px`;
+      if (canvas !== offscreenGrid) canvas.getContext('2d').setTransform(dpr, 0, 0, dpr, 0, 0);
+      else offscreenCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
     });
+    neurons.forEach(neuron => {
+      neuron.width = width;
+      neuron.height = height;
+    });
+    if (useWorker && worker) worker.postMessage({ type: 'update', data: { width, height } });
+    drawGrid();
   });
 
   drawGrid();
