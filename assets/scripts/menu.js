@@ -18,15 +18,16 @@ const MENU_CONFIG = {
   GRID_PARTICLE_COUNT_MAX: 12, // Maximum grid particles
   SECTOR_FILL: 'rgba(180, 220, 255, 0.08)', // Sector fill color
   STROKE_COLOR: '#fff', // Stroke color for menu elements
-  BACKGROUND_RADIUS: 192, // Background circle radius
+  BACKGROUND_RADIUS: 192, // Stationary ring radius
   INNER_CIRCLE_RADIUS: 58, // Inner circle radius
   INNER_FILLED_RADIUS: 48, // Inner filled circle radius
   CORE_RADIUS: 20, // Holographic core radius
+  SEGMENTED_RING_RADIUS: 210, // Outer segmented ring radius
   RING_RADII: [25, 30, 35], // Radii for holographic rings
   NAVIGATION_LINKS: ['Contact', 'AI', 'Work', 'Media', 'Shop', 'About'], // Menu sector labels
   WELCOME_INTERVAL: 3000, // Carousel transition interval (ms)
   SQUARE_COUNT: 24, // Number of rotating squares
-  SEGMENT_COUNT: 4, // Number of segments in counter-rotating ring
+  SEGMENT_COUNT: 8, // Number of segments in counter-rotating ring
   FALLBACK_LANGUAGES: [
     { lang: 'English', text: 'Welcome' },
     { lang: 'Spanish', text: 'Bienvenido' },
@@ -341,6 +342,7 @@ function initializeRadialMenu() {
   defsBackground.appendChild(holoCoreGradient);
   svgElement.appendChild(defsBackground);
 
+  // Stationary ring/donut shape
   const backgroundCircle = document.createElementNS(MENU_SVG_NS, 'circle');
   backgroundCircle.setAttribute('cx', MENU_CONFIG.CENTER_X);
   backgroundCircle.setAttribute('cy', MENU_CONFIG.CENTER_Y);
@@ -348,6 +350,7 @@ function initializeRadialMenu() {
   backgroundCircle.setAttribute('fill', 'url(#backgroundGradient)');
   backgroundCircle.setAttribute('stroke', MENU_CONFIG.STROKE_COLOR);
   backgroundCircle.setAttribute('stroke-width', '1');
+  backgroundCircle.setAttribute('class', 'stationary-ring');
   menuContainer.parentNode.insertBefore(backgroundCircle, menuContainer);
 
   const defs = document.createElementNS(MENU_SVG_NS, 'defs');
@@ -459,39 +462,40 @@ function initializeRadialMenu() {
   innerRing.setAttribute('class', 'rotating-ring reverse');
   menuContainer.appendChild(innerRing);
 
-  // 24 rotating squares
+  // 24 rotating squares (clockwise, no outline, UI fill)
   const squareGroup = document.createElementNS(MENU_SVG_NS, 'g');
   squareGroup.setAttribute('class', 'square-orbit');
   for (let i = 0; i < MENU_CONFIG.SQUARE_COUNT; i++) {
     const angle = (i / MENU_CONFIG.SQUARE_COUNT) * 360;
-    const pos = polarToCartesian(MENU_CONFIG.CENTER_X, MENU_CONFIG.CENTER_Y, MENU_CONFIG.OUTER_RADIUS + 20, angle);
+    const pos = polarToCartesian(MENU_CONFIG.CENTER_X, MENU_CONFIG.CENTER_Y, MENU_CONFIG.OUTER_RADIUS + 5, angle);
     const square = document.createElementNS(MENU_SVG_NS, 'rect');
     square.setAttribute('x', pos.x - 5);
     square.setAttribute('y', pos.y - 5);
     square.setAttribute('width', '10');
     square.setAttribute('height', '10');
-    square.setAttribute('fill', 'none');
-    square.setAttribute('stroke', '#fff');
-    square.setAttribute('stroke-width', '1');
+    square.setAttribute('fill', MENU_CONFIG.SECTOR_FILL);
+    square.setAttribute('stroke', 'none');
     square.setAttribute('class', 'rotating-square');
     squareGroup.appendChild(square);
   }
   menuContainer.appendChild(squareGroup);
 
-  // 4-segment counter-rotating ring
+  // Segmented ring (counter-clockwise, thinner, random cutouts)
   const segmentGroup = document.createElementNS(MENU_SVG_NS, 'g');
   segmentGroup.setAttribute('class', 'segmented-ring');
   for (let i = 0; i < MENU_CONFIG.SEGMENT_COUNT; i++) {
-    const start = (i / MENU_CONFIG.SEGMENT_COUNT) * 360;
-    const end = start + 45;
-    const arc = document.createElementNS(MENU_SVG_NS, 'path');
-    const p1 = polarToCartesian(MENU_CONFIG.CENTER_X, MENU_CONFIG.CENTER_Y, MENU_CONFIG.OUTER_RADIUS + 15, start);
-    const p2 = polarToCartesian(MENU_CONFIG.CENTER_X, MENU_CONFIG.CENTER_Y, MENU_CONFIG.OUTER_RADIUS + 15, end);
-    arc.setAttribute('d', `M ${p1.x} ${p1.y} A ${MENU_CONFIG.OUTER_RADIUS + 15} ${MENU_CONFIG.OUTER_RADIUS + 15} 0 0 1 ${p2.x} ${p2.y}`);
-    arc.setAttribute('stroke', '#fff');
-    arc.setAttribute('stroke-width', '2');
-    arc.setAttribute('fill', 'none');
-    segmentGroup.appendChild(arc);
+    if (Math.random() > 0.4) { // Randomly skip ~40% of segments
+      const start = (i / MENU_CONFIG.SEGMENT_COUNT) * 360;
+      const end = start + (360 / MENU_CONFIG.SEGMENT_COUNT) * 0.8;
+      const p1 = polarToCartesian(MENU_CONFIG.CENTER_X, MENU_CONFIG.CENTER_Y, MENU_CONFIG.SEGMENTED_RING_RADIUS, start);
+      const p2 = polarToCartesian(MENU_CONFIG.CENTER_X, MENU_CONFIG.CENTER_Y, MENU_CONFIG.SEGMENTED_RING_RADIUS, end);
+      const arc = document.createElementNS(MENU_SVG_NS, 'path');
+      arc.setAttribute('d', `M ${p1.x} ${p1.y} A ${MENU_CONFIG.SEGMENTED_RING_RADIUS} ${MENU_CONFIG.SEGMENTED_RING_RADIUS} 0 0 0 ${p2.x} ${p2.y}`);
+      arc.setAttribute('stroke', MENU_CONFIG.STROKE_COLOR);
+      arc.setAttribute('stroke-width', '0.5');
+      arc.setAttribute('fill', 'none');
+      segmentGroup.appendChild(arc);
+    }
   }
   menuContainer.appendChild(segmentGroup);
 
