@@ -219,7 +219,18 @@ canvas {
   animation: circleGlowPulse 3s ease-in-out infinite, opacityPulse 2s ease-in-out infinite;
 }
 
-/* CSS Animations for Rotating Squares and Segmented Ring */
+/* Rotating Ring Animations - NEW */
+.rotating-ring {
+  transform-origin: center;
+  will-change: transform;
+  animation: rotate 20s linear infinite;
+}
+
+.rotating-ring.reverse {
+  animation: rotate 20s linear infinite reverse;
+}
+
+/* Rotating Squares and Segmented Ring */
 .rotating-square-ring {
   will-change: transform;
 }
@@ -245,6 +256,11 @@ canvas {
   -moz-animation: counterRotate 80s linear infinite;
 }
 
+@keyframes rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
 @keyframes orbit {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
@@ -265,7 +281,7 @@ canvas {
   to { transform: rotate(360deg); }
 }
 
-@-webkit@keyframes selfRotate {
+@-webkit-keyframes selfRotate {
   from { -webkit-transform: rotate(0deg); }
   to { -webkit-transform: rotate(360deg); }
 }
@@ -280,12 +296,12 @@ canvas {
   to { transform: rotate(-360deg); }
 }
 
-@-webkit@keyframes counterRotate {
+@-webkit-keyframes counterRotate {
   from { -webkit-transform: rotate(0deg); }
   to { -webkit-transform: rotate(-360deg); }
 }
 
-@-moz@keyframes counterRotate {
+@-moz-keyframes counterRotate {
   from { -moz-transform: rotate(0deg); }
   to { -moz-transform: rotate(-360deg); }
 }
@@ -303,12 +319,12 @@ canvas {
   50% { opacity: 1; }
 }
 
-@-webkit@keyframes neuronFade {
+@-webkit-keyframes neuronFade {
   0%, 100% { opacity: 0; }
   50% { opacity: 1; }
 }
 
-@-moz@keyframes neuronFade {
+@-moz-keyframes neuronFade {
   0%, 100% { opacity: 0; }
   50% { opacity: 1; }
 }
