@@ -2,7 +2,7 @@
  * Shimti Multimedia: Manages connection lines between panels and radial menu.
  * Handles dynamic SVG rendering and responsive resizing for a sci-fi aesthetic.
  */
-const SVG_NS = 'http://www.w3.org/2000/svg';
+const SVG_NS = 'http://www.w3.org/2000/svg'; // Declared only once
 
 function drawConnectionLines() {
   const shimtiPanel = document.getElementById('shimtiPanel');
@@ -23,32 +23,14 @@ function drawConnectionLines() {
     const radialRect = radialMenu.getBoundingClientRect();
 
     const topPoints = {
-      startPoint: {
-        x: topRect.left + topRect.width / 2,
-        y: topRect.bottom,
-      },
-      endPoint: {
-        x: radialRect.left + radialRect.width / 2,
-        y: radialRect.top,
-      },
+      startPoint: { x: topRect.left + topRect.width / 2, y: topRect.bottom },
+      endPoint: { x: radialRect.left + radialRect.width / 2, y: radialRect.top },
     };
-
-    // Removed debug log
-    // console.log('Top connection line points:', topPoints);
 
     const bottomPoints = {
-      startPoint: {
-        x: bottomRect.left + bottomRect.width / 2,
-        y: bottomRect.top,
-      },
-      endPoint: {
-        x: radialRect.left + radialRect.width / 2,
-        y: radialRect.bottom,
-      },
+      startPoint: { x: bottomRect.left + bottomRect.width / 2, y: bottomRect.top },
+      endPoint: { x: radialRect.left + radialRect.width / 2, y: radialRect.bottom },
     };
-
-    // Removed debug log
-    // console.log('Bottom connection line points:', bottomPoints);
 
     const pathTop = document.createElementNS(SVG_NS, 'path');
     pathTop.setAttribute('d', `M${topPoints.startPoint.x},${topPoints.startPoint.y} L${topPoints.endPoint.x},${topPoints.endPoint.y}`);
