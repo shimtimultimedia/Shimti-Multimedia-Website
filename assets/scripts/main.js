@@ -2,7 +2,7 @@
  * Shimti Multimedia: Manages connection lines between panels and radial menu.
  * Handles dynamic SVG rendering and responsive resizing for a sci-fi aesthetic.
  */
-const SVG_NS = 'http://www.w3.org/2000/svg'; // Declared only once
+const SVG_NS_MAIN = 'http://www.w3.org/2000/svg'; // Renamed to avoid conflict
 
 function drawConnectionLines() {
   const shimtiPanel = document.getElementById('shimtiPanel');
@@ -23,23 +23,35 @@ function drawConnectionLines() {
     const radialRect = radialMenu.getBoundingClientRect();
 
     const topPoints = {
-      startPoint: { x: topRect.left + topRect.width / 2, y: topRect.bottom },
-      endPoint: { x: radialRect.left + radialRect.width / 2, y: radialRect.top },
+      startPoint: {
+        x: topRect.left + topRect.width / 2,
+        y: topRect.bottom,
+      },
+      endPoint: {
+        x: radialRect.left + radialRect.width / 2,
+        y: radialRect.top,
+      },
     };
 
     const bottomPoints = {
-      startPoint: { x: bottomRect.left + bottomRect.width / 2, y: bottomRect.top },
-      endPoint: { x: radialRect.left + radialRect.width / 2, y: radialRect.bottom },
+      startPoint: {
+        x: bottomRect.left + bottomRect.width / 2,
+        y: bottomRect.top,
+      },
+      endPoint: {
+        x: radialRect.left + radialRect.width / 2,
+        y: radialRect.bottom,
+      },
     };
 
-    const pathTop = document.createElementNS(SVG_NS, 'path');
+    const pathTop = document.createElementNS(SVG_NS_MAIN, 'path');
     pathTop.setAttribute('d', `M${topPoints.startPoint.x},${topPoints.startPoint.y} L${topPoints.endPoint.x},${topPoints.endPoint.y}`);
     pathTop.setAttribute('stroke', '#fff');
     pathTop.setAttribute('stroke-width', '1');
     pathTop.setAttribute('stroke-dasharray', '5,5');
     connectionLines.appendChild(pathTop);
 
-    const pathBottom = document.createElementNS(SVG_NS, 'path');
+    const pathBottom = document.createElementNS(SVG_NS_MAIN, 'path');
     pathBottom.setAttribute('d', `M${bottomPoints.startPoint.x},${bottomPoints.startPoint.y} L${bottomPoints.endPoint.x},${bottomPoints.endPoint.y}`);
     pathBottom.setAttribute('stroke', '#fff');
     pathBottom.setAttribute('stroke-width', '1');
