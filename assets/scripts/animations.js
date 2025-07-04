@@ -3,7 +3,7 @@
  * Manages canvas rendering and neuron movement with Web Worker fallback for performance.
  */
 const ANIMATION_CONFIG = {
-  MAX_NEURONS: 71, // Aligned with neuronWorker.js
+  MAX_NEURONS: 168, // Aligned with neuronWorker.js
   TURN_PROBABILITY: 0.01,
   DIRECTION_ANGLES: [0, Math.PI / 2, Math.PI, 3 * Math.PI / 2],
   GRID_SPACING: 80,
