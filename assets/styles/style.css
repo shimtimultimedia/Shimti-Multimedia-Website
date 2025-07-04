@@ -50,7 +50,6 @@
   --panel-bg: rgba(180, 220, 255, 0.15);
   --text-color: #eaffff;
   --border-color: #fff;
-  --brightness-filter: brightness(1.1);
   --focus-outline: #8cf;
 }
 
@@ -81,7 +80,7 @@ canvas {
   user-select: none;
 }
 
-/* Branding Panel (Top) */
+/* Branding Panel */
 #shimtiPanel {
   position: absolute;
   top: 20px;
@@ -97,7 +96,7 @@ canvas {
   user-select: none;
 }
 
-/* Branding Panel (Bottom) */
+/* Welcome Panel */
 #shimtiPanelBottom {
   position: absolute;
   bottom: 20px;
@@ -130,7 +129,7 @@ canvas {
   visibility: visible;
 }
 
-/* Fade animations */
+/* Fade Animations */
 #shimtiPanelBottom #welcomeText.fade-out {
   opacity: 0;
 }
@@ -142,7 +141,7 @@ canvas {
 #shimtiPanel img {
   height: 1.5em;
   aspect-ratio: 1;
-  filter: var(--brightness-filter);
+  filter: brightness(1.1);
 }
 
 #shimtiPanel span {
@@ -219,7 +218,7 @@ canvas {
   animation: circleGlowPulse 3s ease-in-out infinite, opacityPulse 2s ease-in-out infinite;
 }
 
-/* Rotating Ring Animations - NEW */
+/* Radial Menu Animations */
 .rotating-ring {
   transform-origin: center;
   will-change: transform;
@@ -230,30 +229,22 @@ canvas {
   animation: rotate 20s linear infinite reverse;
 }
 
-/* Rotating Squares and Segmented Ring */
-.rotating-square-ring {
-  will-change: transform;
-}
-
 .square-orbit {
+  transform-origin: center;
   will-change: transform;
-  animation: orbit 60s linear infinite;
-  -webkit-animation: orbit 60s linear infinite;
-  -moz-animation: orbit 60s linear infinite;
+  animation: rotate 60s linear infinite;
 }
 
 .rotating-square {
+  transform-origin: center;
   will-change: transform;
   animation: selfRotate 2s linear infinite;
-  -webkit-animation: selfRotate 2s linear infinite;
-  -moz-animation: selfRotate 2s linear infinite;
 }
 
 .segmented-ring {
+  transform-origin: center;
   will-change: transform;
   animation: counterRotate 80s linear infinite;
-  -webkit-animation: counterRotate 80s linear infinite;
-  -moz-animation: counterRotate 80s linear infinite;
 }
 
 @keyframes rotate {
@@ -261,34 +252,9 @@ canvas {
   to { transform: rotate(360deg); }
 }
 
-@keyframes orbit {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-
-@-webkit-keyframes orbit {
-  from { -webkit-transform: rotate(0deg); }
-  to { -webkit-transform: rotate(360deg); }
-}
-
-@-moz-keyframes orbit {
-  from { -moz-transform: rotate(0deg); }
-  to { -moz-transform: rotate(360deg); }
-}
-
 @keyframes selfRotate {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
-}
-
-@-webkit-keyframes selfRotate {
-  from { -webkit-transform: rotate(0deg); }
-  to { -webkit-transform: rotate(360deg); }
-}
-
-@-moz@keyframes selfRotate {
-  from { -moz-transform: rotate(0deg); }
-  to { -moz-transform: rotate(360deg); }
 }
 
 @keyframes counterRotate {
@@ -296,40 +262,18 @@ canvas {
   to { transform: rotate(-360deg); }
 }
 
-@-webkit-keyframes counterRotate {
-  from { -webkit-transform: rotate(0deg); }
-  to { -webkit-transform: rotate(-360deg); }
-}
-
-@-moz-keyframes counterRotate {
-  from { -moz-transform: rotate(0deg); }
-  to { -moz-transform: rotate(-360deg); }
-}
-
-/* Grid Neuron Animation (Unused, kept for reference) */
-.grid-neuron {
-  animation: neuronFade 3s ease-in-out infinite;
-  -webkit-animation: neuronFade 3s ease-in-out infinite;
-  -moz-animation: neuronFade 3s ease-in-out infinite;
+/* Grid Particle Animation */
+.grid-particle {
+  animation: particleFade 3s ease-in-out infinite;
   animation-delay: calc(var(--random-delay) * 1s);
 }
 
-@keyframes neuronFade {
+@keyframes particleFade {
   0%, 100% { opacity: 0; }
   50% { opacity: 1; }
 }
 
-@-webkit-keyframes neuronFade {
-  0%, 100% { opacity: 0; }
-  50% { opacity: 1; }
-}
-
-@-moz-keyframes neuronFade {
-  0%, 100% { opacity: 0; }
-  50% { opacity: 1; }
-}
-
-/* Existing Animations */
+/* Core Animations */
 @keyframes glowPulse {
   0% { filter: drop-shadow(0 0 2px rgba(180, 220, 255, 0.3)); }
   50% { filter: drop-shadow(0 0 8px rgba(180, 220, 255, 0.6)); }
@@ -340,11 +284,6 @@ canvas {
   0% { filter: drop-shadow(0 0 3px rgba(180, 220, 255, 0.4)); }
   50% { filter: drop-shadow(0 0 8px rgba(180, 220, 255, 0.7)); }
   100% { filter: drop-shadow(0 0 3px rgba(180, 220, 255, 0.4)); }
-}
-
-@keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
 }
 
 @keyframes opacityPulse {
