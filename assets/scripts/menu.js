@@ -18,7 +18,7 @@ const CONFIG = {
   INNER_FILLED_RADIUS: 48,
   CORE_RADIUS: 20,
   RING_RADII: [25, 30, 35],
-  LABELS: ['Contact', 'AI', 'Work', 'Media', 'Shop', 'About'], // Populated for navigation
+  LABELS: ['Contact', 'AI', 'Work', 'Media', 'Shop', 'About'],
   WELCOME_INTERVAL: 3000,
   FALLBACK_LANGUAGES: [
     { lang: 'English', text: 'Welcome' },
@@ -408,7 +408,7 @@ function initRadialMenu() {
   outerRing.setAttribute('stroke', '#8cf');
   outerRing.setAttribute('stroke-width', '2');
   outerRing.setAttribute('fill', 'none');
-  outerRing.setAttribute('class', 'rotating-square-ring');
+  outerRing.setAttribute('class', 'rotating-ring');
   wheelMenu.appendChild(outerRing);
 
   const innerRing = document.createElementNS(SVG_NS, 'circle');
@@ -418,7 +418,7 @@ function initRadialMenu() {
   innerRing.setAttribute('stroke', '#8cf');
   innerRing.setAttribute('stroke-width', '2');
   innerRing.setAttribute('fill', 'none');
-  innerRing.setAttribute('class', 'rotating-square-ring');
+  innerRing.setAttribute('class', 'rotating-ring reverse');
   wheelMenu.appendChild(innerRing);
 
   // Initialize welcome text carousel
