@@ -1,21 +1,21 @@
 /**
- * Shimti Multimedia: Animates the background grid and neural network visualization.
- * Uses main-thread updates for reliable rendering.
+ * Shimti Multimedia: Animates the background grid and particle visualization.
+ * Optimized for main-thread rendering at 30 FPS.
  */
-const ANIMATION_CONFIG = {
-  MAX_NEURONS: 168, // Number of neurons to render
+const APP_CONFIG = {
+  MAX_PARTICLES: 100, // Optimized for performance, adjustable to 168
   TURN_PROBABILITY: 0.01,
   DIRECTION_ANGLES: [0, Math.PI / 2, Math.PI, 3 * Math.PI / 2],
   GRID_SPACING: 80,
   GRID_STROKE: 'rgba(100, 150, 255, 0.1)',
-  NEURON_STROKE: 'rgba(180, 220, 255, {alpha})',
-  NEURON_SHADOW: '#8cf',
-  NEURON_FILL: 'rgba(234, 255, 255, {depth})',
+  PARTICLE_STROKE: 'rgba(180, 220, 255, {alpha})',
+  PARTICLE_SHADOW: '#8cf',
+  PARTICLE_FILL: 'rgba(234, 255, 255, {depth})',
   TARGET_FPS: 30,
 };
 
-class Neuron {
-  constructor(depth = 1, id, width, height) {
+class Particle {
+  constructor(depth, id, width, height) {
     this.id = id;
     this.depth = depth;
     this.width = width;
@@ -29,7 +29,7 @@ class Neuron {
 
   reset() {
     if (!this.width || !this.height) {
-      console.error('Width or height undefined in Neuron.reset:', { width: this.width, height: this.height });
+      console.error('Invalid dimensions in Particle.reset:', { width: this.width, height: this.height });
       return;
     }
     this.x = Math.random() * this.width;
@@ -45,15 +45,15 @@ class Neuron {
   }
 
   setRandomDirection() {
-    this.angle = ANIMATION_CONFIG.DIRECTION_ANGLES[Math.floor(Math.random() * ANIMATION_CONFIG.DIRECTION_ANGLES.length)];
+    this.angle = APP_CONFIG.DIRECTION_ANGLES[Math.floor(Math.random() * APP_CONFIG.DIRECTION_ANGLES.length)];
   }
 
   maybeTurn() {
-    if (Math.random() < ANIMATION_CONFIG.TURN_PROBABILITY) {
-      const directionIndex = ANIMATION_CONFIG.DIRECTION_ANGLES.indexOf(this.angle);
+    if (Math.random() < APP_CONFIG.TURN_PROBABILITY) {
+      const directionIndex = APP_CONFIG.DIRECTION_ANGLES.indexOf(this.angle);
       const turn = Math.random() < 0.5 ? -1 : 1;
-      const newIndex = (directionIndex + turn + ANIMATION_CONFIG.DIRECTION_ANGLES.length) % ANIMATION_CONFIG.DIRECTION_ANGLES.length;
-      this.angle = ANIMATION_CONFIG.DIRECTION_ANGLES[newIndex];
+      const newIndex = (directionIndex + turn + APP_CONFIG.DIRECTION_ANGLES.length) % APP_CONFIG.DIRECTION_ANGLES.length;
+      this.angle = APP_CONFIG.DIRECTION_ANGLES[newIndex];
     }
   }
 
@@ -78,40 +78,40 @@ class Neuron {
     }
   }
 
-  draw(ctx) {
+  render(context) {
     for (let i = 0; i < this.trail.length - 1; i++) {
       const p1 = this.trail[i];
       const p2 = this.trail[i + 1];
       const alpha = (i / this.trail.length) * this.depth * 0.3;
-      ctx.strokeStyle = ANIMATION_CONFIG.NEURON_STROKE.replace('{alpha}', alpha);
-      ctx.lineWidth = 0.5 * this.depth;
-      ctx.beginPath();
-      ctx.moveTo(p1.x, p1.y);
-      ctx.lineTo(p2.x, p2.y);
-      ctx.stroke();
+      context.strokeStyle = APP_CONFIG.PARTICLE_STROKE.replace('{alpha}', alpha);
+      context.lineWidth = 0.5 * this.depth;
+      context.beginPath();
+      context.moveTo(p1.x, p1.y);
+      context.lineTo(p2.x, p2.y);
+      context.stroke();
     }
 
-    ctx.shadowBlur = 1.5 * this.depth;
-    ctx.shadowColor = ANIMATION_CONFIG.NEURON_SHADOW;
-    ctx.fillStyle = ANIMATION_CONFIG.NEURON_FILL.replace('{depth}', this.depth);
-    ctx.beginPath();
-    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-    ctx.fill();
+    context.shadowBlur = 1.5 * this.depth;
+    context.shadowColor = APP_CONFIG.PARTICLE_SHADOW;
+    context.fillStyle = APP_CONFIG.PARTICLE_FILL.replace('{depth}', this.depth);
+    context.beginPath();
+    context.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+    context.fill();
   }
 }
 
-function initAnimations() {
+function initializeParticleSystem() {
   const gridCanvas = document.getElementById('gridLayer');
-  const brainCircuit = document.getElementById('circuitBrain');
-  if (!gridCanvas || !brainCircuit) {
-    console.error('Canvas elements not found:', { gridCanvas, brainCircuit });
+  const particleCanvas = document.getElementById('circuitBrain');
+  if (!gridCanvas || !particleCanvas) {
+    console.error('Canvas elements not found:', { gridCanvas, particleCanvas });
     return;
   }
 
-  const gridCtx = gridCanvas.getContext('2d');
-  const ctx = brainCircuit.getContext('2d');
-  if (!gridCtx || !ctx) {
-    console.error('Canvas contexts not available:', { gridCtx, ctx });
+  const gridContext = gridCanvas.getContext('2d');
+  const particleContext = particleCanvas.getContext('2d');
+  if (!gridContext || !particleContext) {
+    console.error('Canvas contexts not available:', { gridContext, particleContext });
     return;
   }
 
@@ -122,10 +122,10 @@ function initAnimations() {
   const offscreenGrid = document.createElement('canvas');
   offscreenGrid.width = width * dpr;
   offscreenGrid.height = height * dpr;
-  const offscreenCtx = offscreenGrid.getContext('2d');
-  offscreenCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  const offscreenContext = offscreenGrid.getContext('2d');
+  offscreenContext.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-  [gridCanvas, brainCircuit].forEach(canvas => {
+  [gridCanvas, particleCanvas].forEach(canvas => {
     canvas.width = width * dpr;
     canvas.height = height * dpr;
     canvas.style.width = `${width}px`;
@@ -134,36 +134,36 @@ function initAnimations() {
     context.setTransform(dpr, 0, 0, dpr, 0, 0);
   });
 
-  function drawGrid() {
-    offscreenCtx.clearRect(0, 0, width, height);
-    offscreenCtx.strokeStyle = ANIMATION_CONFIG.GRID_STROKE;
-    offscreenCtx.lineWidth = 1;
+  function renderGrid() {
+    offscreenContext.clearRect(0, 0, width, height);
+    offscreenContext.strokeStyle = APP_CONFIG.GRID_STROKE;
+    offscreenContext.lineWidth = 1;
 
-    for (let x = 0; x < width; x += ANIMATION_CONFIG.GRID_SPACING) {
-      offscreenCtx.beginPath();
-      offscreenCtx.moveTo(x, 0);
-      offscreenCtx.lineTo(x, height);
-      offscreenCtx.stroke();
+    for (let x = 0; x < width; x += APP_CONFIG.GRID_SPACING) {
+      offscreenContext.beginPath();
+      offscreenContext.moveTo(x, 0);
+      offscreenContext.lineTo(x, height);
+      offscreenContext.stroke();
     }
-    for (let y = 0; y < height; y += ANIMATION_CONFIG.GRID_SPACING) {
-      offscreenCtx.beginPath();
-      offscreenCtx.moveTo(0, y);
-      offscreenCtx.lineTo(width, y);
-      offscreenCtx.stroke();
+    for (let y = 0; y < height; y += APP_CONFIG.GRID_SPACING) {
+      offscreenContext.beginPath();
+      offscreenContext.moveTo(0, y);
+      offscreenContext.lineTo(width, y);
+      offscreenContext.stroke();
     }
 
-    gridCtx.clearRect(0, 0, width, height);
-    gridCtx.drawImage(offscreenGrid, 0, 0);
+    gridContext.clearRect(0, 0, width, height);
+    gridContext.drawImage(offscreenGrid, 0, 0);
   }
 
-  const neurons = [];
-  let neuronId = 0;
+  const particles = [];
+  let particleId = 0;
 
   for (let depth = 0.3; depth <= 1.0; depth += 0.2) {
-    const count = Math.floor(ANIMATION_CONFIG.MAX_NEURONS * (depth / 1.0));
+    const count = Math.floor(APP_CONFIG.MAX_PARTICLES * (depth / 1.0));
     for (let i = 0; i < count; i++) {
-      neurons.push(new Neuron(depth, neuronId, width, height));
-      neuronId++;
+      particles.push(new Particle(depth, particleId, width, height));
+      particleId++;
     }
   }
 
@@ -171,25 +171,27 @@ function initAnimations() {
   function animate() {
     const now = performance.now();
     const delta = now - lastTime;
-    const frameInterval = 1000 / ANIMATION_CONFIG.TARGET_FPS;
+    const frameInterval = 1000 / APP_CONFIG.TARGET_FPS;
 
     if (delta >= frameInterval) {
-      neurons.forEach(neuron => neuron.update());
-      ctx.clearRect(0, 0, width, height);
-      neurons.forEach(neuron => neuron.draw(ctx));
+      particleContext.clearRect(0, 0, width, height);
+      particles.forEach(particle => {
+        particle.update();
+        particle.render(particleContext);
+      });
       lastTime = now - (delta % frameInterval);
     }
 
     requestAnimationFrame(animate);
   }
 
-  let resizeFrame;
+  let resizeTimeout;
   window.addEventListener('resize', () => {
-    cancelAnimationFrame(resizeFrame);
-    resizeFrame = requestAnimationFrame(() => {
+    clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(() => {
       width = window.innerWidth;
       height = window.innerHeight;
-      [gridCanvas, brainCircuit, offscreenGrid].forEach(canvas => {
+      [gridCanvas, particleCanvas, offscreenGrid].forEach(canvas => {
         canvas.width = width * dpr;
         canvas.height = height * dpr;
         canvas.style.width = `${width}px`;
@@ -198,19 +200,19 @@ function initAnimations() {
           const context = canvas.getContext('2d');
           context.setTransform(dpr, 0, 0, dpr, 0, 0);
         } else {
-          offscreenCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+          offscreenContext.setTransform(dpr, 0, 0, dpr, 0, 0);
         }
       });
-      neurons.forEach(neuron => {
-        neuron.width = width;
-        neuron.height = height;
+      particles.forEach(particle => {
+        particle.width = width;
+        particle.height = height;
       });
-      drawGrid();
-    });
+      renderGrid();
+    }, 100);
   });
 
-  drawGrid();
+  renderGrid();
   animate();
 }
 
-window.addEventListener('load', initAnimations);
+window.addEventListener('load', initializeParticleSystem);
