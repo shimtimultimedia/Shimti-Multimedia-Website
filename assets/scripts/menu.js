@@ -18,8 +18,8 @@ const CONFIG = {
   INNER_FILLED_RADIUS: 48,
   CORE_RADIUS: 20,
   RING_RADII: [25, 30, 35],
-  LABELS: [], // Empty to avoid 404s until pages are added
-  WELCOME_INTERVAL: 3000, // 3s per language
+  LABELS: ['Contact', 'AI', 'Work', 'Media', 'Shop', 'About'], // Populated for navigation
+  WELCOME_INTERVAL: 3000,
   FALLBACK_LANGUAGES: [
     { lang: 'English', text: 'Welcome' },
     { lang: 'Spanish', text: 'Bienvenido' },
@@ -36,9 +36,6 @@ const CONFIG = {
   ],
 };
 
-/**
- * Converts polar coordinates to Cartesian coordinates.
- */
 function polarToCartesian(cx, cy, r, angleDeg) {
   const angleRad = (Math.PI / 180) * angleDeg;
   return {
@@ -47,9 +44,6 @@ function polarToCartesian(cx, cy, r, angleDeg) {
   };
 }
 
-/**
- * Creates a radial menu sector with a path and icon.
- */
 function createSector(pos, label, color, fragment) {
   const { p1, p2, p3, p4, iconPos, start, end } = pos;
   const largeArc = end - start > 180 ? 1 : 0;
@@ -88,9 +82,6 @@ function createSector(pos, label, color, fragment) {
   fragment.appendChild(group);
 }
 
-/**
- * Represents a grid neuron with random pop-in/pop-out animation.
- */
 class GridNeuron {
   constructor(x, y, gridOverlay) {
     this.x = x;
@@ -119,9 +110,6 @@ class GridNeuron {
   }
 }
 
-/**
- * Loads languages from XML and manages the welcome text carousel and button hover interactions.
- */
 async function initWelcomeCarousel() {
   await new Promise(resolve => setTimeout(resolve, 100));
   const welcomeText = document.getElementById('welcomeText');
@@ -211,9 +199,6 @@ async function initWelcomeCarousel() {
   });
 }
 
-/**
- * Initializes the radial menu with sectors, grid, and holographic effects.
- */
 function initRadialMenu() {
   const svgElement = document.getElementById('radialMenu');
   const wheelMenu = document.getElementById('wheelMenu');
@@ -415,9 +400,29 @@ function initRadialMenu() {
   });
   wheelMenu.appendChild(holoCoreGroup);
 
+  // Add rotating rings
+  const outerRing = document.createElementNS(SVG_NS, 'circle');
+  outerRing.setAttribute('cx', CONFIG.CENTER_X);
+  outerRing.setAttribute('cy', CONFIG.CENTER_Y);
+  outerRing.setAttribute('r', CONFIG.OUTER_RADIUS + 10);
+  outerRing.setAttribute('stroke', '#8cf');
+  outerRing.setAttribute('stroke-width', '2');
+  outerRing.setAttribute('fill', 'none');
+  outerRing.setAttribute('class', 'rotating-square-ring');
+  wheelMenu.appendChild(outerRing);
+
+  const innerRing = document.createElementNS(SVG_NS, 'circle');
+  innerRing.setAttribute('cx', CONFIG.CENTER_X);
+  innerRing.setAttribute('cy', CONFIG.CENTER_Y);
+  innerRing.setAttribute('r', CONFIG.INNER_RADIUS - 10);
+  innerRing.setAttribute('stroke', '#8cf');
+  innerRing.setAttribute('stroke-width', '2');
+  innerRing.setAttribute('fill', 'none');
+  innerRing.setAttribute('class', 'rotating-square-ring');
+  wheelMenu.appendChild(innerRing);
+
   // Initialize welcome text carousel
   initWelcomeCarousel();
 }
 
-// Initialize on DOM load
 window.addEventListener('load', initRadialMenu);
