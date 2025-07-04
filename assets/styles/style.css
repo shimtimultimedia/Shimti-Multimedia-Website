@@ -221,6 +221,10 @@ canvas {
   animation: circleGlowPulse 3s ease-in-out infinite, opacityPulse 2s ease-in-out infinite;
 }
 
+#wheelMenu .stationary-ring {
+  animation: glowPulse 3s ease-in-out infinite;
+}
+
 /* Radial Menu Animations */
 .rotating-ring {
   transform-origin: center;
@@ -235,19 +239,19 @@ canvas {
 .square-orbit {
   transform-origin: center;
   will-change: transform;
-  animation: rotate 60s linear infinite;
+  animation: rotate 120s linear infinite; /* Slow clockwise rotation */
 }
 
 .rotating-square {
   transform-origin: center;
   will-change: transform;
-  animation: selfRotate 2s linear infinite;
+  animation: selfRotate 2s linear infinite; /* Local pivot rotation */
 }
 
 .segmented-ring {
   transform-origin: center;
   will-change: transform;
-  animation: counterRotate 80s linear infinite;
+  animation: counterRotate 160s linear infinite; /* Slow counter-clockwise rotation */
 }
 
 @keyframes rotate {
