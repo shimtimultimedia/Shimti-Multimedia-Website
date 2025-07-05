@@ -313,4 +313,120 @@ window.initRadialMenu = function () {
   holoCoreGradient.setAttribute('y2', '100%');
 
   const holoStop1 = document.createElementNS(window.MENU_SVG_NS, 'stop');
-  holoStop1.setAttribute('offset', '
+  holoStop1.setAttribute('offset', '0%');
+  holoStop1.setAttribute('stop-color', 'rgb(180, 220, 255)');
+  holoStop1.setAttribute('stop-opacity', '0.1');
+
+  const holoStop2 = document.createElementNS(window.MENU_SVG_NS, 'stop');
+  holoStop2.setAttribute('offset', '100%');
+  holoStop2.setAttribute('stop-color', 'rgb(180, 220, 255)');
+  holoStop2.setAttribute('stop-opacity', '0.2');
+
+  holoCoreGradient.appendChild(holoStop1);
+  holoCoreGradient.appendChild(holoStop2);
+  defsBackground.appendChild(holoCoreGradient);
+  svgElement.appendChild(defsBackground);
+
+  const backgroundCircle = document.createElementNS(window.MENU_SVG_NS, 'circle');
+  backgroundCircle.setAttribute('cx', window.MENU_CONFIG.CENTER_X);
+  backgroundCircle.setAttribute('cy', window.MENU_CONFIG.CENTER_Y);
+  backgroundCircle.setAttribute('r', 192); // Slightly larger than outer radius
+  backgroundCircle.setAttribute('fill', 'url(#backgroundGradient)');
+  backgroundCircle.setAttribute('stroke', window.MENU_CONFIG.STROKE_COLOR);
+  backgroundCircle.setAttribute('stroke-width', '2');
+  menuWheel.parentNode.insertBefore(backgroundCircle, menuWheel);
+
+  const defs = document.createElementNS(window.MENU_SVG_NS, 'defs');
+  const clipPath = document.createElementNS(window.MENU_SVG_NS, 'clipPath');
+  clipPath.setAttribute('id', 'innerCircleClip');
+  const clipCircle = document.createElementNS(window.MENU_SVG_NS, 'circle');
+  clipCircle.setAttribute('cx', window.MENU_CONFIG.CENTER_X);
+  clipCircle.setAttribute('cy', window.MENU_CONFIG.CENTER_Y);
+  clipCircle.setAttribute('r', window.MENU_CONFIG.INNER_CIRCLE_RADIUS);
+  clipPath.appendChild(clipCircle);
+  defs.appendChild(clipPath);
+  svgElement.appendChild(defs);
+
+  const gridOverlay = document.createElementNS(window.MENU_SVG_NS, 'g');
+  gridOverlay.setAttribute('clip-path', 'url(#innerCircleClip)');
+  for (let x = -window.MENU_CONFIG.INNER_RADIUS; x <= window.MENU_CONFIG.INNER_RADIUS; x += window.MENU_CONFIG.GRID_SPACING) {
+    const line = document.createElementNS(window.MENU_SVG_NS, 'line');
+    line.setAttribute('x1', window.MENU_CONFIG.CENTER_X + x);
+    line.setAttribute('y1', window.MENU_CONFIG.CENTER_Y - window.MENU_CONFIG.INNER_RADIUS);
+    line.setAttribute('x2', window.MENU_CONFIG.CENTER_X + x);
+    line.setAttribute('y2', window.MENU_CONFIG.CENTER_Y + window.MENU_CONFIG.INNER_RADIUS);
+    line.setAttribute('stroke', window.MENU_CONFIG.STROKE_COLOR);
+    line.setAttribute('stroke-width', '1');
+    gridOverlay.appendChild(line);
+  }
+  for (let y = -window.MENU_CONFIG.INNER_RADIUS; y <= window.MENU_CONFIG.INNER_RADIUS; y += window.MENU_CONFIG.GRID_SPACING) {
+    const line = document.createElementNS(window.MENU_SVG_NS, 'line');
+    line.setAttribute('x1', window.MENU_CONFIG.CENTER_X - window.MENU_CONFIG.INNER_RADIUS);
+    line.setAttribute('y1', window.MENU_CONFIG.CENTER_Y + y);
+    line.setAttribute('x2', window.MENU_CONFIG.CENTER_X + window.MENU_CONFIG.INNER_RADIUS);
+    line.setAttribute('y2', window.MENU_CONFIG.CENTER_Y + y);
+    line.setAttribute('stroke', window.MENU_CONFIG.STROKE_COLOR);
+    line.setAttribute('stroke-width', '1');
+    gridOverlay.appendChild(line);
+  }
+  menuWheel.appendChild(gridOverlay);
+
+  const gridCenters = [];
+  for (let x = -window.MENU_CONFIG.INNER_RADIUS; x <= window.MENU_CONFIG.INNER_RADIUS; x += window.MENU_CONFIG.GRID_SPACING) {
+    for (let y = -window.MENU_CONFIG.INNER_RADIUS; y <= window.MENU_CONFIG.INNER_RADIUS; y += window.MENU_CONFIG.GRID_SPACING) {
+      const distance = Math.sqrt(x * x + y * y);
+      if (distance <= window.MENU_CONFIG.INNER_CIRCLE_RADIUS) {
+        gridCenters.push({ x: window.MENU_CONFIG.CENTER_X + x, y: window.MENU_CONFIG.CENTER_Y + y });
+      }
+    }
+  }
+
+  const particleCount = window.MENU_CONFIG.PARTICLE_COUNT_MIN + Math.floor(Math.random() * (window.MENU_CONFIG.PARTICLE_COUNT_MAX - window.MENU_CONFIG.PARTICLE_COUNT_MIN));
+  const selectedCenters = gridCenters.sort(() => Math.random() - 0.5).slice(0, particleCount);
+  selectedCenters.forEach(center => new window.GridParticle(center.x, center.y, gridOverlay));
+
+  const centerCircle = document.createElementNS(window.MENU_SVG_NS, 'circle');
+  centerCircle.setAttribute('cx', window.MENU_CONFIG.CENTER_X);
+  centerCircle.setAttribute('cy', window.MENU_CONFIG.CENTER_Y);
+  centerCircle.setAttribute('r', window.MENU_CONFIG.INNER_CIRCLE_RADIUS);
+  centerCircle.setAttribute('fill', 'none');
+  centerCircle.setAttribute('stroke', window.MENU_CONFIG.STROKE_COLOR);
+  centerCircle.setAttribute('stroke-width', '2');
+  menuWheel.appendChild(centerCircle);
+
+  const innerFilledCircle = document.createElementNS(window.MENU_SVG_NS, 'circle');
+  innerFilledCircle.setAttribute('cx', window.MENU_CONFIG.CENTER_X);
+  innerFilledCircle.setAttribute('cy', window.MENU_CONFIG.CENTER_Y);
+  innerFilledCircle.setAttribute('r', window.MENU_CONFIG.INNER_FILLED_RADIUS);
+  innerFilledCircle.setAttribute('fill', 'rgba(180, 220, 255, 0.06)');
+  innerFilledCircle.setAttribute('stroke', 'none');
+  innerFilledCircle.setAttribute('class', 'inner-filled-circle');
+  menuWheel.appendChild(innerFilledCircle);
+
+  const holoCoreGroup = document.createElementNS(window.MENU_SVG_NS, 'g');
+  holoCoreGroup.setAttribute('aria-hidden', 'true');
+  const holoCore = document.createElementNS(window.MENU_SVG_NS, 'circle');
+  holoCore.setAttribute('cx', window.MENU_CONFIG.CENTER_X);
+  holoCore.setAttribute('cy', window.MENU_CONFIG.CENTER_Y);
+  holoCore.setAttribute('r', window.MENU_CONFIG.CORE_RADIUS);
+  holoCore.setAttribute('fill', 'rgba(234, 255, 255, 0.9)');
+  holoCore.setAttribute('class', 'holo-core');
+  holoCoreGroup.appendChild(holoCore);
+
+  window.MENU_CONFIG.RING_RADII.forEach((r, i) => {
+    const ring = document.createElementNS(window.MENU_SVG_NS, 'circle');
+    ring.setAttribute('cx', window.MENU_CONFIG.CENTER_X);
+    ring.setAttribute('cy', window.MENU_CONFIG.CENTER_Y);
+    ring.setAttribute('r', r);
+    ring.setAttribute('fill', 'url(#holoCoreGradient)');
+    ring.setAttribute('stroke', window.MENU_CONFIG.STROKE_COLOR);
+    ring.setAttribute('stroke-width', '2');
+    ring.setAttribute('class', `holo-ring ring-${i}`);
+    holoCoreGroup.appendChild(ring);
+  });
+  menuWheel.appendChild(holoCoreGroup);
+
+  window.initWelcomeCarousel();
+};
+
+window.addEventListener('load', window.initRadialMenu);
