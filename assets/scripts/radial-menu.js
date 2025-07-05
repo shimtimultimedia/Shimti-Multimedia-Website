@@ -9,23 +9,23 @@ window.MENU_SVG_NS = 'http://www.w3.org/2000/svg';
 
 /** @constant {Object} window.MENU_CONFIG - Configuration for radial menu and welcome carousel */
 window.MENU_CONFIG = {
-  CENTER_X: 200, // X-coordinate of menu center
-  CENTER_Y: 200, // Y-coordinate of menu center
-  OUTER_RADIUS: 180, // Outer radius of menu sectors
-  INNER_RADIUS: 70, // Inner radius of menu sectors
-  GRID_SPACING: 20, // Grid line spacing
-  PARTICLE_COUNT_MIN: 4, // Minimum grid particles
-  PARTICLE_COUNT_MAX: 12, // Maximum grid particles
-  SECTOR_FILL: 'rgba(180, 220, 255, 0.08)', // Sector fill color
-  STROKE_COLOR: '#fff', // Stroke color for menu elements
-  INNER_CIRCLE_RADIUS: 58, // Inner circle radius
-  INNER_FILLED_RADIUS: 48, // Inner filled circle radius
-  CORE_RADIUS: 20, // Holographic core radius
-  RING_RADII: [25, 30, 35], // Radii for holographic core rings
-  NAVIGATION_LINKS: ['Contact', 'AI', 'Work', 'Media', 'Shop', 'About'], // Menu sector labels
-  WELCOME_INTERVAL: 3000, // Carousel transition interval (ms)
-  PARTICLE_INTERVAL_MIN: 1000, // Minimum time before particle respawns
-  PARTICLE_INTERVAL_MAX: 3000, // Maximum time before particle respawns
+  CENTER_X: 200,
+  CENTER_Y: 200,
+  OUTER_RADIUS: 180,
+  INNER_RADIUS: 70,
+  GRID_SPACING: 20,
+  PARTICLE_COUNT_MIN: 4,
+  PARTICLE_COUNT_MAX: 12,
+  SECTOR_FILL: 'rgba(180, 220, 255, 0.08)',
+  STROKE_COLOR: '#fff',
+  INNER_CIRCLE_RADIUS: 58,
+  INNER_FILLED_RADIUS: 48,
+  CORE_RADIUS: 20,
+  RING_RADII: [25, 30, 35],
+  NAVIGATION_LINKS: ['Contact', 'AI', 'Work', 'Media', 'Shop', 'About'],
+  WELCOME_INTERVAL: 3000,
+  PARTICLE_INTERVAL_MIN: 1000,
+  PARTICLE_INTERVAL_MAX: 3000,
   FALLBACK_LANGUAGES: [
     { lang: 'English', text: 'Welcome' },
     { lang: 'Spanish', text: 'Bienvenido' },
@@ -38,35 +38,20 @@ window.MENU_CONFIG = {
     { lang: 'Swahili', text: 'Karibu' },
     { lang: 'Arabic', text: 'أهلاً' },
     { lang: 'Portuguese', text: 'Bem-vindo' },
-    { lang: 'Yoruba', text: 'Kaabọ' },
-  ], // Fallback languages for welcome text
+    { lang: 'Yoruba', text: 'Kaabọ' }
+  ]
 };
 
-/**
- * @function window.polarToCartesian
- * @description Converts polar coordinates to Cartesian coordinates
- * @param {number} cx - X-coordinate of the center
- * @param {number} cy - Y-coordinate of the center
- * @param {number} r - Radius from the center
- * @param {number} angleDeg - Angle in degrees
- * @returns {Object} Cartesian coordinates {x, y}
- */
+/** @function window.polarToCartesian */
 window.polarToCartesian = function (cx, cy, r, angleDeg) {
   const angleRad = (Math.PI / 180) * angleDeg;
   return {
     x: cx + r * Math.cos(angleRad),
-    y: cy + r * Math.sin(angleRad),
+    y: cy + r * Math.sin(angleRad)
   };
 };
 
-/**
- * @function window.createNavigationSector
- * @description Creates an SVG sector for the radial menu
- * @param {Object} position - Sector position data (p1, p2, p3, p4, iconPos, start, end)
- * @param {string} label - Sector label (e.g., 'Contact')
- * @param {string} fillColor - Sector fill color
- * @param {DocumentFragment} fragment - Fragment to append the sector
- */
+/** @function window.createNavigationSector */
 window.createNavigationSector = function (position, label, fillColor, fragment) {
   const { p1, p2, p3, p4, iconPos, start, end } = position;
   const largeArc = end - start > 180 ? 1 : 0;
@@ -104,16 +89,8 @@ window.createNavigationSector = function (position, label, fillColor, fragment) 
   fragment.appendChild(group);
 };
 
-/**
- * @class window.GridParticle
- * @description Represents a particle at grid intersections that pops in/out randomly
- */
+/** @class window.GridParticle */
 window.GridParticle = class {
-  /**
-   * @param {number} x - X-coordinate of the particle
-   * @param {number} y - Y-coordinate of the particle
-   * @param {SVGGElement} gridOverlay - SVG group for appending the particle
-   */
   constructor(x, y, gridOverlay) {
     this.x = x;
     this.y = y;
@@ -123,12 +100,11 @@ window.GridParticle = class {
     this.element.setAttribute('cy', this.y);
     this.element.setAttribute('r', '3');
     this.element.setAttribute('fill', 'rgba(234, 255, 255, 0.8)');
-    this.element.setAttribute('class', 'grid-particle');
+    this.element.style.opacity = '0';
     this.gridOverlay.appendChild(this.element);
     this.animate();
   }
 
-  /** @method animate - Toggles visibility randomly in an infinite loop */
   animate() {
     const toggleVisibility = () => {
       const isVisible = this.element.style.opacity === '1';
@@ -141,14 +117,11 @@ window.GridParticle = class {
   }
 };
 
-/**
- * @function window.initWelcomeCarousel
- * @description Initializes the welcome text carousel with language cycling
- */
+/** @function window.initWelcomeCarousel */
 window.initWelcomeCarousel = async function () {
   await new Promise(resolve => setTimeout(resolve, 100));
   const welcomeText = document.getElementById('welcomeText');
-  const menuWheel = document.getElementById('menuWheel');
+  const menuWheel = document.getElementById('wheelMenu');
   if (!welcomeText || !menuWheel) return;
 
   welcomeText.textContent = 'Loading...';
@@ -167,7 +140,7 @@ window.initWelcomeCarousel = async function () {
       text: node.getAttribute('text') || 'Welcome'
     }));
   } catch (error) {
-    // Silent fallback to avoid console clutter
+    // Silent fallback
   }
 
   let currentIndex = 0;
@@ -175,7 +148,6 @@ window.initWelcomeCarousel = async function () {
   let timeoutId = null;
   let hasShownEnglish = false;
 
-  /** @function cycleText - Cycles through welcome text languages */
   const cycleText = () => {
     if (isHovering) return;
 
@@ -229,13 +201,10 @@ window.initWelcomeCarousel = async function () {
   });
 };
 
-/**
- * @function window.initRadialMenu
- * @description Initializes the radial menu with sectors, masked grid with particles, and holographic effects
- */
+/** @function window.initRadialMenu */
 window.initRadialMenu = function () {
   const svgElement = document.getElementById('radialMenu');
-  const menuWheel = document.getElementById('menuWheel');
+  const menuWheel = document.getElementById('wheelMenu');
   if (!svgElement || !menuWheel) return;
 
   const sectorAngle = 360 / window.MENU_CONFIG.NAVIGATION_LINKS.length;
@@ -250,7 +219,7 @@ window.initRadialMenu = function () {
       p4: window.polarToCartesian(window.MENU_CONFIG.CENTER_X, window.MENU_CONFIG.CENTER_Y, window.MENU_CONFIG.INNER_RADIUS, end),
       iconPos: window.polarToCartesian(window.MENU_CONFIG.CENTER_X, window.MENU_CONFIG.CENTER_Y, (window.MENU_CONFIG.INNER_RADIUS + window.MENU_CONFIG.OUTER_RADIUS) / 2, labelAngle),
       start,
-      end,
+      end
     };
   });
 
@@ -377,7 +346,6 @@ window.initRadialMenu = function () {
     gridOverlay.appendChild(line);
   }
 
-  // Add particles at grid intersections, masked by innerCircleClip
   const gridCenters = [];
   for (let x = -window.MENU_CONFIG.INNER_RADIUS; x <= window.MENU_CONFIG.INNER_RADIUS; x += window.MENU_CONFIG.GRID_SPACING) {
     for (let y = -window.MENU_CONFIG.INNER_RADIUS; y <= window.MENU_CONFIG.INNER_RADIUS; y += window.MENU_CONFIG.GRID_SPACING) {
@@ -399,7 +367,7 @@ window.initRadialMenu = function () {
   centerCircle.setAttribute('r', window.MENU_CONFIG.INNER_CIRCLE_RADIUS);
   centerCircle.setAttribute('fill', 'none');
   centerCircle.setAttribute('stroke', window.MENU_CONFIG.STROKE_COLOR);
-  centerCircle.setAttribute('stroke-width', '2');
+  centerCircle.setAttribute('stroke-width', '1');
   menuWheel.appendChild(centerCircle);
 
   const innerFilledCircle = document.createElementNS(window.MENU_SVG_NS, 'circle');
@@ -428,8 +396,7 @@ window.initRadialMenu = function () {
     ring.setAttribute('cy', window.MENU_CONFIG.CENTER_Y);
     ring.setAttribute('r', r);
     ring.setAttribute('fill', 'url(#holoCoreGradient)');
-    ring.setAttribute('stroke', window.MENU_CONFIG.STROKE_COLOR);
-    ring.setAttribute('stroke-width', '2');
+    ring.setAttribute('stroke', 'none');
     ring.setAttribute('class', `holo-ring ring-${i}`);
     holoCoreGroup.appendChild(ring);
   });
