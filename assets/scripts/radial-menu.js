@@ -132,91 +132,93 @@ window.GridParticle.prototype.animate = function() {
 
 /**
  * @function window.initWelcomeCarousel
- * @description Initializes the welcome text carousel with language cycling
+ * @description Initializes the welcome text carousel with smooth, sequential language cycling
  */
 window.initWelcomeCarousel = function() {
-  setTimeout(function() {
-    var welcomeText = document.getElementById('welcomeText');
-    var menuWheel = document.getElementById('wheelMenu');
-    if (!welcomeText || !menuWheel) {
-      console.error('Welcome text or wheel menu not found:', { welcomeText: !!welcomeText, menuWheel: !!menuWheel });
+  var welcomeText = document.getElementById('welcomeText');
+  var menuWheel = document.getElementById('wheelMenu');
+  if (!welcomeText || !menuWheel) {
+    console.error('Welcome text or wheel menu not found:', { welcomeText: !!welcomeText, menuWheel: !!menuWheel });
+    return;
+  }
+
+  welcomeText.textContent = 'Loading...';
+
+  var languages = window.MENU_CONFIG.FALLBACK_LANGUAGES;
+  var xhr = new XMLHttpRequest();
+  xhr.open('GET', 'assets/data/languages.xml', true);
+  xhr.onreadystatechange = function() {
+    if (xhr.readyState === 4 && xhr.status === 200) {
+      var xmlDoc = xhr.responseXML;
+      var languageNodes = xmlDoc.getElementsByTagName('language');
+      if (languageNodes.length > 0) {
+        languages = Array.prototype.map.call(languageNodes, function(node) {
+          return {
+            lang: node.getAttribute('lang'),
+            text: node.getAttribute('text') || 'Welcome'
+          };
+        });
+        console.log('Loaded languages from XML:', languages.length);
+      }
+    }
+  };
+  xhr.send();
+
+  var currentIndex = 0;
+  var isHovering = false;
+  var timeoutId = null;
+
+  var cycleText = function() {
+    if (timeoutId) clearTimeout(timeoutId);
+    if (isHovering) {
+      timeoutId = setTimeout(cycleText, window.MENU_CONFIG.WELCOME_INTERVAL);
       return;
     }
 
-    welcomeText.textContent = 'Loading...';
+    welcomeText.classList.remove('fade-in');
+    welcomeText.classList.add('fade-out');
+    setTimeout(function() {
+      currentIndex = (currentIndex + 1) % languages.length;
+      welcomeText.textContent = languages[currentIndex].text || 'Welcome';
+      welcomeText.classList.remove('fade-out');
+      welcomeText.classList.add('fade-in');
+      timeoutId = setTimeout(cycleText, window.MENU_CONFIG.WELCOME_INTERVAL);
+    }, 500);
+  };
 
-    var languages = window.MENU_CONFIG.FALLBACK_LANGUAGES;
-    var xhr = new XMLHttpRequest();
-    xhr.open('GET', 'assets/data/languages.xml', true);
-    xhr.onreadystatechange = function() {
-      if (xhr.readyState === 4 && xhr.status === 200) {
-        var xmlDoc = xhr.responseXML;
-        var languageNodes = xmlDoc.getElementsByTagName('language');
-        if (languageNodes.length > 0) {
-          languages = Array.prototype.map.call(languageNodes, function(node) {
-            return {
-              lang: node.getAttribute('lang'),
-              text: node.getAttribute('text') || 'Welcome'
-            };
-          });
-          console.log('Loaded languages from XML:', languages.length);
-        }
-      }
-    };
-    xhr.send();
+  welcomeText.textContent = languages[0].text || 'Welcome';
+  welcomeText.classList.add('fade-in');
+  timeoutId = setTimeout(cycleText, window.MENU_CONFIG.WELCOME_INTERVAL);
 
-    var currentIndex = 0;
-    var isHovering = false;
-    var timeoutId = null;
+  var sectors = menuWheel.querySelectorAll('g[role="link"]');
+  for (var i = 0; i < sectors.length; i++) {
+    sectors[i].addEventListener('mouseenter', function() {
+      if (timeoutId) clearTimeout(timeoutId);
+      isHovering = true;
+      welcomeText.classList.remove('fade-in');
+      welcomeText.classList.add('fade-out');
+      var sector = this;
+      setTimeout(function() {
+        var labelMatch = sector.getAttribute('aria-label').match(/Navigate to (\w+) section/);
+        welcomeText.textContent = labelMatch ? labelMatch[1] : '';
+        welcomeText.classList.remove('fade-out');
+        welcomeText.classList.add('fade-in');
+      }, 500);
+    });
 
-    var cycleText = function() {
-      if (isHovering) return;
-
+    sectors[i].addEventListener('mouseleave', function() {
+      if (timeoutId) clearTimeout(timeoutId);
+      isHovering = false;
       welcomeText.classList.remove('fade-in');
       welcomeText.classList.add('fade-out');
       setTimeout(function() {
-        currentIndex = (currentIndex + 1) % languages.length;
         welcomeText.textContent = languages[currentIndex].text || 'Welcome';
         welcomeText.classList.remove('fade-out');
         welcomeText.classList.add('fade-in');
         timeoutId = setTimeout(cycleText, window.MENU_CONFIG.WELCOME_INTERVAL);
       }, 500);
-    };
-
-    welcomeText.textContent = languages[0].text || 'Welcome';
-    welcomeText.classList.add('fade-in');
-    timeoutId = setTimeout(cycleText, window.MENU_CONFIG.WELCOME_INTERVAL);
-
-    var sectors = menuWheel.querySelectorAll('g[role="link"]');
-    for (var i = 0; i < sectors.length; i++) {
-      sectors[i].addEventListener('mouseenter', function() {
-        if (timeoutId) clearTimeout(timeoutId);
-        isHovering = true;
-        welcomeText.classList.remove('fade-in');
-        welcomeText.classList.add('fade-out');
-        var sector = this;
-        setTimeout(function() {
-          var labelMatch = sector.getAttribute('aria-label').match(/Navigate to (\w+) section/);
-          welcomeText.textContent = labelMatch ? labelMatch[1] : '';
-          welcomeText.classList.remove('fade-out');
-          welcomeText.classList.add('fade-in');
-        }, 500);
-      });
-
-      sectors[i].addEventListener('mouseleave', function() {
-        if (timeoutId) clearTimeout(timeoutId);
-        isHovering = false;
-        welcomeText.classList.remove('fade-in');
-        welcomeText.classList.add('fade-out');
-        setTimeout(function() {
-          welcomeText.textContent = languages[currentIndex].text || 'Welcome';
-          welcomeText.classList.remove('fade-out');
-          welcomeText.classList.add('fade-in');
-          timeoutId = setTimeout(cycleText, window.MENU_CONFIG.WELCOME_INTERVAL);
-        }, 500);
-      });
-    }
-  }, 100);
+    });
+  }
 };
 
 /**
