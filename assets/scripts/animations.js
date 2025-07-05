@@ -1,49 +1,54 @@
 /**
  * @module ParticleSystem
- * @description Manages the background grid and particle animations for Shimti Multimedia.
- * Optimizes main-thread rendering at 30 FPS for a smooth sci-fi aesthetic.
+ * @description Animates the background grid and neural network visualization for Shimti Multimedia.
+ * Manages canvas rendering and neuron movement with Web Worker fallback for performance.
  */
 
-/** @constant {Object} PARTICLE_CONFIG - Configuration for particle and grid animations */
-const PARTICLE_CONFIG = {
-  MAX_PARTICLES: 100, // Number of particles, optimized for performance
-  TURN_PROBABILITY: 0.01, // Probability of particle direction change
-  DIRECTION_ANGLES: [0, Math.PI / 2, Math.PI, 3 * Math.PI / 2], // Possible movement angles
+/** @constant {Object} ANIMATION_CONFIG - Configuration for particle and grid animations */
+const ANIMATION_CONFIG = {
+  MAX_NEURONS: 30, // Reduced for performance
+  TURN_PROBABILITY: 0.01, // Probability of neuron direction change
+  DIRECTION_ANGLES: [0, Math.PI / 2, Math.PI, 3 * Math.PI / 2], // Allowed movement angles
   GRID_SPACING: 80, // Grid line spacing in pixels
   GRID_STROKE: 'rgba(100, 150, 255, 0.1)', // Grid line color
-  PARTICLE_STROKE: 'rgba(180, 220, 255, {alpha})', // Particle trail color template
-  PARTICLE_SHADOW: '#8cf', // Particle shadow color
-  PARTICLE_FILL: 'rgba(234, 255, 255, {depth})', // Particle fill color template
-  TARGET_FPS: 30, // Target frames per second
+  NEURON_STROKE: 'rgba(180, 220, 255, {alpha})', // Neuron trail color template
+  NEURON_SHADOW: '#8cf', // Neuron shadow color
+  NEURON_FILL: 'rgba(234, 255, 255, {depth})', // Neuron fill color template
+  TARGET_FPS: 30, // Optimized for performance
+  WORKER_UPDATE_INTERVAL: 100, // Throttle Web Worker updates
 };
 
 /**
- * @class Particle
- * @description Represents a single animated particle with position, trail, and rendering logic.
+ * @class Neuron
+ * @description Represents a single neuron with position, trail, and rendering logic.
  */
-class Particle {
+class Neuron {
   /**
    * @param {number} depth - Visual depth factor (0.3 to 1.0)
-   * @param {number} id - Unique particle identifier
+   * @param {number} id - Unique identifier for the neuron
+   * @param {boolean} useWorker - Whether to use Web Worker for updates
    * @param {number} width - Canvas width
    * @param {number} height - Canvas height
    */
-  constructor(depth, id, width, height) {
+  constructor(depth, id, useWorker, width, height) {
     this.id = id;
     this.depth = depth;
+    this.useWorker = useWorker;
     this.width = width;
     this.height = height;
     this.x = 0;
     this.y = 0;
     this.size = 0;
     this.trail = [];
-    this.reset();
+    if (!useWorker) {
+      this.reset();
+    }
   }
 
-  /** @method reset - Resets particle properties to initial state */
+  /** @method reset - Resets neuron properties to initial state */
   reset() {
     if (!this.width || !this.height) {
-      console.error('Invalid dimensions in Particle.reset:', { width: this.width, height: this.height });
+      console.error('Width or height undefined in Neuron.reset:', { width: this.width, height: this.height });
       return;
     }
     this.x = Math.random() * this.width;
@@ -60,83 +65,98 @@ class Particle {
 
   /** @method setRandomDirection - Sets a random movement direction */
   setRandomDirection() {
-    this.angle = PARTICLE_CONFIG.DIRECTION_ANGLES[Math.floor(Math.random() * PARTICLE_CONFIG.DIRECTION_ANGLES.length)];
+    this.angle = ANIMATION_CONFIG.DIRECTION_ANGLES[Math.floor(Math.random() * ANIMATION_CONFIG.DIRECTION_ANGLES.length)];
   }
 
-  /** @method maybeTurn - Randomly changes particle direction based on probability */
+  /** @method maybeTurn - Randomly changes direction based on probability */
   maybeTurn() {
-    if (Math.random() < PARTICLE_CONFIG.TURN_PROBABILITY) {
-      const directionIndex = PARTICLE_CONFIG.DIRECTION_ANGLES.indexOf(this.angle);
+    if (Math.random() < ANIMATION_CONFIG.TURN_PROBABILITY) {
+      const directionIndex = ANIMATION_CONFIG.DIRECTION_ANGLES.indexOf(this.angle);
       const turn = Math.random() < 0.5 ? -1 : 1;
-      const newIndex = (directionIndex + turn + PARTICLE_CONFIG.DIRECTION_ANGLES.length) % PARTICLE_CONFIG.DIRECTION_ANGLES.length;
-      this.angle = PARTICLE_CONFIG.DIRECTION_ANGLES[newIndex];
-    }
-  }
-
-  /** @method update - Updates particle position and trail */
-  update() {
-    this.maybeTurn();
-    this.trail.push({ x: this.x, y: this.y });
-    if (this.trail.length > this.maxTrailLength) {
-      this.trail.shift();
-    }
-    this.x += Math.cos(this.angle) * this.speed;
-    this.y += Math.sin(this.angle) * this.speed;
-
-    this.fadeCounter++;
-    if (
-      this.fadeCounter > this.fadeLimit ||
-      this.x < -50 ||
-      this.x > this.width + 50 ||
-      this.y < -50 ||
-      this.y > this.height + 50
-    ) {
-      this.reset();
+      const newIndex = (directionIndex + turn + ANIMATION_CONFIG.DIRECTION_ANGLES.length) % ANIMATION_CONFIG.DIRECTION_ANGLES.length;
+      this.angle = ANIMATION_CONFIG.DIRECTION_ANGLES[newIndex];
     }
   }
 
   /**
-   * @method render - Renders the particle and its trail on the canvas
-   * @param {CanvasRenderingContext2D} context - Canvas 2D rendering context
+   * @method update - Updates neuron position and trail
+   * @param {Object} data - Data from Web Worker (if used)
    */
-  render(context) {
+  update(data) {
+    if (this.useWorker) {
+      if (!data || !('x' in data)) {
+        console.warn('Invalid Web Worker data:', data);
+        return;
+      }
+      this.x = data.x;
+      this.y = data.y;
+      this.size = data.size;
+      this.depth = data.depth;
+      this.trail = data.trail || [];
+    } else {
+      this.maybeTurn();
+      this.trail.push({ x: this.x, y: this.y });
+      if (this.trail.length > this.maxTrailLength) {
+        this.trail.shift();
+      }
+      this.x += Math.cos(this.angle) * this.speed;
+      this.y += Math.sin(this.angle) * this.speed;
+
+      this.fadeCounter++;
+      if (
+        this.fadeCounter > this.fadeLimit ||
+        this.x < -50 ||
+        this.x > this.width + 50 ||
+        this.y < -50 ||
+        this.y > this.height + 50
+      ) {
+        this.reset();
+      }
+    }
+  }
+
+  /**
+   * @method draw - Renders the neuron and its trail on the canvas
+   * @param {CanvasRenderingContext2D} ctx - Canvas 2D rendering context
+   */
+  draw(ctx) {
     for (let i = 0; i < this.trail.length - 1; i++) {
       const p1 = this.trail[i];
       const p2 = this.trail[i + 1];
       const alpha = (i / this.trail.length) * this.depth * 0.3;
-      context.strokeStyle = PARTICLE_CONFIG.PARTICLE_STROKE.replace('{alpha}', alpha);
-      context.lineWidth = 0.5 * this.depth;
-      context.beginPath();
-      context.moveTo(p1.x, p1.y);
-      context.lineTo(p2.x, p2.y);
-      context.stroke();
+      ctx.strokeStyle = ANIMATION_CONFIG.NEURON_STROKE.replace('{alpha}', alpha);
+      ctx.lineWidth = 0.5 * this.depth;
+      ctx.beginPath();
+      ctx.moveTo(p1.x, p1.y);
+      ctx.lineTo(p2.x, p2.y);
+      ctx.stroke();
     }
 
-    context.shadowBlur = 1.5 * this.depth;
-    context.shadowColor = PARTICLE_CONFIG.PARTICLE_SHADOW;
-    context.fillStyle = PARTICLE_CONFIG.PARTICLE_FILL.replace('{depth}', this.depth);
-    context.beginPath();
-    context.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-    context.fill();
+    ctx.shadowBlur = 1.5 * this.depth;
+    ctx.shadowColor = ANIMATION_CONFIG.NEURON_SHADOW;
+    ctx.fillStyle = ANIMATION_CONFIG.NEURON_FILL.replace('{depth}', this.depth);
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+    ctx.fill();
   }
 }
 
 /**
- * @function initializeParticleSystem
- * @description Initializes the particle system and grid animation
+ * @function initAnimations
+ * @description Initializes canvas animations for the background grid and neurons
  */
-function initializeParticleSystem() {
+function initAnimations() {
   const gridCanvas = document.getElementById('gridLayer');
-  const particleCanvas = document.getElementById('circuitBrain');
-  if (!gridCanvas || !particleCanvas) {
-    console.error('Canvas elements not found:', { gridCanvas, particleCanvas });
+  const brainCircuit = document.getElementById('circuitBrain');
+  if (!gridCanvas || !brainCircuit) {
+    console.error('Canvas elements not found:', { gridCanvas, brainCircuit });
     return;
   }
 
-  const gridContext = gridCanvas.getContext('2d', { alpha: true });
-  const particleContext = particleCanvas.getContext('2d', { alpha: true });
-  if (!gridContext || !particleContext) {
-    console.error('Canvas contexts not available:', { gridContext, particleContext });
+  const gridCtx = gridCanvas.getContext('2d', { alpha: true });
+  const ctx = brainCircuit.getContext('2d', { alpha: true });
+  if (!gridCtx || !ctx) {
+    console.error('Canvas contexts not available:', { gridCtx, ctx });
     return;
   }
 
@@ -147,10 +167,10 @@ function initializeParticleSystem() {
   const offscreenGrid = document.createElement('canvas');
   offscreenGrid.width = width * dpr;
   offscreenGrid.height = height * dpr;
-  const offscreenContext = offscreenGrid.getContext('2d', { alpha: true });
-  offscreenContext.setTransform(dpr, 0, 0, dpr, 0, 0);
+  const offscreenCtx = offscreenGrid.getContext('2d', { alpha: true });
+  offscreenCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-  [gridCanvas, particleCanvas].forEach(canvas => {
+  [gridCanvas, brainCircuit].forEach(canvas => {
     canvas.width = width * dpr;
     canvas.height = height * dpr;
     canvas.style.width = `${width}px`;
@@ -159,66 +179,112 @@ function initializeParticleSystem() {
     context.setTransform(dpr, 0, 0, dpr, 0, 0);
   });
 
-  /** @function renderGrid - Renders the background grid to an offscreen canvas */
-  function renderGrid() {
-    offscreenContext.clearRect(0, 0, width, height);
-    offscreenContext.strokeStyle = PARTICLE_CONFIG.GRID_STROKE;
-    offscreenContext.lineWidth = 1;
+  /** @function drawGrid - Draws the background grid on the offscreen canvas */
+  function drawGrid() {
+    offscreenCtx.clearRect(0, 0, width, height);
+    offscreenCtx.strokeStyle = ANIMATION_CONFIG.GRID_STROKE;
+    offscreenCtx.lineWidth = 1;
 
-    for (let x = 0; x < width; x += PARTICLE_CONFIG.GRID_SPACING) {
-      offscreenContext.beginPath();
-      offscreenContext.moveTo(x, 0);
-      offscreenContext.lineTo(x, height);
-      offscreenContext.stroke();
+    for (let x = 0; x < width; x += ANIMATION_CONFIG.GRID_SPACING) {
+      offscreenCtx.beginPath();
+      offscreenCtx.moveTo(x, 0);
+      offscreenCtx.lineTo(x, height);
+      offscreenCtx.stroke();
     }
-    for (let y = 0; y < height; y += PARTICLE_CONFIG.GRID_SPACING) {
-      offscreenContext.beginPath();
-      offscreenContext.moveTo(0, y);
-      offscreenContext.lineTo(width, y);
-      offscreenContext.stroke();
+    for (let y = 0; y < height; y += ANIMATION_CONFIG.GRID_SPACING) {
+      offscreenCtx.beginPath();
+      offscreenCtx.moveTo(0, y);
+      offscreenCtx.lineTo(width, y);
+      offscreenCtx.stroke();
     }
 
-    gridContext.clearRect(0, 0, width, height);
-    gridContext.drawImage(offscreenGrid, 0, 0);
+    gridCtx.clearRect(0, 0, width, height);
+    gridCtx.drawImage(offscreenGrid, 0, 0);
   }
 
-  const particles = [];
-  let particleId = 0;
+  const neurons = [];
+  let worker = null;
+  let useWorker = true;
+  const initialNeurons = [];
+  let neuronId = 0;
+
+  try {
+    worker = new Worker('assets/scripts/neuronWorker.js');
+    worker.onerror = (error) => {
+      console.warn('Web Worker failed to load:', error);
+      useWorker = false;
+    };
+  } catch (error) {
+    console.warn('Web Worker not supported:', error);
+    useWorker = false;
+  }
 
   for (let depth = 0.3; depth <= 1.0; depth += 0.2) {
-    const count = Math.floor(PARTICLE_CONFIG.MAX_PARTICLES * (depth / 1.0));
+    const count = Math.floor(ANIMATION_CONFIG.MAX_NEURONS * depth);
     for (let i = 0; i < count; i++) {
-      particles.push(new Particle(depth, particleId, width, height));
-      particleId++;
+      neurons.push(new Neuron(depth, neuronId, useWorker, width, height));
+      if (useWorker) {
+        initialNeurons.push({ depth });
+      }
+      neuronId++;
     }
+  }
+
+  if (useWorker && worker) {
+    worker.postMessage({
+      type: 'init',
+      data: { width: window.innerWidth, height: window.innerHeight, neurons: initialNeurons }
+    });
+
+    worker.onmessage = (event) => {
+      const { type, neurons: updatedNeurons } = event.data;
+      if (type === 'init' || type === 'update') {
+        if (!updatedNeurons || updatedNeurons.length !== neurons.length) {
+          console.warn('Invalid Web Worker neuron data:', updatedNeurons);
+          return;
+        }
+        updatedNeurons.forEach((data, i) => {
+          if (neurons[i]) {
+            neurons[i].update(data);
+          }
+        });
+      }
+    };
   }
 
   let lastTime = performance.now();
-  /** @function animate - Updates and renders particles at target FPS */
+  let lastWorkerUpdate = 0;
+  /** @function animate - Updates and renders neurons at target FPS */
   function animate() {
     const now = performance.now();
     const delta = now - lastTime;
-    const frameInterval = 1000 / PARTICLE_CONFIG.TARGET_FPS;
+    const frameInterval = 1000 / ANIMATION_CONFIG.TARGET_FPS;
 
     if (delta >= frameInterval) {
-      particleContext.clearRect(0, 0, width, height);
-      particles.forEach(particle => {
-        particle.update();
-        particle.render(particleContext);
-      });
+      if (useWorker && worker && now - lastWorkerUpdate >= ANIMATION_CONFIG.WORKER_UPDATE_INTERVAL) {
+        worker.postMessage({
+          type: 'update',
+          data: { width: window.innerWidth, height: window.innerHeight }
+        });
+        lastWorkerUpdate = now;
+      } else if (!useWorker) {
+        neurons.forEach(neuron => neuron.update({}));
+      }
+      ctx.clearRect(0, 0, width, height);
+      neurons.forEach(neuron => neuron.draw(ctx));
       lastTime = now - (delta % frameInterval);
     }
 
     requestAnimationFrame(animate);
   }
 
-  let resizeTimeout;
+  let resizeFrame;
   window.addEventListener('resize', () => {
-    clearTimeout(resizeTimeout);
-    resizeTimeout = setTimeout(() => {
+    cancelAnimationFrame(resizeFrame);
+    resizeFrame = requestAnimationFrame(() => {
       width = window.innerWidth;
       height = window.innerHeight;
-      [gridCanvas, particleCanvas, offscreenGrid].forEach(canvas => {
+      [gridCanvas, brainCircuit, offscreenGrid].forEach(canvas => {
         canvas.width = width * dpr;
         canvas.height = height * dpr;
         canvas.style.width = `${width}px`;
@@ -227,19 +293,25 @@ function initializeParticleSystem() {
           const context = canvas.getContext('2d');
           context.setTransform(dpr, 0, 0, dpr, 0, 0);
         } else {
-          offscreenContext.setTransform(dpr, 0, 0, dpr, 0, 0);
+          offscreenCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
         }
       });
-      particles.forEach(particle => {
-        particle.width = width;
-        particle.height = height;
+      neurons.forEach(neuron => {
+        neuron.width = width;
+        neuron.height = height;
       });
-      renderGrid();
-    }, 100);
+      if (useWorker && worker) {
+        worker.postMessage({
+          type: 'update',
+          data: { width: window.innerWidth, height: window.innerHeight }
+        });
+      }
+      drawGrid();
+    });
   });
 
-  renderGrid();
+  drawGrid();
   animate();
 }
 
-window.addEventListener('load', initializeParticleSystem);
+window.addEventListener('load', initAnimations);
