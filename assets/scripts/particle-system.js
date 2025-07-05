@@ -4,8 +4,8 @@
  * Optimized for main-thread rendering at 30 FPS, compatible with Brave browser.
  */
 
-/** @constant {Object} PARTICLE_CONFIG - Configuration for particle animations */
-const PARTICLE_CONFIG = {
+/** @constant {Object} window.PARTICLE_CONFIG - Configuration for particle animations */
+window.PARTICLE_CONFIG = {
   MAX_PARTICLES: 30, // Number of particles
   TURN_PROBABILITY: 0.01, // Probability of direction change
   DIRECTION_ANGLES: [0, Math.PI / 2, Math.PI, 3 * Math.PI / 2], // Cardinal movement angles
@@ -18,7 +18,7 @@ const PARTICLE_CONFIG = {
  * @class Particle
  * @description Represents a single particle with position, trail, and rendering logic.
  */
-class Particle {
+window.Particle = class {
   /**
    * @param {number} depth - Visual depth (0.3 to 1.0) for scaling
    * @param {number} id - Unique identifier
@@ -50,16 +50,16 @@ class Particle {
 
   /** @method setRandomDirection - Sets a random cardinal direction */
   setRandomDirection() {
-    this.angle = PARTICLE_CONFIG.DIRECTION_ANGLES[Math.floor(Math.random() * PARTICLE_CONFIG.DIRECTION_ANGLES.length)];
+    this.angle = window.PARTICLE_CONFIG.DIRECTION_ANGLES[Math.floor(Math.random() * window.PARTICLE_CONFIG.DIRECTION_ANGLES.length)];
   }
 
   /** @method maybeTurn - Randomly changes direction based on probability */
   maybeTurn() {
-    if (Math.random() < PARTICLE_CONFIG.TURN_PROBABILITY) {
-      const directionIndex = PARTICLE_CONFIG.DIRECTION_ANGLES.indexOf(this.angle);
+    if (Math.random() < window.PARTICLE_CONFIG.TURN_PROBABILITY) {
+      const directionIndex = window.PARTICLE_CONFIG.DIRECTION_ANGLES.indexOf(this.angle);
       const turn = Math.random() < 0.5 ? -1 : 1;
-      const newIndex = (directionIndex + turn + PARTICLE_CONFIG.DIRECTION_ANGLES.length) % PARTICLE_CONFIG.DIRECTION_ANGLES.length;
-      this.angle = PARTICLE_CONFIG.DIRECTION_ANGLES[newIndex];
+      const newIndex = (directionIndex + turn + window.PARTICLE_CONFIG.DIRECTION_ANGLES.length) % window.PARTICLE_CONFIG.DIRECTION_ANGLES.length;
+      this.angle = window.PARTICLE_CONFIG.DIRECTION_ANGLES[newIndex];
     }
   }
 
@@ -94,7 +94,7 @@ class Particle {
       const p1 = this.trail[i];
       const p2 = this.trail[i + 1];
       const alpha = (i / this.trail.length) * this.depth * 0.3;
-      ctx.strokeStyle = PARTICLE_CONFIG.STROKE_COLOR.replace('{alpha}', alpha);
+      ctx.strokeStyle = window.PARTICLE_CONFIG.STROKE_COLOR.replace('{alpha}', alpha);
       ctx.lineWidth = 0.5 * this.depth;
       ctx.beginPath();
       ctx.moveTo(p1.x, p1.y);
@@ -103,12 +103,10 @@ class Particle {
     }
 
     ctx.shadowBlur = 1.5 * this.depth;
-    ctx.shadowColor = PARTICLE_CONFIG.SHADOW_COLOR;
-    ctx.fillStyle = PARTICLE_CONFIG.FILL_COLOR.replace('{depth}', this.depth);
+    ctx.shadowColor = window.PARTICLE_CONFIG.SHADOW_COLOR;
+    ctx.fillStyle = window.PARTICLE_CONFIG.FILL_COLOR.replace('{depth}', this.depth);
     ctx.beginPath();
     ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
     ctx.fill();
   }
-}
-
-export { Particle, PARTICLE_CONFIG };
+};
