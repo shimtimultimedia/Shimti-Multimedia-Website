@@ -29,7 +29,7 @@ window.initConnectionLines = function() {
   if (titleRect && wheelRect) {
     const startPoint = {
       x: titleRect.right, // Right edge of shimtiPanel
-      y: titleRect.top + titleRect.height / 2 // Vertical center
+      y: titleRect.top + titleRect.height / 1 // Vertical center
     };
     const endPoint = {
       x: wheelRect.left + wheelRect.width / 2,
