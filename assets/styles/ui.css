@@ -1,5 +1,5 @@
 /*
- * Shimti Multimedia: Styles for UI elements (branding panel, radial menu, welcome panel, connection lines, rings, and squares)
+ * Shimti Multimedia: Styles for UI elements (branding panel, radial menu, welcome panel, connection lines, rings, and dotted circle)
  */
 
 /* Font Definitions */
@@ -188,6 +188,14 @@ div#shimtiPanelBottom #welcomeText.fade-in {
 .outer-segmented-ring {
   animation: rotateClockwise 100s linear infinite;
   transform-origin: center;
+}
+
+/* Dotted Circle */
+.dotted-circle {
+  stroke: rgba(255, 255, 255, 0.3);
+  stroke-width: 2;
+  stroke-dasharray: 4, 4;
+  fill: none;
 }
 
 /* Animations */
