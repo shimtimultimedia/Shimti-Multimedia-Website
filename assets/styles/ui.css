@@ -61,7 +61,7 @@
   padding: 8px 16px;
   border-radius: 10px;
   border: 2px solid var(--border-color);
-  width: 170px;
+  width: 200px;
   height: 24px;
   z-index: 10;
   user-select: none;
@@ -72,11 +72,12 @@
 
 #shimtiPanelBottom #welcomeText {
   font-family: 'Orbitron', sans-serif;
-  font-size: 1.2em;
+  font-size: 1em;
   color: var(--text-color);
   letter-spacing: 0.1em;
   font-weight: 600;
   text-align: center;
+  white-space: nowrap;
   transition: opacity 0.5s ease;
   opacity: 1;
 }
@@ -186,12 +187,12 @@
   #shimtiPanelBottom {
     bottom: 10px;
     padding: 6px 12px;
-    width: 140px;
+    width: 170px;
     height: 20px;
   }
 
   #shimtiPanelBottom #welcomeText {
-    font-size: 1em;
+    font-size: 0.9em;
   }
 
   #radialMenu {
@@ -218,12 +219,12 @@
   #shimtiPanelBottom {
     bottom: 10px;
     padding: 4px 8px;
-    width: 120px;
+    width: 140px;
     height: 18px;
   }
 
   #shimtiPanelBottom #welcomeText {
-    font-size: 0.9em;
+    font-size: 0.8em;
   }
 
   #radialMenu {
