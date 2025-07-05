@@ -20,7 +20,8 @@
     #radialMenu { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 400px; height: 400px; z-index: 7; }
     #connectionSvg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 6; }
     #ringSvg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 5; }
-    #segmentedRingSvg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 4; }
+    #segmentedRingSvg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 5; }
+    #innerSegmentedRingSvg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 4; }
     #thickCircleSvg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 3; }
     #outerSegmentedRingSvg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 2; }
     #dottedCircleSvg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
@@ -55,9 +56,10 @@
   <svg id="connectionSvg" role="presentation" aria-hidden="true"></svg>
   <svg id="ringSvg" role="presentation" aria-hidden="true"></svg>
   <svg id="segmentedRingSvg" role="presentation" aria-hidden="true"></svg>
+  <svg id="innerSegmentedRingSvg" role="presentation" aria-hidden="true"></svg>
+  <svg id="thickCircleSvg" role="presentation" aria-hidden="true"></svg>
   <svg id="outerSegmentedRingSvg" role="presentation" aria-hidden="true"></svg>
   <svg id="dottedCircleSvg" role="presentation" aria-hidden="true"></svg>
-  <svg id="thickCircleSvg" role="presentation" aria-hidden="true"></svg>
   <div id="shimtiPanelBottom">
     <span id="welcomeText">Loading...</span>
   </div>
@@ -71,6 +73,7 @@
   <script src="assets/scripts/connection-rings.js?v=20250705"></script>
   <script src="assets/scripts/rings-and-squares.js?v=20250705"></script>
   <script src="assets/scripts/segmented-ring.js?v=20250705"></script>
+  <script src="assets/scripts/inner-segmented-ring.js?v=20250705"></script>
   <script src="assets/scripts/outer-segmented-ring.js?v=20250705"></script>
   <script src="assets/scripts/dotted-circle.js?v=20250705"></script>
   <script src="assets/scripts/thick-circle.js?v=20250705"></script>
