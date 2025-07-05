@@ -23,13 +23,13 @@ window.initConnectionLines = function() {
   var connectionGroup = document.createElementNS(window.MENU_SVG_NS, 'g');
   connectionGroup.setAttribute('aria-hidden', 'true');
 
-  // Top Connection Line (from shimtiPanel to radialMenu)
+  // Top Connection Line (from shimtiPanel right edge to radialMenu)
   var titleRect = document.getElementById('shimtiPanel')?.getBoundingClientRect();
   var wheelRect = document.getElementById('radialMenu')?.getBoundingClientRect();
   if (titleRect && wheelRect) {
     const startPoint = {
-      x: titleRect.left + titleRect.width,
-      y: titleRect.top + titleRect.height / 2
+      x: titleRect.right, // Right edge of shimtiPanel
+      y: titleRect.top + titleRect.height / 2 // Vertical center
     };
     const endPoint = {
       x: wheelRect.left + wheelRect.width / 2,
@@ -105,7 +105,7 @@ window.initConnectionLines = function() {
     endCircle.setAttribute('r', '5');
     endCircle.setAttribute('fill', 'none');
     endCircle.setAttribute('stroke', '#ffffff');
-    endCircle.setAttribute('stroke-width', '1');
+    startCircle.setAttribute('stroke-width', '1');
     endCircle.setAttribute('class', 'connection-point');
     connectionGroup.appendChild(endCircle);
   } else {
@@ -122,7 +122,7 @@ window.initConnectionLines = function() {
     wheelRect = document.getElementById('radialMenu')?.getBoundingClientRect();
     if (titleRect && wheelRect) {
       const startPoint = {
-        x: titleRect.left + titleRect.width,
+        x: titleRect.right,
         y: titleRect.top + titleRect.height / 2
       };
       const endPoint = {
