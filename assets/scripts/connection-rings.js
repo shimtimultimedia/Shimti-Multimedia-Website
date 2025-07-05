@@ -1,6 +1,6 @@
 /**
  * @module ConnectionRings
- * @description Renders top and bottom connection lines with connection points for Shimti Multimedia's radial menu.
+ * @description Renders top and bottom connection lines with connection points for Shimti Multimedia.
  */
 
 /** @constant {string} window.MENU_SVG_NS - SVG namespace for connection elements */
@@ -8,46 +8,33 @@ window.MENU_SVG_NS = 'http://www.w3.org/2000/svg';
 
 /**
  * @function window.initConnectionLines
- * @description Initializes top and bottom connection lines with connection points
+ * @description Initializes top and bottom connection lines with connection points in full-screen SVG
  */
 window.initConnectionLines = function() {
-  var svgElement = document.getElementById('radialMenu');
+  var svgElement = document.getElementById('connectionSvg');
   if (!svgElement) {
-    console.error('Radial menu SVG not found');
+    console.error('Connection SVG not found');
     return;
   }
 
+  // Set dynamic viewBox to match viewport
+  svgElement.setAttribute('viewBox', `0 0 ${window.innerWidth} ${window.innerHeight}`);
+
   var connectionGroup = document.createElementNS(window.MENU_SVG_NS, 'g');
   connectionGroup.setAttribute('aria-hidden', 'true');
-
-  // Convert viewport coordinates to SVG viewBox (0 0 400 400)
-  function toSvgCoords(x, y, elementRect) {
-    const svgRect = svgElement.getBoundingClientRect();
-    const scaleX = 400 / svgRect.width;
-    const scaleY = 400 / svgRect.height;
-    // Adjust for SVG's position in viewport
-    const offsetX = x - svgRect.left;
-    const offsetY = y - svgRect.top;
-    return {
-      x: Math.max(0, Math.min(400, offsetX * scaleX)),
-      y: Math.max(0, Math.min(400, offsetY * scaleY))
-    };
-  }
 
   // Top Connection Line (from shimtiPanel to radialMenu)
   var titleRect = document.getElementById('shimtiPanel')?.getBoundingClientRect();
   var wheelRect = document.getElementById('radialMenu')?.getBoundingClientRect();
   if (titleRect && wheelRect) {
-    const startPoint = toSvgCoords(
-      titleRect.left + titleRect.width,
-      titleRect.top + titleRect.height / 2,
-      titleRect
-    );
-    const endPoint = toSvgCoords(
-      wheelRect.left + wheelRect.width / 2,
-      wheelRect.top + wheelRect.height / 18, // ~22.22px in 400x400 viewBox
-      wheelRect
-    );
+    const startPoint = {
+      x: titleRect.left + titleRect.width,
+      y: titleRect.top + titleRect.height / 2
+    };
+    const endPoint = {
+      x: wheelRect.left + wheelRect.width / 2,
+      y: wheelRect.top + wheelRect.height / 18 // ~5.56% from top
+    };
     const bendX = startPoint.x + (endPoint.x - startPoint.x);
     const bendY = startPoint.y;
 
@@ -85,16 +72,14 @@ window.initConnectionLines = function() {
   // Bottom Connection Line (from radialMenu to shimtiPanelBottom)
   var bottomPanelRect = document.getElementById('shimtiPanelBottom')?.getBoundingClientRect();
   if (wheelRect && bottomPanelRect) {
-    const startPoint = toSvgCoords(
-      wheelRect.left + wheelRect.width / 2,
-      wheelRect.top + wheelRect.height / 1.05, // ~380.95px in 400x400 viewBox
-      wheelRect
-    );
-    const endPoint = toSvgCoords(
-      bottomPanelRect.left + bottomPanelRect.width / 2,
-      bottomPanelRect.top,
-      bottomPanelRect
-    );
+    const startPoint = {
+      x: wheelRect.left + wheelRect.width / 2,
+      y: wheelRect.top + wheelRect.height / 1.05 // ~95.24% from top
+    };
+    const endPoint = {
+      x: bottomPanelRect.left + bottomPanelRect.width / 2,
+      y: bottomPanelRect.top
+    };
 
     const path = document.createElementNS(window.MENU_SVG_NS, 'path');
     path.setAttribute('d', `M ${startPoint.x} ${startPoint.y} L ${endPoint.x} ${endPoint.y}`);
@@ -129,22 +114,21 @@ window.initConnectionLines = function() {
 
   svgElement.appendChild(connectionGroup);
 
-  // Handle resize to update coordinates
+  // Handle resize to update viewBox and redraw lines
   window.addEventListener('resize', function() {
+    svgElement.setAttribute('viewBox', `0 0 ${window.innerWidth} ${window.innerHeight}`);
     connectionGroup.innerHTML = ''; // Clear existing lines
     titleRect = document.getElementById('shimtiPanel')?.getBoundingClientRect();
     wheelRect = document.getElementById('radialMenu')?.getBoundingClientRect();
     if (titleRect && wheelRect) {
-      const startPoint = toSvgCoords(
-        titleRect.left + titleRect.width,
-        titleRect.top + titleRect.height / 2,
-        titleRect
-      );
-      const endPoint = toSvgCoords(
-        wheelRect.left + wheelRect.width / 2,
-        wheelRect.top + wheelRect.height / 18,
-        wheelRect
-      );
+      const startPoint = {
+        x: titleRect.left + titleRect.width,
+        y: titleRect.top + titleRect.height / 2
+      };
+      const endPoint = {
+        x: wheelRect.left + wheelRect.width / 2,
+        y: wheelRect.top + wheelRect.height / 18
+      };
       const bendX = startPoint.x + (endPoint.x - startPoint.x);
       const bendY = startPoint.y;
 
@@ -179,16 +163,14 @@ window.initConnectionLines = function() {
 
     bottomPanelRect = document.getElementById('shimtiPanelBottom')?.getBoundingClientRect();
     if (wheelRect && bottomPanelRect) {
-      const startPoint = toSvgCoords(
-        wheelRect.left + wheelRect.width / 2,
-        wheelRect.top + wheelRect.height / 1.05,
-        wheelRect
-      );
-      const endPoint = toSvgCoords(
-        bottomPanelRect.left + bottomPanelRect.width / 2,
-        bottomPanelRect.top,
-        bottomPanelRect
-      );
+      const startPoint = {
+        x: wheelRect.left + wheelRect.width / 2,
+        y: wheelRect.top + wheelRect.height / 1.05
+      };
+      const endPoint = {
+        x: bottomPanelRect.left + bottomPanelRect.width / 2,
+        y: bottomPanelRect.top
+      };
 
       const path = document.createElementNS(window.MENU_SVG_NS, 'path');
       path.setAttribute('d', `M ${startPoint.x} ${startPoint.y} L ${endPoint.x} ${endPoint.y}`);
