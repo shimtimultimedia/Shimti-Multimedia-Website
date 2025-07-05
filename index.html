@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Shimti Multimedia: Responsive background, branding panel, radial menu, welcome carousel, connection lines, ring/squares, segmented rings -->
+<!-- Shimti Multimedia: Responsive background, branding panel, radial menu, welcome carousel, connection lines, rings/squares, segmented rings, dotted circle -->
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -22,6 +22,7 @@
     #ringSvg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 5; }
     #segmentedRingSvg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 5; }
     #outerSegmentedRingSvg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 5; }
+    #dottedCircleSvg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 5; }
     #shimtiPanelBottom { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); background: rgba(180, 220, 255, 0.15); padding: 8px 16px; border-radius: 10px; border: 1px solid #fff; width: 170px; height: 24px; z-index: 10; display: flex; align-items: center; justify-content: center; }
     #shimtiPanelBottom span { font-size: 1.2em; color: #eaffff; }
     @media (max-width: 768px) {
@@ -54,6 +55,7 @@
   <svg id="ringSvg" role="presentation" aria-hidden="true"></svg>
   <svg id="segmentedRingSvg" role="presentation" aria-hidden="true"></svg>
   <svg id="outerSegmentedRingSvg" role="presentation" aria-hidden="true"></svg>
+  <svg id="dottedCircleSvg" role="presentation" aria-hidden="true"></svg>
   <div id="shimtiPanelBottom">
     <span id="welcomeText">Loading...</span>
   </div>
@@ -68,5 +70,6 @@
   <script src="assets/scripts/rings-and-squares.js?v=20250705"></script>
   <script src="assets/scripts/segmented-ring.js?v=20250705"></script>
   <script src="assets/scripts/outer-segmented-ring.js?v=20250705"></script>
+  <script src="assets/scripts/dotted-circle.js?v=20250705"></script>
 </body>
 </html>
