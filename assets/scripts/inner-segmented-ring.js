@@ -28,8 +28,8 @@ window.initInnerSegmentedRing = function() {
   if (wheelRect) {
     const centerX = wheelRect.left + wheelRect.width / 2;
     const centerY = wheelRect.top + wheelRect.height / 2;
-    const outerRadius = 600; // Half of 257.5px
-    const innerRadius = 500; // Half of 240px, ~8.75px thick
+    const outerRadius = 450; // Half of 257.5px
+    const innerRadius = 420; // Half of 240px, ~8.75px thick
     const segmentCount = 4;
     const minArc = 30;
     const maxArc = 90;
