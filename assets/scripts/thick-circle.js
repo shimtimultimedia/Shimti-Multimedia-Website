@@ -27,8 +27,8 @@ window.initThickCircle = function() {
   if (wheelRect) {
     const centerX = wheelRect.left + wheelRect.width / 2;
     const centerY = wheelRect.top + wheelRect.height / 2;
-    const outerRadius = 600; // 335px (dotted circle) + 10px spacing
-    const innerRadius = 400; // 345px - 110px (matches radial menu button ring thickness)
+    const outerRadius = 480; // 335px (dotted circle) + 10px spacing
+    const innerRadius = 360; // 345px - 110px (matches radial menu button ring thickness)
 
     const outerD = `M${centerX + outerRadius},${centerY} A${outerRadius},${outerRadius} 0 1,0 ${centerX - outerRadius},${centerY} A${outerRadius},${outerRadius} 0 1,0 ${centerX + outerRadius},${centerY}`;
     const innerD = `M${centerX + innerRadius},${centerY} A${innerRadius},${innerRadius} 0 1,1 ${centerX - innerRadius},${centerY} A${innerRadius},${innerRadius} 0 1,1 ${centerX + innerRadius},${centerY}`;
