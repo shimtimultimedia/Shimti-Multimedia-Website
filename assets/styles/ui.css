@@ -1,5 +1,5 @@
 /*
- * Shimti Multimedia: Styles for UI elements (branding panel, radial menu, welcome panel, connection lines, ring, and squares)
+ * Shimti Multimedia: Styles for UI elements (branding panel, radial menu, welcome panel, connection lines, rings, and squares)
  */
 
 /* Font Definitions */
@@ -141,7 +141,7 @@ div#shimtiPanelBottom #welcomeText.fade-in {
 }
 
 #wheelMenu .holo-core {
-  animation: spectatorsGlowPulse 3s ease-in-out infinite, opacityPulse 2s ease-in-out infinite;
+  animation: circleGlowPulse 3s ease-in-out infinite, opacityPulse 2s ease-in-out infinite;
 }
 
 #wheelMenu .holo-ring.ring-0,
@@ -179,9 +179,14 @@ div#shimtiPanelBottom #welcomeText.fade-in {
   animation: selfRotate 2s linear infinite;
 }
 
-/* Segmented Ring */
+/* Segmented Rings */
 .segmented-ring {
   animation: rotateCounterClockwise 80s linear infinite;
+  transform-origin: center;
+}
+
+.outer-segmented-ring {
+  animation: rotateClockwise 100s linear infinite;
   transform-origin: center;
 }
 
