@@ -24,6 +24,8 @@ window.MENU_CONFIG = {
   RING_RADII: [25, 30, 35], // Radii for holographic core rings
   NAVIGATION_LINKS: ['Contact', 'AI', 'Work', 'Media', 'Shop', 'About'], // Menu sector labels
   WELCOME_INTERVAL: 3000, // Carousel transition interval (ms)
+  PARTICLE_INTERVAL_MIN: 1000, // Minimum time before particle respawns
+  PARTICLE_INTERVAL_MAX: 3000, // Maximum time before particle respawns
   FALLBACK_LANGUAGES: [
     { lang: 'English', text: 'Welcome' },
     { lang: 'Spanish', text: 'Bienvenido' },
@@ -104,7 +106,7 @@ window.createNavigationSector = function (position, label, fillColor, fragment) 
 
 /**
  * @class window.GridParticle
- * @description Represents a fading particle at grid intersections in the radial menu
+ * @description Represents a particle at grid intersections that pops in/out randomly
  */
 window.GridParticle = class {
   /**
@@ -115,22 +117,27 @@ window.GridParticle = class {
   constructor(x, y, gridOverlay) {
     this.x = x;
     this.y = y;
+    this.gridOverlay = gridOverlay;
     this.element = document.createElementNS(window.MENU_SVG_NS, 'circle');
     this.element.setAttribute('cx', this.x);
     this.element.setAttribute('cy', this.y);
     this.element.setAttribute('r', '3');
     this.element.setAttribute('fill', 'rgba(234, 255, 255, 0.8)');
-    this.element.setAttribute('opacity', '0');
     this.element.setAttribute('class', 'grid-particle');
-    gridOverlay.appendChild(this.element);
+    this.gridOverlay.appendChild(this.element);
     this.animate();
   }
 
-  /** @method animate - Applies fading animation to the particle */
+  /** @method animate - Toggles visibility randomly in an infinite loop */
   animate() {
-    const lifetime = 1000 + Math.random() * 2000;
-    const delay = Math.random() * 1000;
-    this.element.style.setProperty('--random-delay', delay / 1000);
+    const toggleVisibility = () => {
+      const isVisible = this.element.style.opacity === '1';
+      this.element.style.opacity = isVisible ? '0' : '1';
+      const delay = window.MENU_CONFIG.PARTICLE_INTERVAL_MIN + Math.random() * (window.MENU_CONFIG.PARTICLE_INTERVAL_MAX - window.MENU_CONFIG.PARTICLE_INTERVAL_MIN);
+      setTimeout(toggleVisibility, delay);
+    };
+    const initialDelay = Math.random() * window.MENU_CONFIG.PARTICLE_INTERVAL_MAX;
+    setTimeout(toggleVisibility, initialDelay);
   }
 };
 
