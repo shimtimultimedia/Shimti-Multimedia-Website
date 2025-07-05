@@ -25,7 +25,7 @@ window.MENU_CONFIG = {
   NAVIGATION_LINKS: ['Contact', 'AI', 'Work', 'Media', 'Shop', 'About'],
   WELCOME_INTERVAL: 3000,
   PARTICLE_INTERVAL_MIN: 1000,
-  PARTICLE_COUNT_MAX: 3000,
+  PARTICLE_INTERVAL_MAX: 3000,
   FALLBACK_LANGUAGES: [
     { lang: 'English', text: 'Welcome' },
     { lang: 'Spanish', text: 'Bienvenido' },
@@ -122,10 +122,10 @@ window.GridParticle.prototype.animate = function() {
   var toggleVisibility = function() {
     var isVisible = self.element.style.opacity === '1';
     self.element.style.opacity = isVisible ? '0' : '1';
-    var delay = window.MENU_CONFIG.PARTICLE_INTERVAL_MIN + Math.random() * (window.MENU_CONFIG.PARTICLE_COUNT_MAX - window.MENU_CONFIG.PARTICLE_INTERVAL_MIN);
+    var delay = window.MENU_CONFIG.PARTICLE_INTERVAL_MIN + Math.random() * (window.MENU_CONFIG.PARTICLE_INTERVAL_MAX - window.MENU_CONFIG.PARTICLE_INTERVAL_MIN);
     setTimeout(toggleVisibility, delay);
   };
-  var initialDelay = Math.random() * window.MENU_CONFIG.PARTICLE_COUNT_MAX;
+  var initialDelay = Math.random() * window.MENU_CONFIG.PARTICLE_INTERVAL_MAX;
   setTimeout(toggleVisibility, initialDelay);
 };
 
@@ -137,7 +137,10 @@ window.initWelcomeCarousel = function() {
   setTimeout(function() {
     var welcomeText = document.getElementById('welcomeText');
     var menuWheel = document.getElementById('wheelMenu');
-    if (!welcomeText || !menuWheel) return;
+    if (!welcomeText || !menuWheel) {
+      console.error('Welcome text or wheel menu not found:', { welcomeText: !!welcomeText, menuWheel: !!menuWheel });
+      return;
+    }
 
     welcomeText.textContent = 'Loading...';
 
@@ -155,6 +158,7 @@ window.initWelcomeCarousel = function() {
               text: node.getAttribute('text') || 'Welcome'
             };
           });
+          console.log('Loaded languages from XML:', languages.length);
         }
       }
     };
@@ -228,7 +232,11 @@ window.initWelcomeCarousel = function() {
 window.initRadialMenu = function() {
   var svgElement = document.getElementById('radialMenu');
   var menuWheel = document.getElementById('wheelMenu');
-  if (!svgElement || !menuWheel) return;
+  console.log('Initializing radial menu:', { svgElement: !!svgElement, menuWheel: !!menuWheel });
+  if (!svgElement || !menuWheel) {
+    console.error('Radial menu elements not found:', { svgElement: !!svgElement, menuWheel: !!menuWheel });
+    return;
+  }
 
   var sectorAngle = 360 / window.MENU_CONFIG.NAVIGATION_LINKS.length;
   var sectorPositions = window.MENU_CONFIG.NAVIGATION_LINKS.map(function(_, i) {
@@ -251,6 +259,7 @@ window.initRadialMenu = function() {
     window.createNavigationSector(pos, window.MENU_CONFIG.NAVIGATION_LINKS[i], window.MENU_CONFIG.SECTOR_FILL, fragment);
   });
   menuWheel.appendChild(fragment);
+  console.log('Sectors appended:', sectorPositions.length);
 
   menuWheel.addEventListener('click', function(event) {
     var sector = event.target.closest('g');
@@ -383,6 +392,7 @@ window.initRadialMenu = function() {
   selectedCenters.forEach(function(center) { new window.GridParticle(center.x, center.y, gridOverlay); });
 
   menuWheel.appendChild(gridOverlay);
+  console.log('Grid and particles appended');
 
   var centerCircle = document.createElementNS(window.MENU_SVG_NS, 'circle');
   centerCircle.setAttribute('cx', window.MENU_CONFIG.CENTER_X);
@@ -424,8 +434,13 @@ window.initRadialMenu = function() {
     holoCoreGroup.appendChild(ring);
   });
   menuWheel.appendChild(holoCoreGroup);
+  console.log('Core elements appended');
 
   window.initWelcomeCarousel();
+  console.log('Radial menu initialization complete');
 };
 
-window.addEventListener('load', window.initRadialMenu);
+document.addEventListener('DOMContentLoaded', function() {
+  console.log('DOMContentLoaded: Starting radial menu initialization');
+  window.initRadialMenu();
+});
