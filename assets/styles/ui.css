@@ -54,14 +54,14 @@
 /* Welcome Panel (Bottom) */
 div#shimtiPanelBottom {
   position: absolute;
-  bottom: 8px;
+  bottom: 12px;
   left: 50%;
   transform: translateX(-50%);
   background: var(--panel-bg);
   padding: 8px 16px;
   border-radius: 10px;
   border: 2px solid var(--border-color);
-  width: 400px;
+  width: 300px;
   height: 24px;
   z-index: 10;
   user-select: none;
@@ -224,7 +224,7 @@ div#shimtiPanelBottom #welcomeText.fade-in {
   }
 
   div#shimtiPanelBottom {
-    bottom: 8px;
+    bottom: 12px;
     padding: 6px 12px;
     width: 300px;
     height: 20px;
@@ -256,9 +256,9 @@ div#shimtiPanelBottom #welcomeText.fade-in {
   }
 
   div#shimtiPanelBottom {
-    bottom: 8px;
+    bottom: 12px;
     padding: 4px 8px;
-    width: 250px;
+    width: 300px;
     height: 18px;
   }
 
