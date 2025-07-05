@@ -21,15 +21,16 @@ window.initConnectionLines = function() {
   connectionGroup.setAttribute('aria-hidden', 'true');
 
   // Convert viewport coordinates to SVG viewBox (0 0 400 400)
-  function toSvgCoords(x, y, rect) {
+  function toSvgCoords(x, y, elementRect) {
     const svgRect = svgElement.getBoundingClientRect();
     const scaleX = 400 / svgRect.width;
     const scaleY = 400 / svgRect.height;
-    const offsetX = rect.left - svgRect.left;
-    const offsetY = rect.top - svgRect.top;
+    // Adjust for SVG's position in viewport
+    const offsetX = x - svgRect.left;
+    const offsetY = y - svgRect.top;
     return {
-      x: offsetX * scaleX,
-      y: offsetY * scaleY
+      x: Math.max(0, Math.min(400, offsetX * scaleX)),
+      y: Math.max(0, Math.min(400, offsetY * scaleY))
     };
   }
 
@@ -44,7 +45,7 @@ window.initConnectionLines = function() {
     );
     const endPoint = toSvgCoords(
       wheelRect.left + wheelRect.width / 2,
-      wheelRect.top + wheelRect.height / 18,
+      wheelRect.top + wheelRect.height / 18, // ~22.22px in 400x400 viewBox
       wheelRect
     );
     const bendX = startPoint.x + (endPoint.x - startPoint.x);
@@ -86,7 +87,7 @@ window.initConnectionLines = function() {
   if (wheelRect && bottomPanelRect) {
     const startPoint = toSvgCoords(
       wheelRect.left + wheelRect.width / 2,
-      wheelRect.top + wheelRect.height / 1.05,
+      wheelRect.top + wheelRect.height / 1.05, // ~380.95px in 400x400 viewBox
       wheelRect
     );
     const endPoint = toSvgCoords(
