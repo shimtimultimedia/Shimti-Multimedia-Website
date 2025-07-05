@@ -144,16 +144,18 @@
   animation: circleGlowPulse 3s ease-in-out infinite, opacityPulse 2s ease-in-out infinite;
 }
 
-#menuWheel .holo-ring.ring-0 {
-  animation: circleGlowPulse 3s ease-in-out infinite, opacityPulse 2s ease-in-out infinite;
-}
-
-#menuWheel .holo-ring.ring-1 {
-  animation: circleGlowPulse 3s ease-in-out infinite, opacityPulse 2s ease-in-out infinite;
-}
-
+#menuWheel .holo-ring.ring-0,
+#menuWheel .holo-ring.ring-1,
 #menuWheel .holo-ring.ring-2 {
   animation: circleGlowPulse 3s ease-in-out infinite, opacityPulse 2s ease-in-out infinite;
+}
+
+/* Grid Particle Animation */
+.grid-particle {
+  animation: neuronFade 3s ease-in-out infinite;
+  -webkit-animation: neuronFade 3s ease-in-out infinite;
+  -moz-animation: neuronFade 3s ease-in-out infinite;
+  animation-delay: calc(var(--random-delay) * 1s);
 }
 
 /* Animations */
@@ -171,6 +173,21 @@
 
 @keyframes opacityPulse {
   0%, 100% { opacity: 0.7; }
+  50% { opacity: 1; }
+}
+
+@keyframes neuronFade {
+  0%, 100% { opacity: 0; }
+  50% { opacity: 1; }
+}
+
+@-webkit-keyframes neuronFade {
+  0%, 100% { opacity: 0; }
+  50% { opacity: 1; }
+}
+
+@-moz-keyframes neuronFade {
+  0%, 100% { opacity: 0; }
   50% { opacity: 1; }
 }
 
