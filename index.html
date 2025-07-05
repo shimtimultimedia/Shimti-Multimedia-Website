@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Shimti Multimedia: Responsive background, branding panel, radial menu, welcome carousel, and connection lines -->
+<!-- Shimti Multimedia: Responsive background, branding panel, radial menu, welcome carousel, connection lines, and ring/squares -->
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -19,6 +19,7 @@
     #shimtiPanel span { font-size: 1.2em; color: #eaffff; }
     #radialMenu { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 400px; height: 400px; z-index: 10; }
     #connectionSvg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 5; }
+    #ringSvg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 5; }
     #shimtiPanelBottom { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); background: rgba(180, 220, 255, 0.15); padding: 8px 16px; border-radius: 10px; border: 1px solid #fff; width: 170px; height: 24px; z-index: 10; display: flex; align-items: center; justify-content: center; }
     #shimtiPanelBottom span { font-size: 1.2em; color: #eaffff; }
     @media (max-width: 768px) {
@@ -48,6 +49,7 @@
     <g id="wheelMenu"></g>
   </svg>
   <svg id="connectionSvg" role="presentation" aria-hidden="true"></svg>
+  <svg id="ringSvg" role="presentation" aria-hidden="true"></svg>
   <div id="shimtiPanelBottom">
     <span id="welcomeText">Loading...</span>
   </div>
@@ -59,5 +61,6 @@
   <script src="assets/scripts/title-panel.js"></script>
   <script src="assets/scripts/radial-menu.js?v=20250705"></script>
   <script src="assets/scripts/connection-rings.js?v=20250705"></script>
+  <script src="assets/scripts/rings-and-squares.js?v=20250705"></script>
 </body>
 </html>
