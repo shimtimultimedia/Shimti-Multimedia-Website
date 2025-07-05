@@ -338,7 +338,7 @@ window.initRadialMenu = function() {
   var backgroundCircle = document.createElementNS(window.MENU_SVG_NS, 'circle');
   backgroundCircle.setAttribute('cx', window.MENU_CONFIG.CENTER_X);
   backgroundCircle.setAttribute('cy', window.MENU_CONFIG.CENTER_Y);
-  backgroundCircle.setAttribute('r', 205);
+  backgroundCircle.setAttribute('r', 201);
   backgroundCircle.setAttribute('fill', 'url(#backgroundGradient)');
   backgroundCircle.setAttribute('stroke', window.MENU_CONFIG.STROKE_COLOR);
   backgroundCircle.setAttribute('stroke-width', '1');
