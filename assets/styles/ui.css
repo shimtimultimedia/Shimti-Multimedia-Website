@@ -1,5 +1,5 @@
 /*
- * Shimti Multimedia: Styles for UI elements (branding panel, radial menu, welcome panel, connection lines, rings, and dotted circle)
+ * Shimti Multimedia: Styles for UI elements (branding panel, radial menu, welcome panel, connection lines, rings, and circles)
  */
 
 /* Font Definitions */
@@ -196,6 +196,12 @@ div#shimtiPanelBottom #welcomeText.fade-in {
   stroke-width: 2;
   stroke-dasharray: 4, 4;
   fill: none;
+}
+
+/* Thick Circle */
+.thick-circle {
+  fill: rgba(180, 220, 255, 0.08);
+  stroke: none;
 }
 
 /* Animations */
