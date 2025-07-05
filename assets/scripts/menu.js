@@ -25,8 +25,9 @@ const MENU_CONFIG = {
   OUTER_RING_RADIUS: 200, // Outer rotating ring radius
   INNER_RING_RADIUS: 60, // Inner rotating ring radius
   SEGMENTED_RING_RADIUS: 210, // Outer segmented ring radius
-  RING_STROKE_WIDTH: 2, // Thickness for all rings
+  RING_STROKE_WIDTH: 2, // Thickness for all rings except segmented
   SEGMENTED_RING_STROKE_WIDTH: 1, // Thinner segmented ring
+  RING_RADII: [25, 30, 35], // Radii for holographic core rings
   NAVIGATION_LINKS: ['Contact', 'AI', 'Work', 'Media', 'Shop', 'About'], // Menu sector labels
   WELCOME_INTERVAL: 3000, // Carousel transition interval (ms)
   SQUARE_COUNT: 24, // Number of rotating squares
@@ -376,7 +377,7 @@ function initializeRadialMenu() {
     line.setAttribute('x2', MENU_CONFIG.CENTER_X + x);
     line.setAttribute('y2', MENU_CONFIG.CENTER_Y + MENU_CONFIG.INNER_RADIUS);
     line.setAttribute('stroke', MENU_CONFIG.STROKE_COLOR);
-    line.setAttribute('stroke-width', '1');
+    line.setAttribute('stroke-width', MENU_CONFIG.RING_STROKE_WIDTH);
     gridOverlay.appendChild(line);
   }
   for (let y = -MENU_CONFIG.INNER_RADIUS; y <= MENU_CONFIG.INNER_RADIUS; y += MENU_CONFIG.GRID_SPACING) {
@@ -386,7 +387,7 @@ function initializeRadialMenu() {
     line.setAttribute('x2', MENU_CONFIG.CENTER_X + MENU_CONFIG.INNER_RADIUS);
     line.setAttribute('y2', MENU_CONFIG.CENTER_Y + y);
     line.setAttribute('stroke', MENU_CONFIG.STROKE_COLOR);
-    line.setAttribute('stroke-width', '1');
+    line.setAttribute('stroke-width', MENU_CONFIG.RING_STROKE_WIDTH);
     gridOverlay.appendChild(line);
   }
   menuContainer.appendChild(gridOverlay);
@@ -430,6 +431,8 @@ function initializeRadialMenu() {
   holoCore.setAttribute('cy', MENU_CONFIG.CENTER_Y);
   holoCore.setAttribute('r', MENU_CONFIG.CORE_RADIUS);
   holoCore.setAttribute('fill', 'rgba(234, 255, 255, 0.9)');
+  holoCore.setAttribute('stroke', MENU_CONFIG.STROKE_COLOR);
+  holoCore.setAttribute('stroke-width', MENU_CONFIG.RING_STROKE_WIDTH);
   holoCore.setAttribute('class', 'holo-core');
   holoCoreGroup.appendChild(holoCore);
 
@@ -439,6 +442,8 @@ function initializeRadialMenu() {
     ring.setAttribute('cy', MENU_CONFIG.CENTER_Y);
     ring.setAttribute('r', r);
     ring.setAttribute('fill', 'url(#holoCoreGradient)');
+    ring.setAttribute('stroke', MENU_CONFIG.STROKE_COLOR);
+    ring.setAttribute('stroke-width', MENU_CONFIG.RING_STROKE_WIDTH);
     ring.setAttribute('class', `holo-ring ring-${i}`);
     holoCoreGroup.appendChild(ring);
   });
