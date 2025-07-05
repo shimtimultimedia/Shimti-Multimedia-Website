@@ -1,21 +1,21 @@
 /**
  * @module GridRenderer
  * @description Renders an 80px grid for Shimti Multimedia's background.
- * Uses offscreen canvas for performance.
+ * Uses offscreen canvas for performance in live environments.
  */
 
-/** @constant {Object} GRID_CONFIG - Configuration for grid rendering */
-const GRID_CONFIG = {
+/** @constant {Object} window.GRID_CONFIG - Configuration for grid rendering */
+window.GRID_CONFIG = {
   GRID_SPACING: 80, // Grid line spacing in pixels
   GRID_STROKE: 'rgba(100, 150, 255, 0.1)', // Grid line color
 };
 
 /**
- * @function renderGrid
+ * @function window.renderGrid
  * @description Initializes and renders the background grid
  * @param {HTMLCanvasElement} canvas - The grid canvas element
  */
-function renderGrid(canvas) {
+window.renderGrid = function (canvas) {
   if (!canvas) return;
 
   const ctx = canvas.getContext('2d', { alpha: true });
@@ -40,16 +40,16 @@ function renderGrid(canvas) {
   /** @function drawGrid - Draws grid lines on offscreen canvas */
   function drawGrid() {
     offscreenCtx.clearRect(0, 0, width, height);
-    offscreenCtx.strokeStyle = GRID_CONFIG.GRID_STROKE;
+    offscreenCtx.strokeStyle = window.GRID_CONFIG.GRID_STROKE;
     offscreenCtx.lineWidth = 1;
 
-    for (let x = 0; x < width; x += GRID_CONFIG.GRID_SPACING) {
+    for (let x = 0; x < width; x += window.GRID_CONFIG.GRID_SPACING) {
       offscreenCtx.beginPath();
       offscreenCtx.moveTo(x, 0);
       offscreenCtx.lineTo(x, height);
       offscreenCtx.stroke();
     }
-    for (let y = 0; y < height; y += GRID_CONFIG.GRID_SPACING) {
+    for (let y = 0; y < height; y += window.GRID_CONFIG.GRID_SPACING) {
       offscreenCtx.beginPath();
       offscreenCtx.moveTo(0, y);
       offscreenCtx.lineTo(width, y);
@@ -79,6 +79,4 @@ function renderGrid(canvas) {
       drawGrid();
     }, 100);
   });
-}
-
-export { renderGrid };
+};
