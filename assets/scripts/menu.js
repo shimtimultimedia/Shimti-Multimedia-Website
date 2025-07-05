@@ -22,8 +22,11 @@ const MENU_CONFIG = {
   INNER_CIRCLE_RADIUS: 58, // Inner circle radius
   INNER_FILLED_RADIUS: 48, // Inner filled circle radius
   CORE_RADIUS: 20, // Holographic core radius
+  OUTER_RING_RADIUS: 200, // Outer rotating ring radius
+  INNER_RING_RADIUS: 60, // Inner rotating ring radius
   SEGMENTED_RING_RADIUS: 210, // Outer segmented ring radius
-  RING_RADII: [25, 30, 35], // Radii for holographic rings
+  RING_STROKE_WIDTH: 2, // Thickness for all rings
+  SEGMENTED_RING_STROKE_WIDTH: 1, // Thinner segmented ring
   NAVIGATION_LINKS: ['Contact', 'AI', 'Work', 'Media', 'Shop', 'About'], // Menu sector labels
   WELCOME_INTERVAL: 3000, // Carousel transition interval (ms)
   SQUARE_COUNT: 24, // Number of rotating squares
@@ -349,7 +352,7 @@ function initializeRadialMenu() {
   backgroundCircle.setAttribute('r', MENU_CONFIG.BACKGROUND_RADIUS);
   backgroundCircle.setAttribute('fill', 'url(#backgroundGradient)');
   backgroundCircle.setAttribute('stroke', MENU_CONFIG.STROKE_COLOR);
-  backgroundCircle.setAttribute('stroke-width', '1');
+  backgroundCircle.setAttribute('stroke-width', MENU_CONFIG.RING_STROKE_WIDTH);
   backgroundCircle.setAttribute('class', 'stationary-ring');
   menuContainer.parentNode.insertBefore(backgroundCircle, menuContainer);
 
@@ -408,7 +411,7 @@ function initializeRadialMenu() {
   centerCircle.setAttribute('r', MENU_CONFIG.INNER_CIRCLE_RADIUS);
   centerCircle.setAttribute('fill', 'none');
   centerCircle.setAttribute('stroke', MENU_CONFIG.STROKE_COLOR);
-  centerCircle.setAttribute('stroke-width', '1');
+  centerCircle.setAttribute('stroke-width', MENU_CONFIG.RING_STROKE_WIDTH);
   menuContainer.appendChild(centerCircle);
 
   const innerFilledCircle = document.createElementNS(MENU_SVG_NS, 'circle');
@@ -441,23 +444,24 @@ function initializeRadialMenu() {
   });
   menuContainer.appendChild(holoCoreGroup);
 
-  // Rotating outer and inner rings
+  // Rotating outer ring
   const outerRing = document.createElementNS(MENU_SVG_NS, 'circle');
   outerRing.setAttribute('cx', MENU_CONFIG.CENTER_X);
   outerRing.setAttribute('cy', MENU_CONFIG.CENTER_Y);
-  outerRing.setAttribute('r', MENU_CONFIG.OUTER_RADIUS + 10);
-  outerRing.setAttribute('stroke', '#fff');
-  outerRing.setAttribute('stroke-width', '2');
+  outerRing.setAttribute('r', MENU_CONFIG.OUTER_RING_RADIUS);
+  outerRing.setAttribute('stroke', MENU_CONFIG.STROKE_COLOR);
+  outerRing.setAttribute('stroke-width', MENU_CONFIG.RING_STROKE_WIDTH);
   outerRing.setAttribute('fill', 'none');
   outerRing.setAttribute('class', 'rotating-ring');
   menuContainer.appendChild(outerRing);
 
+  // Rotating inner ring
   const innerRing = document.createElementNS(MENU_SVG_NS, 'circle');
   innerRing.setAttribute('cx', MENU_CONFIG.CENTER_X);
   innerRing.setAttribute('cy', MENU_CONFIG.CENTER_Y);
-  innerRing.setAttribute('r', MENU_CONFIG.INNER_RADIUS - 10);
-  innerRing.setAttribute('stroke', '#fff');
-  innerRing.setAttribute('stroke-width', '2');
+  innerRing.setAttribute('r', MENU_CONFIG.INNER_RING_RADIUS);
+  innerRing.setAttribute('stroke', MENU_CONFIG.STROKE_COLOR);
+  innerRing.setAttribute('stroke-width', MENU_CONFIG.RING_STROKE_WIDTH);
   innerRing.setAttribute('fill', 'none');
   innerRing.setAttribute('class', 'rotating-ring reverse');
   menuContainer.appendChild(innerRing);
@@ -492,7 +496,7 @@ function initializeRadialMenu() {
       const arc = document.createElementNS(MENU_SVG_NS, 'path');
       arc.setAttribute('d', `M ${p1.x} ${p1.y} A ${MENU_CONFIG.SEGMENTED_RING_RADIUS} ${MENU_CONFIG.SEGMENTED_RING_RADIUS} 0 0 0 ${p2.x} ${p2.y}`);
       arc.setAttribute('stroke', MENU_CONFIG.STROKE_COLOR);
-      arc.setAttribute('stroke-width', '0.5');
+      arc.setAttribute('stroke-width', MENU_CONFIG.SEGMENTED_RING_STROKE_WIDTH);
       arc.setAttribute('fill', 'none');
       segmentGroup.appendChild(arc);
     }
