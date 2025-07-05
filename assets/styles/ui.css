@@ -1,0 +1,240 @@
+/*
+ * Shimti Multimedia: Styles for UI elements (title panel, radial menu, welcome panel)
+ */
+
+/* Font Definitions */
+@font-face {
+  font-family: 'Orbitron';
+  src: url('../fonts/Orbitron-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Custom Properties */
+:root {
+  --panel-bg: rgba(180, 220, 255, 0.15);
+  --text-color: #eaffff;
+  --border-color: #fff;
+  --brightness-filter: brightness(1.1);
+  --focus-outline: #8cf;
+}
+
+/* Title Panel */
+#titlePanel {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  background: var(--panel-bg);
+  padding: 8px 16px;
+  border-radius: 10px;
+  border: 2px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  z-index: 10;
+  user-select: none;
+}
+
+#titlePanel img {
+  height: 1.5em;
+  aspect-ratio: 1;
+  filter: var(--brightness-filter);
+}
+
+#titlePanel span {
+  font-family: 'Orbitron', sans-serif;
+  font-size: clamp(0.9em, 2vw, 1.2em);
+  color: var(--text-color);
+  letter-spacing: 0.1em;
+  font-weight: 600;
+  animation: glowPulse 3s ease-in-out infinite;
+}
+
+/* Welcome Panel */
+#welcomePanel {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--panel-bg);
+  padding: 8px 16px;
+  border-radius: 10px;
+  border: 2px solid var(--border-color);
+  width: 170px;
+  height: 24px;
+  z-index: 10;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#welcomePanel #welcomeText {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.2em;
+  color: var(--text-color);
+  letter-spacing: 0.1em;
+  font-weight: 600;
+  animation: glowPulse 3s ease-in-out infinite;
+  text-align: center;
+  transition: opacity 0.5s ease;
+  opacity: 1;
+}
+
+#welcomePanel #welcomeText.fade-out {
+  opacity: 0;
+}
+
+#welcomePanel #welcomeText.fade-in {
+  opacity: 1;
+}
+
+/* Radial Menu */
+#radialMenu {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 400px;
+  height: 400px;
+  z-index: 10;
+  user-select: none;
+}
+
+#menuWheel {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  user-select: none;
+}
+
+#menuWheel g {
+  transition: all 0.3s ease;
+}
+
+#menuWheel g:hover path {
+  fill: rgba(180, 220, 255, 0.2);
+}
+
+#menuWheel g:hover image {
+  filter: brightness(1.5) drop-shadow(0 0 8px rgba(180, 220, 255, 0.6));
+}
+
+#menuWheel g:focus {
+  outline: 2px solid var(--focus-outline);
+  outline-offset: 2px;
+}
+
+#menuWheel g.mouse-active:focus {
+  outline: none;
+}
+
+#menuWheel g image {
+  animation: glowPulse 3s ease-in-out infinite;
+}
+
+#menuWheel .inner-filled-circle {
+  animation: circleGlowPulse 3s ease-in-out infinite;
+}
+
+#menuWheel .holo-core {
+  animation: circleGlowPulse 3s ease-in-out infinite, opacityPulse 2s ease-in-out infinite;
+}
+
+#menuWheel .holo-ring.ring-0 {
+  animation: circleGlowPulse 3s ease-in-out infinite, opacityPulse 2s ease-in-out infinite;
+}
+
+#menuWheel .holo-ring.ring-1 {
+  animation: circleGlowPulse 3s ease-in-out infinite, opacityPulse 2s ease-in-out infinite;
+}
+
+#menuWheel .holo-ring.ring-2 {
+  animation: circleGlowPulse 3s ease-in-out infinite, opacityPulse 2s ease-in-out infinite;
+}
+
+/* Animations */
+@keyframes glowPulse {
+  0% { filter: drop-shadow(0 0 2px rgba(180, 220, 255, 0.3)); }
+  50% { filter: drop-shadow(0 0 8px rgba(180, 220, 255, 0.6)); }
+  100% { filter: drop-shadow(0 0 2px rgba(180, 220, 255, 0.3)); }
+}
+
+@keyframes circleGlowPulse {
+  0% { filter: drop-shadow(0 0 3px rgba(180, 220, 255, 0.4)); }
+  50% { filter: drop-shadow(0 0 8px rgba(180, 220, 255, 0.7)); }
+  100% { filter: drop-shadow(0 0 3px rgba(180, 220, 255, 0.4)); }
+}
+
+@keyframes opacityPulse {
+  0%, 100% { opacity: 0.7; }
+  50% { opacity: 1; }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  #titlePanel {
+    top: 10px;
+    left: 10px;
+    padding: 6px 12px;
+  }
+
+  #titlePanel img {
+    height: 1.5em;
+  }
+
+  #titlePanel span {
+    font-size: clamp(0.7em, 2vw, 1em);
+  }
+
+  #welcomePanel {
+    bottom: 10px;
+    padding: 6px 12px;
+    width: 140px;
+    height: 20px;
+  }
+
+  #welcomePanel #welcomeText {
+    font-size: 1em;
+  }
+
+  #radialMenu {
+    width: 300px;
+    height: 300px;
+  }
+}
+
+@media (max-width: 480px) {
+  #titlePanel {
+    top: 10px;
+    left: 10px;
+    padding: 4px 8px;
+  }
+
+  #titlePanel img {
+    height: 1.2em;
+  }
+
+  #titlePanel span {
+    font-size: clamp(0.6em, 2vw, 0.9em);
+  }
+
+  #welcomePanel {
+    bottom: 10px;
+    padding: 4px 8px;
+    width: 120px;
+    height: 18px;
+  }
+
+  #welcomePanel #welcomeText {
+    font-size: 0.9em;
+  }
+
+  #radialMenu {
+    width: 250px;
+    height: 250px;
+  }
+}
