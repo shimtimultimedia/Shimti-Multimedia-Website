@@ -132,7 +132,7 @@ window.GridParticle.prototype.animate = function() {
 
 /**
  * @function window.initWelcomeCarousel
- * @description Initializes the welcome text carousel with smooth, sequential language cycling, prioritizing languages.xml
+ * @description Initializes the welcome text carousel with smooth, sequential language cycling
  */
 window.initWelcomeCarousel = function() {
   var welcomeText = document.getElementById('welcomeText');
@@ -166,7 +166,6 @@ window.initWelcomeCarousel = function() {
       } else {
         console.log('Failed to load languages.xml, using FALLBACK_LANGUAGES:', languages);
       }
-      // Start carousel after XML load attempt
       startCarousel();
     }
   };
@@ -224,7 +223,7 @@ window.initWelcomeCarousel = function() {
           welcomeText.textContent = languages[currentIndex].text || 'Welcome';
           welcomeText.classList.remove('fade-out');
           welcomeText.classList.add('fade-in');
-          timeoutId = setTimeout(cycleText, window.MENU_CONFIG.WELCOME_INTERVAL);
+          timeoutId = setTimeout(cycleText, window.MENU_CONFIG.WELCOME_INTERVAL - 500);
         }, 500);
       });
     }
