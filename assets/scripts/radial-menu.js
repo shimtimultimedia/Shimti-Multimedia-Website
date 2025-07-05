@@ -26,7 +26,7 @@ window.MENU_CONFIG = {
   WELCOME_INTERVAL: 8000,
   PARTICLE_INTERVAL_MIN: 1000,
   PARTICLE_INTERVAL_MAX: 3000,
-  BACKGROUND_RADIUS: 188,
+  BACKGROUND_RADIUS: 192,
   FALLBACK_LANGUAGES: [
     { lang: 'English', text: 'Welcome' },
     { lang: 'Spanish', text: 'Bienvenido' },
