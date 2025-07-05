@@ -26,6 +26,7 @@ window.MENU_CONFIG = {
   WELCOME_INTERVAL: 3000,
   PARTICLE_INTERVAL_MIN: 1000,
   PARTICLE_INTERVAL_MAX: 3000,
+  BACKGROUND_RADIUS: 185,
   FALLBACK_LANGUAGES: [
     { lang: 'English', text: 'Welcome' },
     { lang: 'Spanish', text: 'Bienvenido' },
@@ -238,17 +239,29 @@ window.initRadialMenu = function() {
     return;
   }
 
+  // Set full-screen viewBox and center the menu
+  var width = window.innerWidth;
+  var height = window.innerHeight;
+  svgElement.setAttribute('viewBox', '0 0 ' + width + ' ' + height);
+  window.MENU_CONFIG.CENTER_X = width / 2;
+  window.MENU_CONFIG.CENTER_Y = height / 2;
+
+  // Scale menu size based on screen width
+  var scale = Math.min(width, height) / 400; // Base size: 400px
+  if (width <= 768) scale = Math.min(width, height) / 500; // 300px at 768px
+  if (width <= 480) scale = Math.min(width, height) / 600; // 250px at 480px
+
   var sectorAngle = 360 / window.MENU_CONFIG.NAVIGATION_LINKS.length;
   var sectorPositions = window.MENU_CONFIG.NAVIGATION_LINKS.map(function(_, i) {
     var start = 270 + i * sectorAngle;
     var end = start + sectorAngle;
     var labelAngle = (start + end) / 2;
     return {
-      p1: window.polarToCartesian(window.MENU_CONFIG.CENTER_X, window.MENU_CONFIG.CENTER_Y, window.MENU_CONFIG.OUTER_RADIUS, end),
-      p2: window.polarToCartesian(window.MENU_CONFIG.CENTER_X, window.MENU_CONFIG.CENTER_Y, window.MENU_CONFIG.OUTER_RADIUS, start),
-      p3: window.polarToCartesian(window.MENU_CONFIG.CENTER_X, window.MENU_CONFIG.CENTER_Y, window.MENU_CONFIG.INNER_RADIUS, start),
-      p4: window.polarToCartesian(window.MENU_CONFIG.CENTER_X, window.MENU_CONFIG.CENTER_Y, window.MENU_CONFIG.INNER_RADIUS, end),
-      iconPos: window.polarToCartesian(window.MENU_CONFIG.CENTER_X, window.MENU_CONFIG.CENTER_Y, (window.MENU_CONFIG.INNER_RADIUS + window.MENU_CONFIG.OUTER_RADIUS) / 2, labelAngle),
+      p1: window.polarToCartesian(window.MENU_CONFIG.CENTER_X, window.MENU_CONFIG.CENTER_Y, window.MENU_CONFIG.OUTER_RADIUS * scale, end),
+      p2: window.polarToCartesian(window.MENU_CONFIG.CENTER_X, window.MENU_CONFIG.CENTER_Y, window.MENU_CONFIG.OUTER_RADIUS * scale, start),
+      p3: window.polarToCartesian(window.MENU_CONFIG.CENTER_X, window.MENU_CONFIG.CENTER_Y, window.MENU_CONFIG.INNER_RADIUS * scale, start),
+      p4: window.polarToCartesian(window.MENU_CONFIG.CENTER_X, window.MENU_CONFIG.CENTER_Y, window.MENU_CONFIG.INNER_RADIUS * scale, end),
+      iconPos: window.polarToCartesian(window.MENU_CONFIG.CENTER_X, window.MENU_CONFIG.CENTER_Y, (window.MENU_CONFIG.INNER_RADIUS + window.MENU_CONFIG.OUTER_RADIUS) / 2 * scale, labelAngle),
       start: start,
       end: end
     };
@@ -338,7 +351,7 @@ window.initRadialMenu = function() {
   var backgroundCircle = document.createElementNS(window.MENU_SVG_NS, 'circle');
   backgroundCircle.setAttribute('cx', window.MENU_CONFIG.CENTER_X);
   backgroundCircle.setAttribute('cy', window.MENU_CONFIG.CENTER_Y);
-  backgroundCircle.setAttribute('r', 201);
+  backgroundCircle.setAttribute('r', window.MENU_CONFIG.BACKGROUND_RADIUS * scale);
   backgroundCircle.setAttribute('fill', 'url(#backgroundGradient)');
   backgroundCircle.setAttribute('stroke', window.MENU_CONFIG.STROKE_COLOR);
   backgroundCircle.setAttribute('stroke-width', '1');
@@ -350,7 +363,7 @@ window.initRadialMenu = function() {
   var clipCircle = document.createElementNS(window.MENU_SVG_NS, 'circle');
   clipCircle.setAttribute('cx', window.MENU_CONFIG.CENTER_X);
   clipCircle.setAttribute('cy', window.MENU_CONFIG.CENTER_Y);
-  clipCircle.setAttribute('r', window.MENU_CONFIG.INNER_CIRCLE_RADIUS);
+  clipCircle.setAttribute('r', window.MENU_CONFIG.INNER_CIRCLE_RADIUS * scale);
   clipPath.appendChild(clipCircle);
   defs.appendChild(clipPath);
   svgElement.appendChild(defs);
@@ -359,20 +372,20 @@ window.initRadialMenu = function() {
   gridOverlay.setAttribute('clip-path', 'url(#innerCircleClip)');
   for (var x = -window.MENU_CONFIG.INNER_RADIUS; x <= window.MENU_CONFIG.INNER_RADIUS; x += window.MENU_CONFIG.GRID_SPACING) {
     var line = document.createElementNS(window.MENU_SVG_NS, 'line');
-    line.setAttribute('x1', window.MENU_CONFIG.CENTER_X + x);
-    line.setAttribute('y1', window.MENU_CONFIG.CENTER_Y - window.MENU_CONFIG.INNER_RADIUS);
-    line.setAttribute('x2', window.MENU_CONFIG.CENTER_X + x);
-    line.setAttribute('y2', window.MENU_CONFIG.CENTER_Y + window.MENU_CONFIG.INNER_RADIUS);
+    line.setAttribute('x1', window.MENU_CONFIG.CENTER_X + x * scale);
+    line.setAttribute('y1', window.MENU_CONFIG.CENTER_Y - window.MENU_CONFIG.INNER_RADIUS * scale);
+    line.setAttribute('x2', window.MENU_CONFIG.CENTER_X + x * scale);
+    line.setAttribute('y2', window.MENU_CONFIG.CENTER_Y + window.MENU_CONFIG.INNER_RADIUS * scale);
     line.setAttribute('stroke', window.MENU_CONFIG.STROKE_COLOR);
     line.setAttribute('stroke-width', '1');
     gridOverlay.appendChild(line);
   }
   for (var y = -window.MENU_CONFIG.INNER_RADIUS; y <= window.MENU_CONFIG.INNER_RADIUS; y += window.MENU_CONFIG.GRID_SPACING) {
     var line = document.createElementNS(window.MENU_SVG_NS, 'line');
-    line.setAttribute('x1', window.MENU_CONFIG.CENTER_X - window.MENU_CONFIG.INNER_RADIUS);
-    line.setAttribute('y1', window.MENU_CONFIG.CENTER_Y + y);
-    line.setAttribute('x2', window.MENU_CONFIG.CENTER_X + window.MENU_CONFIG.INNER_RADIUS);
-    line.setAttribute('y2', window.MENU_CONFIG.CENTER_Y + y);
+    line.setAttribute('x1', window.MENU_CONFIG.CENTER_X - window.MENU_CONFIG.INNER_RADIUS * scale);
+    line.setAttribute('y1', window.MENU_CONFIG.CENTER_Y + y * scale);
+    line.setAttribute('x2', window.MENU_CONFIG.CENTER_X + window.MENU_CONFIG.INNER_RADIUS * scale);
+    line.setAttribute('y2', window.MENU_CONFIG.CENTER_Y + y * scale);
     line.setAttribute('stroke', window.MENU_CONFIG.STROKE_COLOR);
     line.setAttribute('stroke-width', '1');
     gridOverlay.appendChild(line);
@@ -383,7 +396,7 @@ window.initRadialMenu = function() {
     for (var y = -window.MENU_CONFIG.INNER_RADIUS; y <= window.MENU_CONFIG.INNER_RADIUS; y += window.MENU_CONFIG.GRID_SPACING) {
       var distance = Math.sqrt(x * x + y * y);
       if (distance <= window.MENU_CONFIG.INNER_CIRCLE_RADIUS) {
-        gridCenters.push({ x: window.MENU_CONFIG.CENTER_X + x, y: window.MENU_CONFIG.CENTER_Y + y });
+        gridCenters.push({ x: window.MENU_CONFIG.CENTER_X + x * scale, y: window.MENU_CONFIG.CENTER_Y + y * scale });
       }
     }
   }
@@ -397,7 +410,7 @@ window.initRadialMenu = function() {
   var centerCircle = document.createElementNS(window.MENU_SVG_NS, 'circle');
   centerCircle.setAttribute('cx', window.MENU_CONFIG.CENTER_X);
   centerCircle.setAttribute('cy', window.MENU_CONFIG.CENTER_Y);
-  centerCircle.setAttribute('r', window.MENU_CONFIG.INNER_CIRCLE_RADIUS);
+  centerCircle.setAttribute('r', window.MENU_CONFIG.INNER_CIRCLE_RADIUS * scale);
   centerCircle.setAttribute('fill', 'none');
   centerCircle.setAttribute('stroke', window.MENU_CONFIG.STROKE_COLOR);
   centerCircle.setAttribute('stroke-width', '1');
@@ -406,7 +419,7 @@ window.initRadialMenu = function() {
   var innerFilledCircle = document.createElementNS(window.MENU_SVG_NS, 'circle');
   innerFilledCircle.setAttribute('cx', window.MENU_CONFIG.CENTER_X);
   innerFilledCircle.setAttribute('cy', window.MENU_CONFIG.CENTER_Y);
-  innerFilledCircle.setAttribute('r', window.MENU_CONFIG.INNER_FILLED_RADIUS);
+  innerFilledCircle.setAttribute('r', window.MENU_CONFIG.INNER_FILLED_RADIUS * scale);
   innerFilledCircle.setAttribute('fill', 'rgba(180, 220, 255, 0.06)');
   innerFilledCircle.setAttribute('stroke', 'none');
   innerFilledCircle.setAttribute('class', 'inner-filled-circle');
@@ -417,7 +430,7 @@ window.initRadialMenu = function() {
   var holoCore = document.createElementNS(window.MENU_SVG_NS, 'circle');
   holoCore.setAttribute('cx', window.MENU_CONFIG.CENTER_X);
   holoCore.setAttribute('cy', window.MENU_CONFIG.CENTER_Y);
-  holoCore.setAttribute('r', window.MENU_CONFIG.CORE_RADIUS);
+  holoCore.setAttribute('r', window.MENU_CONFIG.CORE_RADIUS * scale);
   holoCore.setAttribute('fill', 'rgba(234, 255, 255, 0.9)');
   holoCore.setAttribute('stroke', 'none');
   holoCore.setAttribute('class', 'holo-core');
@@ -427,7 +440,7 @@ window.initRadialMenu = function() {
     var ring = document.createElementNS(window.MENU_SVG_NS, 'circle');
     ring.setAttribute('cx', window.MENU_CONFIG.CENTER_X);
     ring.setAttribute('cy', window.MENU_CONFIG.CENTER_Y);
-    ring.setAttribute('r', r);
+    ring.setAttribute('r', r * scale);
     ring.setAttribute('fill', 'url(#holoCoreGradient)');
     ring.setAttribute('stroke', 'none');
     ring.setAttribute('class', 'holo-ring ring-' + i);
@@ -438,6 +451,104 @@ window.initRadialMenu = function() {
 
   window.initWelcomeCarousel();
   console.log('Radial menu initialization complete');
+
+  // Handle resize to update viewBox and center
+  window.addEventListener('resize', function() {
+    width = window.innerWidth;
+    height = window.innerHeight;
+    svgElement.setAttribute('viewBox', '0 0 ' + width + ' ' + height);
+    window.MENU_CONFIG.CENTER_X = width / 2;
+    window.MENU_CONFIG.CENTER_Y = height / 2;
+    scale = Math.min(width, height) / 400;
+    if (width <= 768) scale = Math.min(width, height) / 500;
+    if (width <= 480) scale = Math.min(width, height) / 600;
+
+    // Recreate menu elements with new scale
+    menuWheel.innerHTML = '';
+    backgroundCircle.setAttribute('cx', window.MENU_CONFIG.CENTER_X);
+    backgroundCircle.setAttribute('cy', window.MENU_CONFIG.CENTER_Y);
+    backgroundCircle.setAttribute('r', window.MENU_CONFIG.BACKGROUND_RADIUS * scale);
+    clipCircle.setAttribute('cx', window.MENU_CONFIG.CENTER_X);
+    clipCircle.setAttribute('cy', window.MENU_CONFIG.CENTER_Y);
+    clipCircle.setAttribute('r', window.MENU_CONFIG.INNER_CIRCLE_RADIUS * scale);
+    gridOverlay.innerHTML = '';
+    for (var x = -window.MENU_CONFIG.INNER_RADIUS; x <= window.MENU_CONFIG.INNER_RADIUS; x += window.MENU_CONFIG.GRID_SPACING) {
+      var line = document.createElementNS(window.MENU_SVG_NS, 'line');
+      line.setAttribute('x1', window.MENU_CONFIG.CENTER_X + x * scale);
+      line.setAttribute('y1', window.MENU_CONFIG.CENTER_Y - window.MENU_CONFIG.INNER_RADIUS * scale);
+      line.setAttribute('x2', window.MENU_CONFIG.CENTER_X + x * scale);
+      line.setAttribute('y2', window.MENU_CONFIG.CENTER_Y + window.MENU_CONFIG.INNER_RADIUS * scale);
+      line.setAttribute('stroke', window.MENU_CONFIG.STROKE_COLOR);
+      line.setAttribute('stroke-width', '1');
+      gridOverlay.appendChild(line);
+    }
+    for (var y = -window.MENU_CONFIG.INNER_RADIUS; y <= window.MENU_CONFIG.INNER_RADIUS; y += window.MENU_CONFIG.GRID_SPACING) {
+      var line = document.createElementNS(window.MENU_SVG_NS, 'line');
+      line.setAttribute('x1', window.MENU_CONFIG.CENTER_X - window.MENU_CONFIG.INNER_RADIUS * scale);
+      line.setAttribute('y1', window.MENU_CONFIG.CENTER_Y + y * scale);
+      line.setAttribute('x2', window.MENU_CONFIG.CENTER_X + window.MENU_CONFIG.INNER_RADIUS * scale);
+      line.setAttribute('y2', window.MENU_CONFIG.CENTER_Y + y * scale);
+      line.setAttribute('stroke', window.MENU_CONFIG.STROKE_COLOR);
+      line.setAttribute('stroke-width', '1');
+      gridOverlay.appendChild(line);
+    }
+    gridCenters = [];
+    for (var x = -window.MENU_CONFIG.INNER_RADIUS; x <= window.MENU_CONFIG.INNER_RADIUS; x += window.MENU_CONFIG.GRID_SPACING) {
+      for (var y = -window.MENU_CONFIG.INNER_RADIUS; y <= window.MENU_CONFIG.INNER_RADIUS; y += window.MENU_CONFIG.GRID_SPACING) {
+        var distance = Math.sqrt(x * x + y * y);
+        if (distance <= window.MENU_CONFIG.INNER_CIRCLE_RADIUS) {
+          gridCenters.push({ x: window.MENU_CONFIG.CENTER_X + x * scale, y: window.MENU_CONFIG.CENTER_Y + y * scale });
+        }
+      }
+    }
+    selectedCenters = gridCenters.sort(function() { return Math.random() - 0.5; }).slice(0, particleCount);
+    selectedCenters.forEach(function(center) { new window.GridParticle(center.x, center.y, gridOverlay); });
+    menuWheel.appendChild(gridOverlay);
+    centerCircle.setAttribute('cx', window.MENU_CONFIG.CENTER_X);
+    centerCircle.setAttribute('cy', window.MENU_CONFIG.CENTER_Y);
+    centerCircle.setAttribute('r', window.MENU_CONFIG.INNER_CIRCLE_RADIUS * scale);
+    menuWheel.appendChild(centerCircle);
+    innerFilledCircle.setAttribute('cx', window.MENU_CONFIG.CENTER_X);
+    innerFilledCircle.setAttribute('cy', window.MENU_CONFIG.CENTER_Y);
+    innerFilledCircle.setAttribute('r', window.MENU_CONFIG.INNER_FILLED_RADIUS * scale);
+    menuWheel.appendChild(innerFilledCircle);
+    holoCoreGroup.innerHTML = '';
+    holoCore.setAttribute('cx', window.MENU_CONFIG.CENTER_X);
+    holoCore.setAttribute('cy', window.MENU_CONFIG.CENTER_Y);
+    holoCore.setAttribute('r', window.MENU_CONFIG.CORE_RADIUS * scale);
+    holoCoreGroup.appendChild(holoCore);
+    window.MENU_CONFIG.RING_RADII.forEach(function(r, i) {
+      var ring = document.createElementNS(window.MENU_SVG_NS, 'circle');
+      ring.setAttribute('cx', window.MENU_CONFIG.CENTER_X);
+      ring.setAttribute('cy', window.MENU_CONFIG.CENTER_Y);
+      ring.setAttribute('r', r * scale);
+      ring.setAttribute('fill', 'url(#holoCoreGradient)');
+      ring.setAttribute('stroke', 'none');
+      ring.setAttribute('class', 'holo-ring ring-' + i);
+      holoCoreGroup.appendChild(ring);
+    });
+    menuWheel.appendChild(holoCoreGroup);
+    var newFragment = document.createDocumentFragment();
+    sectorPositions = window.MENU_CONFIG.NAVIGATION_LINKS.map(function(_, i) {
+      var start = 270 + i * sectorAngle;
+      var end = start + sectorAngle;
+      var labelAngle = (start + end) / 2;
+      return {
+        p1: window.polarToCartesian(window.MENU_CONFIG.CENTER_X, window.MENU_CONFIG.CENTER_Y, window.MENU_CONFIG.OUTER_RADIUS * scale, end),
+        p2: window.polarToCartesian(window.MENU_CONFIG.CENTER_X, window.MENU_CONFIG.CENTER_Y, window.MENU_CONFIG.OUTER_RADIUS * scale, start),
+        p3: window.polarToCartesian(window.MENU_CONFIG.CENTER_X, window.MENU_CONFIG.CENTER_Y, window.MENU_CONFIG.INNER_RADIUS * scale, start),
+        p4: window.polarToCartesian(window.MENU_CONFIG.CENTER_X, window.MENU_CONFIG.CENTER_Y, window.MENU_CONFIG.INNER_RADIUS * scale, end),
+        iconPos: window.polarToCartesian(window.MENU_CONFIG.CENTER_X, window.MENU_CONFIG.CENTER_Y, (window.MENU_CONFIG.INNER_RADIUS + window.MENU_CONFIG.OUTER_RADIUS) / 2 * scale, labelAngle),
+        start: start,
+        end: end
+      };
+    });
+    sectorPositions.forEach(function(pos, i) {
+      window.createNavigationSector(pos, window.MENU_CONFIG.NAVIGATION_LINKS[i], window.MENU_CONFIG.SECTOR_FILL, newFragment);
+    });
+    menuWheel.appendChild(newFragment);
+    console.log('Menu resized and updated');
+  });
 };
 
 document.addEventListener('DOMContentLoaded', function() {
