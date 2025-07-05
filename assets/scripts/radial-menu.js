@@ -33,9 +33,7 @@ window.MENU_CONFIG = {
     { lang: 'French', text: 'Bienvenue' },
     { lang: 'German', text: 'Willkommen' },
     { lang: 'Russian', text: 'Добро пожаловать' },
-    { lang: 'Mand
-
-System: arin', text: '欢迎' },
+    { lang: 'Mandarin', text: '欢迎' },
     { lang: 'Japanese', text: 'ようこそ' },
     { lang: 'Hindi', text: 'स्वागत है' },
     { lang: 'Swahili', text: 'Karibu' },
