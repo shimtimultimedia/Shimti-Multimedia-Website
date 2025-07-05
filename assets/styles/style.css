@@ -6,42 +6,42 @@
 /* Font Definitions */
 @font-face {
   font-family: 'Orbitron';
-  src: url('../fonts/Orbitron-Black.ttf') format('truetype');
+  src: url('assets/fonts/Orbitron-Black.ttf') format('truetype');
   font-weight: 900;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
   font-family: 'Orbitron';
-  src: url('../fonts/Orbitron-Bold.ttf') format('truetype');
+  src: url('assets/fonts/Orbitron-Bold.ttf') format('truetype');
   font-weight: 700;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
   font-family: 'Orbitron';
-  src: url('../fonts/Orbitron-ExtraBold.ttf') format('truetype');
+  src: url('assets/fonts/Orbitron-ExtraBold.ttf') format('truetype');
   font-weight: 800;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
   font-family: 'Orbitron';
-  src: url('../fonts/Orbitron-Medium.ttf') format('truetype');
+  src: url('assets/fonts/Orbitron-Medium.ttf') format('truetype');
   font-weight: 500;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
   font-family: 'Orbitron';
-  src: url('../fonts/Orbitron-Regular.ttf') format('truetype');
+  src: url('assets/fonts/Orbitron-Regular.ttf') format('truetype');
   font-weight: 400;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
   font-family: 'Orbitron';
-  src: url('../fonts/Orbitron-SemiBold.ttf') format('truetype');
+  src: url('assets/fonts/Orbitron-SemiBold.ttf') format('truetype');
   font-weight: 600;
   font-style: normal;
   font-display: swap;
@@ -53,6 +53,7 @@
   --panel-bg: rgba(180, 220, 255, 0.15);
   --text-color: #eaffff;
   --border-color: #fff;
+  --brightness-filter: brightness(1.1);
   --focus-outline: #8cf;
 }
 
@@ -68,7 +69,7 @@ html, body {
   height: 100%;
   background-color: var(--primary-bg);
   overflow: hidden;
-  font-family: 'Orbitron', Arial, sans-serif;
+  font-family: 'Orbitron', sans-serif;
   user-select: none;
 }
 
@@ -83,7 +84,7 @@ canvas {
   user-select: none;
 }
 
-/* Branding Panel */
+/* Branding Panel (Top) */
 #shimtiPanel {
   position: absolute;
   top: 20px;
@@ -99,7 +100,7 @@ canvas {
   user-select: none;
 }
 
-/* Welcome Panel */
+/* Welcome Panel (Bottom) */
 #shimtiPanelBottom {
   position: absolute;
   bottom: 20px;
@@ -120,7 +121,6 @@ canvas {
 
 /* Welcome Text */
 #shimtiPanelBottom #welcomeText {
-  font-family: 'Orbitron', Arial, sans-serif;
   font-size: 1.2em;
   color: var(--text-color);
   letter-spacing: 0.1em;
@@ -129,7 +129,6 @@ canvas {
   text-align: center;
   transition: opacity 0.5s ease;
   opacity: 1;
-  visibility: visible;
 }
 
 /* Fade Animations */
@@ -144,7 +143,7 @@ canvas {
 #shimtiPanel img {
   height: 1.5em;
   aspect-ratio: 1;
-  filter: brightness(1.1);
+  filter: var(--brightness-filter);
 }
 
 #shimtiPanel span {
@@ -221,42 +220,45 @@ canvas {
   animation: circleGlowPulse 3s ease-in-out infinite, opacityPulse 2s ease-in-out infinite;
 }
 
-#wheelMenu .stationary-ring {
-  animation: glowPulse 3s ease-in-out infinite;
-}
-
-/* Radial Menu Animations */
-.rotating-ring {
-  transform-origin: center;
+/* CSS Animations for Rotating Squares and Segmented Ring */
+.rotating-square-ring {
   will-change: transform;
-  animation: rotate 20s linear infinite;
-}
-
-.rotating-ring.reverse {
-  animation: rotate 20s linear infinite reverse;
 }
 
 .square-orbit {
-  transform-origin: center;
   will-change: transform;
-  animation: rotate 120s linear infinite; /* Slow clockwise rotation */
+  animation: orbit 60s linear infinite;
+  -webkit-animation: orbit 60s linear infinite;
+  -moz-animation: orbit 60s linear infinite;
 }
 
 .rotating-square {
-  transform-origin: center;
   will-change: transform;
-  animation: selfRotate 2s linear infinite; /* Local pivot rotation */
+  animation: selfRotate 2s linear infinite;
+  -webkit-animation: selfRotate 2s linear infinite;
+  -moz-animation: selfRotate 2s linear infinite;
 }
 
 .segmented-ring {
-  transform-origin: center;
   will-change: transform;
-  animation: counterRotate 160s linear infinite; /* Slow counter-clockwise rotation */
+  animation: counterRotate 80s linear infinite;
+  -webkit-animation: counterRotate 80s linear infinite;
+  -moz-animation: counterRotate 80s linear infinite;
 }
 
-@keyframes rotate {
+@keyframes orbit {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
+}
+
+@-webkit-keyframes orbit {
+  from { -webkit-transform: rotate(0deg); }
+  to { -webkit-transform: rotate(360deg); }
+}
+
+@-moz-keyframes orbit {
+  from { -moz-transform: rotate(0deg); }
+  to { -moz-transform: rotate(360deg); }
 }
 
 @keyframes selfRotate {
@@ -264,23 +266,55 @@ canvas {
   to { transform: rotate(360deg); }
 }
 
+@-webkit-keyframes selfRotate {
+  from { -webkit-transform: rotate(0deg); }
+  to { -webkit-transform: rotate(360deg); }
+}
+
+@-moz-keyframes selfRotate {
+  from { -moz-transform: rotate(0deg); }
+  to { -moz-transform: rotate(360deg); }
+}
+
 @keyframes counterRotate {
   from { transform: rotate(0deg); }
   to { transform: rotate(-360deg); }
 }
 
+@-webkit-keyframes counterRotate {
+  from { -webkit-transform: rotate(0deg); }
+  to { -webkit-transform: rotate(-360deg); }
+}
+
+@-moz-keyframes counterRotate {
+  from { -moz-transform: rotate(0deg); }
+  to { -moz-transform: rotate(-360deg); }
+}
+
 /* Grid Particle Animation */
 .grid-particle {
-  animation: particleFade 3s ease-in-out infinite;
+  animation: neuronFade 3s ease-in-out infinite;
+  -webkit-animation: neuronFade 3s ease-in-out infinite;
+  -moz-animation: neuronFade 3s ease-in-out infinite;
   animation-delay: calc(var(--random-delay) * 1s);
 }
 
-@keyframes particleFade {
+@keyframes neuronFade {
   0%, 100% { opacity: 0; }
   50% { opacity: 1; }
 }
 
-/* Core Animations */
+@-webkit-keyframes neuronFade {
+  0%, 100% { opacity: 0; }
+  50% { opacity: 1; }
+}
+
+@-moz@keyframes neuronFade {
+  0%, 100% { opacity: 0; }
+  50% { opacity: 1; }
+}
+
+/* Existing Animations */
 @keyframes glowPulse {
   0% { filter: drop-shadow(0 0 2px rgba(180, 220, 255, 0.3)); }
   50% { filter: drop-shadow(0 0 8px rgba(180, 220, 255, 0.6)); }
