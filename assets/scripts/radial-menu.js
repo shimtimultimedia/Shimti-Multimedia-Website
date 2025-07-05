@@ -23,7 +23,7 @@ window.MENU_CONFIG = {
   CORE_RADIUS: 20,
   RING_RADII: [25, 30, 35],
   NAVIGATION_LINKS: ['Contact', 'AI', 'Work', 'Media', 'Shop', 'About'],
-  WELCOME_INTERVAL: 3000,
+  WELCOME_INTERVAL: 8000,
   PARTICLE_INTERVAL_MIN: 1000,
   PARTICLE_INTERVAL_MAX: 3000,
   BACKGROUND_RADIUS: 185,
@@ -208,6 +208,7 @@ window.initWelcomeCarousel = function() {
           welcomeText.textContent = labelMatch ? labelMatch[1] : '';
           welcomeText.classList.remove('fade-out');
           welcomeText.classList.add('fade-in');
+          timeoutId = setTimeout(cycleText, window.MENU_CONFIG.WELCOME_INTERVAL);
         }, 500);
       });
 
