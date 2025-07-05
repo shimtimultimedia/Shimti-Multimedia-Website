@@ -1,64 +1,29 @@
 <!DOCTYPE html>
-<!-- Shimti Multimedia: A futuristic portfolio showcasing music, video, and AI projects -->
+<!-- Shimti Multimedia: Background with particle animations and grid -->
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Shimti Multimedia offers innovative music, video, and AI projects with a futuristic sci-fi aesthetic.">
-  <meta name="keywords" content="multimedia, AI, music, video, futuristic, sci-fi, Shimti">
+  <meta name="description" content="Shimti Multimedia background with neural-like particle animations and grid.">
+  <meta name="keywords" content="multimedia, AI, futuristic, sci-fi, Shimti">
   <meta name="author" content="Shimti Multimedia">
-  <meta name="theme-color" content="#000000">
-  <title>Shimti Multimedia</title>
-  <link rel="icon" type="image/x-icon" href="assets/images/favicon/favicon.ico" onerror="console.error('Failed to load favicon.ico')">
-  <link rel="stylesheet" href="assets/styles/style.css" onerror="console.error('Failed to load style.css')">
-  <!-- Fallback styles for basic rendering if CSS fails to load -->
+  <meta name="robots" content="noindex, nofollow"> <!-- Prevent indexing during development -->
+  <title>Shimti Multimedia - Background</title>
+  <link rel="stylesheet" href="assets/styles/background.css">
+  <!-- Fallback styles for basic rendering -->
   <style>
-    body { background: #000; font-family: 'Orbitron', Arial, sans-serif; }
-    #shimtiPanel { position: absolute; top: 20px; left: 20px; background: rgba(180, 220, 255, 0.15); padding: 8px 16px; border-radius: 10px; border: 1px solid #fff; display: flex; align-items: center; gap: 10px; z-index: 10; }
-    #shimtiPanel img { height: 1.5em; }
-    #shimtiPanel span { font-size: 1.2em; color: #eaffff; }
-    #shimtiPanelBottom { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); background: rgba(180, 220, 255, 0.15); padding: 8px 16px; border-radius: 10px; border: 1px solid #fff; width: 170px; height: 24px; z-index: 10; display: flex; align-items: center; justify-content: center; }
-    #shimtiPanelBottom #welcomeText { font-size: 1.2em; color: #eaffff; }
-    #errorMessage { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #ff4444; font-size: 1.5em; z-index: 100; }
+    body { background: #000; margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; }
+    canvas { position: absolute; width: 100%; height: 100%; top: 0; left: 0; z-index: 0; }
   </style>
 </head>
 <body>
-  <!-- Error message for asset loading failures -->
-  <div id="errorMessage" style="display: none;">Error: Unable to load site assets. Please try again later.</div>
-  <!-- SVG layer for connection lines -->
-  <svg id="connectionLines" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none;" aria-hidden="true"></svg>
-  <header role="banner">
-    <!-- Loading spinner for initialization -->
-    <div id="loadingSpinner" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 100; display: none;" aria-hidden="true">
-      <svg width="50" height="50" viewBox="0 0 50 50">
-        <circle cx="25" cy="25" r="20" stroke="#8cf" stroke-width="5" fill="none" stroke-dasharray="31.4" stroke-dashoffset="0">
-          <animateTransform attributeName="transform" type="rotate" from="0 25 25" to="360 25 25" dur="1s" repeatCount="indefinite" />
-        </circle>
-      </svg>
-    </div>
-    <!-- Branding panel with logo and title -->
-    <div id="shimtiPanel" role="region" aria-label="Shimti Multimedia branding">
-      <img src="assets/images/Logo.svg" alt="Shimti Multimedia Logo" onerror="console.error('Failed to load Logo.svg')">
-      <span>SHIMTI MULTIMEDIA</span>
-    </div>
-  </header>
-  <main role="main">
-    <!-- Welcome text panel -->
-    <div id="shimtiPanelBottom">
-      <span id="welcomeText">Loading...</span>
-    </div>
-    <!-- Radial menu SVG -->
-    <svg id="radialMenu" viewBox="0 0 400 400" role="navigation" aria-label="Interactive radial menu">
-      <g id="wheelMenu"></g>
-    </svg>
-    <!-- Background grid canvas -->
-    <canvas id="gridLayer" role="img" aria-label="Futuristic background grid animation"></canvas>
-    <!-- Particle animation canvas -->
-    <canvas id="circuitBrain" role="img" aria-label="Animated particle visualization"></canvas>
-  </main>
-  <!-- Scripts for menu, particles, and connection lines -->
-  <script src="assets/scripts/menu.js" defer></script>
-  <script src="assets/scripts/animations.js" defer></script>
-  <script src="assets/scripts/main.js" defer></script>
+  <!-- Canvas for background grid -->
+  <canvas id="gridCanvas" role="img" aria-label="Futuristic background grid"></canvas>
+  <!-- Canvas for particle animations -->
+  <canvas id="particleCanvas" role="img" aria-label="Animated particle visualization"></canvas>
+  <!-- Scripts for background animations -->
+  <script src="assets/scripts/particle-system.js" defer></script>
+  <script src="assets/scripts/grid-renderer.js" defer></script>
+  <script src="assets/scripts/init-background.js" defer></script>
 </body>
 </html>
