@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Shimti Multimedia: Responsive background, title panel, radial menu, and welcome carousel -->
+<!-- Shimti Multimedia: Responsive background, branding panel, radial menu, and welcome carousel -->
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -7,45 +7,38 @@
   <meta name="description" content="Shimti Multimedia portfolio with neural-like particle animations, grid, branding, and interactive radial menu.">
   <meta name="keywords" content="multimedia, AI, futuristic, sci-fi, Shimti">
   <meta name="author" content="Shimti Multimedia">
-  <meta name="robots" content="noindex, nofollow"> <!-- Prevent indexing during development -->
+  <meta name="robots" content="noindex, nofollow">
   <title>Shimti Multimedia - Portfolio</title>
   <link rel="stylesheet" href="assets/styles/background.css">
   <link rel="stylesheet" href="assets/styles/ui.css">
-  <!-- Fallback styles for basic rendering -->
   <style>
     body { background: #000; margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; }
     canvas { position: absolute; width: 100%; height: 100%; top: 0; left: 0; z-index: 0; }
-    #titlePanel { position: absolute; top: 20px; left: 20px; background: rgba(180, 220, 255, 0.15); padding: 8px 16px; border-radius: 10px; border: 1px solid #fff; display: flex; align-items: center; gap: 10px; z-index: 10; }
-    #titlePanel img { height: 1.5em; }
-    #titlePanel span { font-size: 1.2em; color: #eaffff; }
+    #shimtiPanel { position: absolute; top: 20px; left: 20px; background: rgba(180, 220, 255, 0.15); padding: 8px 16px; border-radius: 10px; border: 1px solid #fff; display: flex; align-items: center; gap: 10px; z-index: 10; }
+    #shimtiPanel img { height: 1.5em; }
+    #shimtiPanel span { font-size: 1.2em; color: #eaffff; }
     #radialMenu { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 400px; height: 400px; z-index: 10; }
-    #welcomePanel { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); background: rgba(180, 220, 255, 0.15); padding: 8px 16px; border-radius: 10px; border: 1px solid #fff; width: 170px; height: 24px; z-index: 10; display: flex; align-items: center; justify-content: center; }
-    #welcomePanel span { font-size: 1.2em; color: #eaffff; }
+    #shimtiPanelBottom { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); background: rgba(180, 220, 255, 0.15); padding: 8px 16px; border-radius: 10px; border: 1px solid #fff; width: 170px; height: 24px; z-index: 10; display: flex; align-items: center; justify-content: center; }
+    #shimtiPanelBottom span { font-size: 1.2em; color: #eaffff; }
   </style>
 </head>
 <body>
-  <!-- Title panel with logo and text -->
-  <div id="titlePanel" role="region" aria-label="Shimti Multimedia branding">
+  <div id="shimtiPanel" role="region" aria-label="Shimti Multimedia branding">
     <img src="assets/images/Logo.svg" alt="Shimti Multimedia Logo">
     <span>SHIMTI MULTIMEDIA</span>
   </div>
-  <!-- Radial menu SVG -->
   <svg id="radialMenu" viewBox="0 0 400 400" role="navigation" aria-label="Interactive radial menu">
-    <g id="menuWheel"></g>
+    <g id="wheelMenu"></g>
   </svg>
-  <!-- Welcome panel with carousel -->
-  <div id="welcomePanel">
+  <div id="shimtiPanelBottom">
     <span id="welcomeText">Loading...</span>
   </div>
-  <!-- Canvas for background grid -->
   <canvas id="gridCanvas" role="img" aria-label="Futuristic background grid"></canvas>
-  <!-- Canvas for particle animations -->
   <canvas id="particleCanvas" role="img" aria-label="Animated particle visualization"></canvas>
-  <!-- Scripts for background and UI -->
   <script src="assets/scripts/particle-system.js"></script>
   <script src="assets/scripts/grid-renderer.js"></script>
   <script src="assets/scripts/init-background.js"></script>
   <script src="assets/scripts/title-panel.js"></script>
-  <script src="assets/scripts/radial-menu.js"></script>
+  <script src="assets/scripts/radial-menu.js?v=20250705"></script>
 </body>
 </html>
