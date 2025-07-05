@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Shimti Multimedia: Responsive background, branding panel, radial menu, and welcome carousel -->
+<!-- Shimti Multimedia: Responsive background, branding panel, radial menu, welcome carousel, and connection lines -->
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -10,7 +10,7 @@
   <meta name="robots" content="noindex, nofollow">
   <title>Shimti Multimedia - Portfolio</title>
   <link rel="stylesheet" href="assets/styles/background.css">
-  <link rel="stylesheet" href="assets/styles/ui.css">
+  <link rel="stylesheet" href="assets/styles/ui.css?v=20250705">
   <style>
     body { background: #000; margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; }
     canvas { position: absolute; width: 100%; height: 100%; top: 0; left: 0; z-index: 0; }
@@ -18,6 +18,7 @@
     #shimtiPanel img { height: 1.5em; }
     #shimtiPanel span { font-size: 1.2em; color: #eaffff; }
     #radialMenu { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 400px; height: 400px; z-index: 10; }
+    #connectionSvg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 5; }
     #shimtiPanelBottom { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); background: rgba(180, 220, 255, 0.15); padding: 8px 16px; border-radius: 10px; border: 1px solid #fff; width: 170px; height: 24px; z-index: 10; display: flex; align-items: center; justify-content: center; }
     #shimtiPanelBottom span { font-size: 1.2em; color: #eaffff; }
     @media (max-width: 768px) {
@@ -46,6 +47,7 @@
   <svg id="radialMenu" viewBox="0 0 400 400" role="navigation" aria-label="Interactive radial menu">
     <g id="wheelMenu"></g>
   </svg>
+  <svg id="connectionSvg" role="presentation" aria-hidden="true"></svg>
   <div id="shimtiPanelBottom">
     <span id="welcomeText">Loading...</span>
   </div>
