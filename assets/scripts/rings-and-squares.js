@@ -45,6 +45,7 @@ window.initRingsAndSquares = function() {
     const squareGroup = document.createElementNS(window.MENU_SVG_NS, 'g');
     squareGroup.setAttribute('aria-hidden', 'true');
     squareGroup.setAttribute('class', 'rotating-squares');
+    squareGroup.style.transformOrigin = `${centerX}px ${centerY}px`;
     const squareRadius = (outerRadius + innerRadius) / 2; // 227.5px
     const squareCount = 24;
     const squareSize = 8;
@@ -60,12 +61,8 @@ window.initRingsAndSquares = function() {
       square.setAttribute('fill', 'rgba(180, 220, 255, 0.08)');
       square.setAttribute('stroke', 'none');
       square.setAttribute('class', 'rotating-square');
-      const transformGroup = document.createElementNS(window.MENU_SVG_NS, 'g');
-      transformGroup.setAttribute('class', 'square-orbit');
-      transformGroup.style.transformOrigin = `${centerX}px ${centerY}px`;
-      transformGroup.style.transform = `rotate(${angle}deg)`;
-      transformGroup.appendChild(square);
-      squareGroup.appendChild(transformGroup);
+      square.style.transformOrigin = `${posX}px ${posY}px`;
+      squareGroup.appendChild(square);
     }
     ringGroup.appendChild(squareGroup);
 
@@ -93,6 +90,7 @@ window.initRingsAndSquares = function() {
         const newSquareGroup = document.createElementNS(window.MENU_SVG_NS, 'g');
         newSquareGroup.setAttribute('aria-hidden', 'true');
         newSquareGroup.setAttribute('class', 'rotating-squares');
+        newSquareGroup.style.transformOrigin = `${newCenterX}px ${newCenterY}px`;
         for (let i = 0; i < squareCount; i++) {
           const angle = (i / squareCount) * 360;
           const posX = newCenterX + squareRadius * Math.cos((angle * Math.PI) / 180);
@@ -105,12 +103,8 @@ window.initRingsAndSquares = function() {
           square.setAttribute('fill', 'rgba(180, 220, 255, 0.08)');
           square.setAttribute('stroke', 'none');
           square.setAttribute('class', 'rotating-square');
-          const transformGroup = document.createElementNS(window.MENU_SVG_NS, 'g');
-          transformGroup.setAttribute('class', 'square-orbit');
-          transformGroup.style.transformOrigin = `${newCenterX}px ${newCenterY}px`;
-          transformGroup.style.transform = `rotate(${angle}deg)`;
-          transformGroup.appendChild(square);
-          newSquareGroup.appendChild(transformGroup);
+          square.style.transformOrigin = `${posX}px ${posY}px`;
+          newSquareGroup.appendChild(square);
         }
         ringGroup.appendChild(newSquareGroup);
         svgElement.appendChild(ringGroup);
