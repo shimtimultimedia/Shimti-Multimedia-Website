@@ -1,6 +1,6 @@
 /**
  * @module RadialMenu
- * @description Initializes the radial menu with interactive sectors, grid, holographic effects, and welcome text carousel for Shimti Multimedia.
+ * @description Initializes the radial menu with interactive sectors, masked grid with particles, holographic effects, and welcome text carousel for Shimti Multimedia.
  * Ensures responsiveness and accessibility in live environments.
  */
 
@@ -104,7 +104,7 @@ window.createNavigationSector = function (position, label, fillColor, fragment) 
 
 /**
  * @class window.GridParticle
- * @description Represents a fading particle in the radial menu's grid
+ * @description Represents a fading particle at grid intersections in the radial menu
  */
 window.GridParticle = class {
   /**
@@ -224,7 +224,7 @@ window.initWelcomeCarousel = async function () {
 
 /**
  * @function window.initRadialMenu
- * @description Initializes the radial menu with sectors, grid, and holographic effects
+ * @description Initializes the radial menu with sectors, masked grid with particles, and holographic effects
  */
 window.initRadialMenu = function () {
   const svgElement = document.getElementById('radialMenu');
@@ -330,7 +330,7 @@ window.initRadialMenu = function () {
   const backgroundCircle = document.createElementNS(window.MENU_SVG_NS, 'circle');
   backgroundCircle.setAttribute('cx', window.MENU_CONFIG.CENTER_X);
   backgroundCircle.setAttribute('cy', window.MENU_CONFIG.CENTER_Y);
-  backgroundCircle.setAttribute('r', 192); // Slightly larger than outer radius
+  backgroundCircle.setAttribute('r', 192);
   backgroundCircle.setAttribute('fill', 'url(#backgroundGradient)');
   backgroundCircle.setAttribute('stroke', window.MENU_CONFIG.STROKE_COLOR);
   backgroundCircle.setAttribute('stroke-width', '2');
@@ -369,8 +369,8 @@ window.initRadialMenu = function () {
     line.setAttribute('stroke-width', '1');
     gridOverlay.appendChild(line);
   }
-  menuWheel.appendChild(gridOverlay);
 
+  // Add particles at grid intersections, masked by innerCircleClip
   const gridCenters = [];
   for (let x = -window.MENU_CONFIG.INNER_RADIUS; x <= window.MENU_CONFIG.INNER_RADIUS; x += window.MENU_CONFIG.GRID_SPACING) {
     for (let y = -window.MENU_CONFIG.INNER_RADIUS; y <= window.MENU_CONFIG.INNER_RADIUS; y += window.MENU_CONFIG.GRID_SPACING) {
@@ -380,10 +380,11 @@ window.initRadialMenu = function () {
       }
     }
   }
-
   const particleCount = window.MENU_CONFIG.PARTICLE_COUNT_MIN + Math.floor(Math.random() * (window.MENU_CONFIG.PARTICLE_COUNT_MAX - window.MENU_CONFIG.PARTICLE_COUNT_MIN));
   const selectedCenters = gridCenters.sort(() => Math.random() - 0.5).slice(0, particleCount);
   selectedCenters.forEach(center => new window.GridParticle(center.x, center.y, gridOverlay));
+
+  menuWheel.appendChild(gridOverlay);
 
   const centerCircle = document.createElementNS(window.MENU_SVG_NS, 'circle');
   centerCircle.setAttribute('cx', window.MENU_CONFIG.CENTER_X);
@@ -410,6 +411,7 @@ window.initRadialMenu = function () {
   holoCore.setAttribute('cy', window.MENU_CONFIG.CENTER_Y);
   holoCore.setAttribute('r', window.MENU_CONFIG.CORE_RADIUS);
   holoCore.setAttribute('fill', 'rgba(234, 255, 255, 0.9)');
+  holoCore.setAttribute('stroke', 'none');
   holoCore.setAttribute('class', 'holo-core');
   holoCoreGroup.appendChild(holoCore);
 
