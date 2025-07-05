@@ -54,7 +54,7 @@
 /* Welcome Panel (Bottom) */
 div#shimtiPanelBottom {
   position: absolute;
-  bottom: 10px;
+  bottom: 5px;
   left: 50%;
   transform: translateX(-50%);
   background: var(--panel-bg);
