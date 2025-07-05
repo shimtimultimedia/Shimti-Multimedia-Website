@@ -170,11 +170,13 @@ div#shimtiPanelBottom #welcomeText.fade-in {
 }
 
 .rotating-squares {
-  animation: rotateCounterClockwise 60s linear infinite;
+  animation: rotateClockwise 60s linear infinite;
+  transform-origin: center;
 }
 
 .rotating-square {
   fill: rgba(180, 220, 255, 0.08);
+  animation: selfRotate 2s linear infinite;
 }
 
 /* Animations */
@@ -195,7 +197,12 @@ div#shimtiPanelBottom #welcomeText.fade-in {
   50% { opacity: 1; }
 }
 
-@keyframes rotateCounterClockwise {
+@keyframes rotateClockwise {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes selfRotate {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(-360deg); }
 }
