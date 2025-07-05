@@ -1,6 +1,6 @@
 /**
  * @module OuterSegmentedRing
- * @description Renders a larger segmented clockwise-rotating ring with randomized segment radii for Shimti Multimedia.
+ * @description Renders a larger segmented clockwise-rotating ring with randomized segment thicknesses for Shimti Multimedia.
  */
 
 /** @constant {string} window.MENU_SVG_NS - SVG namespace for outer segmented ring */
@@ -28,15 +28,13 @@ window.initOuterSegmentedRing = function() {
   if (wheelRect) {
     const centerX = wheelRect.left + wheelRect.width / 2;
     const centerY = wheelRect.top + wheelRect.height / 2;
-    const baseOuterRadius = 515; // 2x original 257.5px
-    const baseInnerRadius = 480; // 2x original 240px
-    const segmentCount = 8;
+    const outerRadius = 330; // Adjusted to reduce gap
+    const baseInnerRadius = 260; // 70px thickness (2x original ~35px)
+    const segmentCount = 16; // 2x original 8
     const minArc = 30;
     const maxArc = 90;
     const minGap = 5;
     const maxGap = 15;
-    const minRadiusVariation = -15; // For random thickness
-    const maxRadiusVariation = 15;
 
     const segments = [];
     let currentAngle = 0;
@@ -44,8 +42,8 @@ window.initOuterSegmentedRing = function() {
       const arcLength = minArc + Math.random() * (maxArc - minArc);
       const gapLength = minGap + Math.random() * (maxGap - minGap);
       if (currentAngle + arcLength > 360) break;
-      const outerRadius = baseOuterRadius + (minRadiusVariation + Math.random() * (maxRadiusVariation - minRadiusVariation));
-      const innerRadius = outerRadius - (Math.random() < 0.3 ? 5 : 30 + Math.random() * 5); // Some thin segments (~5px), others ~30–35px
+      // 50% chance for thin segments (~5–10px), others ~30–70px
+      const innerRadius = Math.random() < 0.5 ? outerRadius - (5 + Math.random() * 5) : outerRadius - (30 + Math.random() * 40);
       segments.push({ start: currentAngle, end: currentAngle + arcLength, outerRadius, innerRadius });
       currentAngle += arcLength + gapLength;
     }
