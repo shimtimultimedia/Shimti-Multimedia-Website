@@ -338,10 +338,10 @@ window.initRadialMenu = function() {
   var backgroundCircle = document.createElementNS(window.MENU_SVG_NS, 'circle');
   backgroundCircle.setAttribute('cx', window.MENU_CONFIG.CENTER_X);
   backgroundCircle.setAttribute('cy', window.MENU_CONFIG.CENTER_Y);
-  backgroundCircle.setAttribute('r', 192);
+  backgroundCircle.setAttribute('r', 200);
   backgroundCircle.setAttribute('fill', 'url(#backgroundGradient)');
   backgroundCircle.setAttribute('stroke', window.MENU_CONFIG.STROKE_COLOR);
-  backgroundCircle.setAttribute('stroke-width', '2');
+  backgroundCircle.setAttribute('stroke-width', '1');
   menuWheel.parentNode.insertBefore(backgroundCircle, menuWheel);
 
   var defs = document.createElementNS(window.MENU_SVG_NS, 'defs');
