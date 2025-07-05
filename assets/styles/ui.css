@@ -152,9 +152,9 @@
 
 /* Grid Particle Animation */
 .grid-particle {
-  animation: neuronFade 3s ease-in-out infinite;
-  -webkit-animation: neuronFade 3s ease-in-out infinite;
-  -moz-animation: neuronFade 3s ease-in-out infinite;
+  animation: popInOut 3s linear infinite;
+  -webkit-animation: popInOut 3s linear infinite;
+  -moz-animation: popInOut 3s linear infinite;
   animation-delay: calc(var(--random-delay) * 1s);
 }
 
@@ -176,19 +176,22 @@
   50% { opacity: 1; }
 }
 
-@keyframes neuronFade {
-  0%, 100% { opacity: 0; }
-  50% { opacity: 1; }
+@keyframes popInOut {
+  0%, 40% { opacity: 0; }
+  41%, 70% { opacity: 1; }
+  71%, 100% { opacity: 0; }
 }
 
-@-webkit-keyframes neuronFade {
-  0%, 100% { opacity: 0; }
-  50% { opacity: 1; }
+@-webkit-keyframes popInOut {
+  0%, 40% { opacity: 0; }
+  41%, 70% { opacity: 1; }
+  71%, 100% { opacity: 0; }
 }
 
-@-moz-keyframes neuronFade {
-  0%, 100% { opacity: 0; }
-  50% { opacity: 1; }
+@-moz-keyframes popInOut {
+  0%, 40% { opacity: 0; }
+  41%, 70% { opacity: 1; }
+  71%, 100% { opacity: 0; }
 }
 
 /* Responsive Design */
