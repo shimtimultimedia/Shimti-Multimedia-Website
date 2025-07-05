@@ -27,8 +27,9 @@ window.initConnectionLines = function() {
   var titleRect = document.getElementById('shimtiPanel')?.getBoundingClientRect();
   var wheelRect = document.getElementById('radialMenu')?.getBoundingClientRect();
   if (titleRect && wheelRect) {
+    const borderWidth = 1; // From index.html: #shimtiPanel border: 1px
     const startPoint = {
-      x: titleRect.right, // Right edge of shimtiPanel
+      x: titleRect.right + borderWidth, // Right edge including border
       y: titleRect.top + titleRect.height / 2 // Vertical center
     };
     const endPoint = {
@@ -105,7 +106,7 @@ window.initConnectionLines = function() {
     endCircle.setAttribute('r', '5');
     endCircle.setAttribute('fill', 'none');
     endCircle.setAttribute('stroke', '#ffffff');
-    startCircle.setAttribute('stroke-width', '1');
+    endCircle.setAttribute('stroke-width', '1');
     endCircle.setAttribute('class', 'connection-point');
     connectionGroup.appendChild(endCircle);
   } else {
@@ -121,8 +122,9 @@ window.initConnectionLines = function() {
     titleRect = document.getElementById('shimtiPanel')?.getBoundingClientRect();
     wheelRect = document.getElementById('radialMenu')?.getBoundingClientRect();
     if (titleRect && wheelRect) {
+      const borderWidth = 1; // From index.html: #shimtiPanel border: 1px
       const startPoint = {
-        x: titleRect.right,
+        x: titleRect.right + borderWidth,
         y: titleRect.top + titleRect.height / 2
       };
       const endPoint = {
