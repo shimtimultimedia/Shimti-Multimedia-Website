@@ -132,7 +132,7 @@ window.GridParticle.prototype.animate = function() {
 
 /**
  * @function window.initWelcomeCarousel
- * @description Initializes the welcome text carousel with smooth, sequential language cycling
+ * @description Initializes the welcome text carousel with smooth, sequential language cycling, prioritizing languages.xml
  */
 window.initWelcomeCarousel = function() {
   var welcomeText = document.getElementById('welcomeText');
@@ -148,76 +148,86 @@ window.initWelcomeCarousel = function() {
   var xhr = new XMLHttpRequest();
   xhr.open('GET', 'assets/data/languages.xml', true);
   xhr.onreadystatechange = function() {
-    if (xhr.readyState === 4 && xhr.status === 200) {
-      var xmlDoc = xhr.responseXML;
-      var languageNodes = xmlDoc.getElementsByTagName('language');
-      if (languageNodes.length > 0) {
-        languages = Array.prototype.map.call(languageNodes, function(node) {
-          return {
-            lang: node.getAttribute('lang'),
-            text: node.getAttribute('text') || 'Welcome'
-          };
-        });
-        console.log('Loaded languages from XML:', languages.length);
+    if (xhr.readyState === 4) {
+      if (xhr.status === 200) {
+        var xmlDoc = xhr.responseXML;
+        var languageNodes = xmlDoc.getElementsByTagName('language');
+        if (languageNodes.length > 0) {
+          languages = Array.prototype.map.call(languageNodes, function(node) {
+            return {
+              lang: node.getAttribute('lang'),
+              text: node.getAttribute('text') || 'Welcome'
+            };
+          });
+          console.log('Using languages.xml:', languages);
+        } else {
+          console.log('languages.xml is empty, using FALLBACK_LANGUAGES:', languages);
+        }
+      } else {
+        console.log('Failed to load languages.xml, using FALLBACK_LANGUAGES:', languages);
       }
+      // Start carousel after XML load attempt
+      startCarousel();
     }
   };
   xhr.send();
 
-  var currentIndex = 0;
-  var isHovering = false;
-  var timeoutId = null;
+  function startCarousel() {
+    var currentIndex = 0;
+    var isHovering = false;
+    var timeoutId = null;
 
-  var cycleText = function() {
-    if (timeoutId) clearTimeout(timeoutId);
-    if (isHovering) {
-      timeoutId = setTimeout(cycleText, window.MENU_CONFIG.WELCOME_INTERVAL);
-      return;
-    }
-
-    welcomeText.classList.remove('fade-in');
-    welcomeText.classList.add('fade-out');
-    setTimeout(function() {
-      currentIndex = (currentIndex + 1) % languages.length;
-      welcomeText.textContent = languages[currentIndex].text || 'Welcome';
-      welcomeText.classList.remove('fade-out');
-      welcomeText.classList.add('fade-in');
-      timeoutId = setTimeout(cycleText, window.MENU_CONFIG.WELCOME_INTERVAL);
-    }, 500);
-  };
-
-  welcomeText.textContent = languages[0].text || 'Welcome';
-  welcomeText.classList.add('fade-in');
-  timeoutId = setTimeout(cycleText, window.MENU_CONFIG.WELCOME_INTERVAL);
-
-  var sectors = menuWheel.querySelectorAll('g[role="link"]');
-  for (var i = 0; i < sectors.length; i++) {
-    sectors[i].addEventListener('mouseenter', function() {
+    var cycleText = function() {
       if (timeoutId) clearTimeout(timeoutId);
-      isHovering = true;
-      welcomeText.classList.remove('fade-in');
-      welcomeText.classList.add('fade-out');
-      var sector = this;
-      setTimeout(function() {
-        var labelMatch = sector.getAttribute('aria-label').match(/Navigate to (\w+) section/);
-        welcomeText.textContent = labelMatch ? labelMatch[1] : '';
-        welcomeText.classList.remove('fade-out');
-        welcomeText.classList.add('fade-in');
-      }, 500);
-    });
+      if (isHovering) {
+        timeoutId = setTimeout(cycleText, window.MENU_CONFIG.WELCOME_INTERVAL);
+        return;
+      }
 
-    sectors[i].addEventListener('mouseleave', function() {
-      if (timeoutId) clearTimeout(timeoutId);
-      isHovering = false;
       welcomeText.classList.remove('fade-in');
       welcomeText.classList.add('fade-out');
       setTimeout(function() {
+        currentIndex = (currentIndex + 1) % languages.length;
         welcomeText.textContent = languages[currentIndex].text || 'Welcome';
         welcomeText.classList.remove('fade-out');
         welcomeText.classList.add('fade-in');
         timeoutId = setTimeout(cycleText, window.MENU_CONFIG.WELCOME_INTERVAL);
       }, 500);
-    });
+    };
+
+    welcomeText.textContent = languages[0].text || 'Welcome';
+    welcomeText.classList.add('fade-in');
+    timeoutId = setTimeout(cycleText, window.MENU_CONFIG.WELCOME_INTERVAL);
+
+    var sectors = menuWheel.querySelectorAll('g[role="link"]');
+    for (var i = 0; i < sectors.length; i++) {
+      sectors[i].addEventListener('mouseenter', function() {
+        if (timeoutId) clearTimeout(timeoutId);
+        isHovering = true;
+        welcomeText.classList.remove('fade-in');
+        welcomeText.classList.add('fade-out');
+        var sector = this;
+        setTimeout(function() {
+          var labelMatch = sector.getAttribute('aria-label').match(/Navigate to (\w+) section/);
+          welcomeText.textContent = labelMatch ? labelMatch[1] : '';
+          welcomeText.classList.remove('fade-out');
+          welcomeText.classList.add('fade-in');
+        }, 500);
+      });
+
+      sectors[i].addEventListener('mouseleave', function() {
+        if (timeoutId) clearTimeout(timeoutId);
+        isHovering = false;
+        welcomeText.classList.remove('fade-in');
+        welcomeText.classList.add('fade-out');
+        setTimeout(function() {
+          welcomeText.textContent = languages[currentIndex].text || 'Welcome';
+          welcomeText.classList.remove('fade-out');
+          welcomeText.classList.add('fade-in');
+          timeoutId = setTimeout(cycleText, window.MENU_CONFIG.WELCOME_INTERVAL);
+        }, 500);
+      });
+    }
   }
 };
 
