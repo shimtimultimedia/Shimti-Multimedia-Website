@@ -54,7 +54,7 @@
 /* Welcome Panel (Bottom) */
 div#shimtiPanelBottom {
   position: absolute;
-  bottom: 15px;
+  bottom: 12px;
   left: 50%;
   transform: translateX(-50%);
   background: var(--panel-bg);
@@ -185,7 +185,7 @@ div#shimtiPanelBottom #welcomeText.fade-in {
   }
 
   div#shimtiPanelBottom {
-    bottom: 15px;
+    bottom: 12px;
     padding: 6px 12px;
     width: 300px;
     height: 20px;
@@ -217,7 +217,7 @@ div#shimtiPanelBottom #welcomeText.fade-in {
   }
 
   div#shimtiPanelBottom {
-    bottom: 15px;
+    bottom: 12px;
     padding: 4px 8px;
     width: 250px;
     height: 18px;
