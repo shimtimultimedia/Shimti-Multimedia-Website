@@ -1,5 +1,5 @@
 /*
- * Shimti Multimedia: Styles for UI elements (title panel, radial menu, welcome panel)
+ * Shimti Multimedia: Styles for UI elements (branding panel, radial menu, welcome panel)
  */
 
 /* Font Definitions */
@@ -20,8 +20,8 @@
   --focus-outline: #8cf;
 }
 
-/* Title Panel */
-#titlePanel {
+/* Branding Panel (Top) */
+#shimtiPanel {
   position: absolute;
   top: 20px;
   left: 20px;
@@ -36,13 +36,13 @@
   user-select: none;
 }
 
-#titlePanel img {
+#shimtiPanel img {
   height: 1.5em;
   aspect-ratio: 1;
   filter: var(--brightness-filter);
 }
 
-#titlePanel span {
+#shimtiPanel span {
   font-family: 'Orbitron', sans-serif;
   font-size: clamp(0.9em, 2vw, 1.2em);
   color: var(--text-color);
@@ -51,8 +51,8 @@
   animation: glowPulse 3s ease-in-out infinite;
 }
 
-/* Welcome Panel */
-#welcomePanel {
+/* Welcome Panel (Bottom) */
+#shimtiPanelBottom {
   position: absolute;
   bottom: 20px;
   left: 50%;
@@ -70,23 +70,22 @@
   justify-content: center;
 }
 
-#welcomePanel #welcomeText {
+#shimtiPanelBottom #welcomeText {
   font-family: 'Orbitron', sans-serif;
   font-size: 1.2em;
   color: var(--text-color);
   letter-spacing: 0.1em;
   font-weight: 600;
-  animation: glowPulse 3s ease-in-out infinite;
   text-align: center;
   transition: opacity 0.5s ease;
   opacity: 1;
 }
 
-#welcomePanel #welcomeText.fade-out {
+#shimtiPanelBottom #welcomeText.fade-out {
   opacity: 0;
 }
 
-#welcomePanel #welcomeText.fade-in {
+#shimtiPanelBottom #welcomeText.fade-in {
   opacity: 1;
 }
 
@@ -102,7 +101,7 @@
   user-select: none;
 }
 
-#menuWheel {
+#wheelMenu {
   width: 100%;
   height: 100%;
   border-radius: 50%;
@@ -111,51 +110,43 @@
   user-select: none;
 }
 
-#menuWheel g {
+#wheelMenu g {
   transition: all 0.3s ease;
 }
 
-#menuWheel g:hover path {
+#wheelMenu g:hover path {
   fill: rgba(180, 220, 255, 0.2);
 }
 
-#menuWheel g:hover image {
+#wheelMenu g:hover image {
   filter: brightness(1.5) drop-shadow(0 0 8px rgba(180, 220, 255, 0.6));
 }
 
-#menuWheel g:focus {
+#wheelMenu g:focus {
   outline: 2px solid var(--focus-outline);
   outline-offset: 2px;
 }
 
-#menuWheel g.mouse-active:focus {
+#wheelMenu g.mouse-active:focus {
   outline: none;
 }
 
-#menuWheel g image {
+#wheelMenu g image {
   animation: glowPulse 3s ease-in-out infinite;
 }
 
-#menuWheel .inner-filled-circle {
+#wheelMenu .inner-filled-circle {
   animation: circleGlowPulse 3s ease-in-out infinite;
 }
 
-#menuWheel .holo-core {
+#wheelMenu .holo-core {
   animation: circleGlowPulse 3s ease-in-out infinite, opacityPulse 2s ease-in-out infinite;
 }
 
-#menuWheel .holo-ring.ring-0,
-#menuWheel .holo-ring.ring-1,
-#menuWheel .holo-ring.ring-2 {
+#wheelMenu .holo-ring.ring-0,
+#wheelMenu .holo-ring.ring-1,
+#wheelMenu .holo-ring.ring-2 {
   animation: circleGlowPulse 3s ease-in-out infinite, opacityPulse 2s ease-in-out infinite;
-}
-
-/* Grid Particle Animation */
-.grid-particle {
-  animation: popInOut 3s linear infinite;
-  -webkit-animation: popInOut 3s linear infinite;
-  -moz-animation: popInOut 3s linear infinite;
-  animation-delay: calc(var(--random-delay) * 1s);
 }
 
 /* Animations */
@@ -176,48 +167,30 @@
   50% { opacity: 1; }
 }
 
-@keyframes popInOut {
-  0%, 40% { opacity: 0; }
-  41%, 70% { opacity: 1; }
-  71%, 100% { opacity: 0; }
-}
-
-@-webkit-keyframes popInOut {
-  0%, 40% { opacity: 0; }
-  41%, 70% { opacity: 1; }
-  71%, 100% { opacity: 0; }
-}
-
-@-moz-keyframes popInOut {
-  0%, 40% { opacity: 0; }
-  41%, 70% { opacity: 1; }
-  71%, 100% { opacity: 0; }
-}
-
 /* Responsive Design */
 @media (max-width: 768px) {
-  #titlePanel {
+  #shimtiPanel {
     top: 10px;
     left: 10px;
     padding: 6px 12px;
   }
 
-  #titlePanel img {
+  #shimtiPanel img {
     height: 1.5em;
   }
 
-  #titlePanel span {
+  #shimtiPanel span {
     font-size: clamp(0.7em, 2vw, 1em);
   }
 
-  #welcomePanel {
+  #shimtiPanelBottom {
     bottom: 10px;
     padding: 6px 12px;
     width: 140px;
     height: 20px;
   }
 
-  #welcomePanel #welcomeText {
+  #shimtiPanelBottom #welcomeText {
     font-size: 1em;
   }
 
@@ -228,28 +201,28 @@
 }
 
 @media (max-width: 480px) {
-  #titlePanel {
+  #shimtiPanel {
     top: 10px;
     left: 10px;
     padding: 4px 8px;
   }
 
-  #titlePanel img {
+  #shimtiPanel img {
     height: 1.2em;
   }
 
-  #titlePanel span {
+  #shimtiPanel span {
     font-size: clamp(0.6em, 2vw, 0.9em);
   }
 
-  #welcomePanel {
+  #shimtiPanelBottom {
     bottom: 10px;
     padding: 4px 8px;
     width: 120px;
     height: 18px;
   }
 
-  #welcomePanel #welcomeText {
+  #shimtiPanelBottom #welcomeText {
     font-size: 0.9em;
   }
 
