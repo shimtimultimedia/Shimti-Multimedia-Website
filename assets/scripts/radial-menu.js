@@ -33,7 +33,9 @@ window.MENU_CONFIG = {
     { lang: 'French', text: 'Bienvenue' },
     { lang: 'German', text: 'Willkommen' },
     { lang: 'Russian', text: 'Добро пожаловать' },
-    { lang: 'Mandarin', text: '欢迎' },
+    { lang: 'Mand
+
+System: arin', text: '欢迎' },
     { lang: 'Japanese', text: 'ようこそ' },
     { lang: 'Hindi', text: 'स्वागत है' },
     { lang: 'Swahili', text: 'Karibu' },
@@ -190,8 +192,8 @@ window.initWelcomeCarousel = function() {
     var sectors = menuWheel.querySelectorAll('g[role="link"]');
     for (var i = 0; i < sectors.length; i++) {
       sectors[i].addEventListener('mouseenter', function() {
+        if (timeoutId) clearTimeout(timeoutId);
         isHovering = true;
-        clearTimeout(timeoutId);
         welcomeText.classList.remove('fade-in');
         welcomeText.classList.add('fade-out');
         var sector = this;
@@ -200,11 +202,11 @@ window.initWelcomeCarousel = function() {
           welcomeText.textContent = labelMatch ? labelMatch[1] : '';
           welcomeText.classList.remove('fade-out');
           welcomeText.classList.add('fade-in');
-          timeoutId = setTimeout(cycleText, window.MENU_CONFIG.WELCOME_INTERVAL);
         }, 500);
       });
 
       sectors[i].addEventListener('mouseleave', function() {
+        if (timeoutId) clearTimeout(timeoutId);
         isHovering = false;
         welcomeText.classList.remove('fade-in');
         welcomeText.classList.add('fade-out');
@@ -388,9 +390,7 @@ window.initRadialMenu = function() {
   menuWheel.appendChild(gridOverlay);
   console.log('Grid and particles appended');
 
-  var centerCircle = document.createElementNS(window.MEN
-
-System: U_SVG_NS, 'circle');
+  var centerCircle = document.createElementNS(window.MENU_SVG_NS, 'circle');
   centerCircle.setAttribute('cx', window.MENU_CONFIG.CENTER_X);
   centerCircle.setAttribute('cy', window.MENU_CONFIG.CENTER_Y);
   centerCircle.setAttribute('r', window.MENU_CONFIG.INNER_CIRCLE_RADIUS);
