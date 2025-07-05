@@ -168,25 +168,17 @@ window.initWelcomeCarousel = function() {
     var currentIndex = 0;
     var isHovering = false;
     var timeoutId = null;
-    var hasShownEnglish = false;
 
     var cycleText = function() {
       if (isHovering) return;
 
-      if (languages[currentIndex].lang === 'English' && hasShownEnglish) {
-        currentIndex = (currentIndex + 1) % languages.length;
-      }
-
       welcomeText.classList.remove('fade-in');
       welcomeText.classList.add('fade-out');
       setTimeout(function() {
+        currentIndex = (currentIndex + 1) % languages.length;
         welcomeText.textContent = languages[currentIndex].text || 'Welcome';
         welcomeText.classList.remove('fade-out');
         welcomeText.classList.add('fade-in');
-        if (languages[currentIndex].lang === 'English') {
-          hasShownEnglish = true;
-        }
-        currentIndex = (currentIndex + 1) % languages.length;
         timeoutId = setTimeout(cycleText, window.MENU_CONFIG.WELCOME_INTERVAL);
       }, 500);
     };
@@ -396,7 +388,9 @@ window.initRadialMenu = function() {
   menuWheel.appendChild(gridOverlay);
   console.log('Grid and particles appended');
 
-  var centerCircle = document.createElementNS(window.MENU_SVG_NS, 'circle');
+  var centerCircle = document.createElementNS(window.MEN
+
+System: U_SVG_NS, 'circle');
   centerCircle.setAttribute('cx', window.MENU_CONFIG.CENTER_X);
   centerCircle.setAttribute('cy', window.MENU_CONFIG.CENTER_Y);
   centerCircle.setAttribute('r', window.MENU_CONFIG.INNER_CIRCLE_RADIUS);
