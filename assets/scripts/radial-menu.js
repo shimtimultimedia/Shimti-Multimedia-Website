@@ -25,7 +25,7 @@ window.MENU_CONFIG = {
   NAVIGATION_LINKS: ['Contact', 'AI', 'Work', 'Media', 'Shop', 'About'],
   WELCOME_INTERVAL: 3000,
   PARTICLE_INTERVAL_MIN: 1000,
-  PARTICLE_INTERVAL_MAX: 3000,
+  PARTICLE_COUNT_MAX: 3000,
   FALLBACK_LANGUAGES: [
     { lang: 'English', text: 'Welcome' },
     { lang: 'Spanish', text: 'Bienvenido' },
@@ -42,46 +42,52 @@ window.MENU_CONFIG = {
   ]
 };
 
-/** @function window.polarToCartesian */
-window.polarToCartesian = function (cx, cy, r, angleDeg) {
-  const angleRad = (Math.PI / 180) * angleDeg;
+/**
+ * @function window.polarToCartesian
+ * @description Converts polar coordinates to Cartesian coordinates
+ */
+window.polarToCartesian = function(cx, cy, r, angleDeg) {
+  var angleRad = (Math.PI / 180) * angleDeg;
   return {
     x: cx + r * Math.cos(angleRad),
     y: cy + r * Math.sin(angleRad)
   };
 };
 
-/** @function window.createNavigationSector */
-window.createNavigationSector = function (position, label, fillColor, fragment) {
-  const { p1, p2, p3, p4, iconPos, start, end } = position;
-  const largeArc = end - start > 180 ? 1 : 0;
-  const pathData = `
-    M ${p1.x} ${p1.y}
-    A ${window.MENU_CONFIG.OUTER_RADIUS} ${window.MENU_CONFIG.OUTER_RADIUS} 0 ${largeArc} 0 ${p2.x} ${p2.y}
-    L ${p3.x} ${p3.y}
-    A ${window.MENU_CONFIG.INNER_RADIUS} ${window.MENU_CONFIG.INNER_RADIUS} 0 ${largeArc} 1 ${p4.x} ${p4.y}
-    Z
-  `;
+/**
+ * @function window.createNavigationSector
+ * @description Creates an SVG sector for the radial menu
+ */
+window.createNavigationSector = function(position, label, fillColor, fragment) {
+  var p1 = position.p1, p2 = position.p2, p3 = position.p3, p4 = position.p4, iconPos = position.iconPos, start = position.start, end = position.end;
+  var largeArc = end - start > 180 ? 1 : 0;
+  var pathData = [
+    'M', p1.x, p1.y,
+    'A', window.MENU_CONFIG.OUTER_RADIUS, window.MENU_CONFIG.OUTER_RADIUS, 0, largeArc, 0, p2.x, p2.y,
+    'L', p3.x, p3.y,
+    'A', window.MENU_CONFIG.INNER_RADIUS, window.MENU_CONFIG.INNER_RADIUS, 0, largeArc, 1, p4.x, p4.y,
+    'Z'
+  ].join(' ');
 
-  const path = document.createElementNS(window.MENU_SVG_NS, 'path');
+  var path = document.createElementNS(window.MENU_SVG_NS, 'path');
   path.setAttribute('d', pathData);
   path.setAttribute('fill', fillColor);
   path.setAttribute('stroke', window.MENU_CONFIG.STROKE_COLOR);
   path.setAttribute('stroke-width', '1');
 
-  const group = document.createElementNS(window.MENU_SVG_NS, 'g');
+  var group = document.createElementNS(window.MENU_SVG_NS, 'g');
   group.setAttribute('role', 'link');
-  group.setAttribute('aria-label', `Navigate to ${label} section`);
+  group.setAttribute('aria-label', 'Navigate to ' + label + ' section');
   group.setAttribute('tabindex', '0');
   group.dataset.label = label;
 
-  const icon = document.createElementNS(window.MENU_SVG_NS, 'image');
-  icon.setAttribute('href', `assets/images/${label}.svg`);
+  var icon = document.createElementNS(window.MENU_SVG_NS, 'image');
+  icon.setAttribute('href', 'assets/images/' + label + '.svg');
   icon.setAttribute('x', iconPos.x - 25);
   icon.setAttribute('y', iconPos.y - 25);
   icon.setAttribute('width', '50');
   icon.setAttribute('height', '50');
-  icon.setAttribute('aria-label', `${label} Icon`);
+  icon.setAttribute('aria-label', label + ' Icon');
   icon.setAttribute('loading', 'lazy');
 
   group.appendChild(path);
@@ -89,177 +95,194 @@ window.createNavigationSector = function (position, label, fillColor, fragment) 
   fragment.appendChild(group);
 };
 
-/** @class window.GridParticle */
-window.GridParticle = class {
-  constructor(x, y, gridOverlay) {
-    this.x = x;
-    this.y = y;
-    this.gridOverlay = gridOverlay;
-    this.element = document.createElementNS(window.MENU_SVG_NS, 'circle');
-    this.element.setAttribute('cx', this.x);
-    this.element.setAttribute('cy', this.y);
-    this.element.setAttribute('r', '3');
-    this.element.setAttribute('fill', 'rgba(234, 255, 255, 0.8)');
-    this.element.style.opacity = '0';
-    this.gridOverlay.appendChild(this.element);
-    this.animate();
-  }
-
-  animate() {
-    const toggleVisibility = () => {
-      const isVisible = this.element.style.opacity === '1';
-      this.element.style.opacity = isVisible ? '0' : '1';
-      const delay = window.MENU_CONFIG.PARTICLE_INTERVAL_MIN + Math.random() * (window.MENU_CONFIG.PARTICLE_INTERVAL_MAX - window.MENU_CONFIG.PARTICLE_INTERVAL_MIN);
-      setTimeout(toggleVisibility, delay);
-    };
-    const initialDelay = Math.random() * window.MENU_CONFIG.PARTICLE_INTERVAL_MAX;
-    setTimeout(toggleVisibility, initialDelay);
-  }
+/**
+ * @function window.GridParticle
+ * @description Represents a particle at grid intersections that pops in/out randomly
+ */
+window.GridParticle = function(x, y, gridOverlay) {
+  this.x = x;
+  this.y = y;
+  this.gridOverlay = gridOverlay;
+  this.element = document.createElementNS(window.MENU_SVG_NS, 'circle');
+  this.element.setAttribute('cx', this.x);
+  this.element.setAttribute('cy', this.y);
+  this.element.setAttribute('r', '3');
+  this.element.setAttribute('fill', 'rgba(234, 255, 255, 0.8)');
+  this.element.style.opacity = '0';
+  this.gridOverlay.appendChild(this.element);
+  this.animate();
 };
 
-/** @function window.initWelcomeCarousel */
-window.initWelcomeCarousel = async function () {
-  await new Promise(resolve => setTimeout(resolve, 100));
-  const welcomeText = document.getElementById('welcomeText');
-  const menuWheel = document.getElementById('wheelMenu');
-  if (!welcomeText || !menuWheel) return;
-
-  welcomeText.textContent = 'Loading...';
-
-  let languages = window.MENU_CONFIG.FALLBACK_LANGUAGES;
-  try {
-    const response = await fetch('assets/data/languages.xml');
-    if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
-    const xmlText = await response.text();
-    const parser = new DOMParser();
-    const xmlDoc = parser.parseFromString(xmlText, 'text/xml');
-    const languageNodes = xmlDoc.getElementsByTagName('language');
-    if (languageNodes.length === 0) throw new Error('No languages found in XML');
-    languages = Array.from(languageNodes).map(node => ({
-      lang: node.getAttribute('lang'),
-      text: node.getAttribute('text') || 'Welcome'
-    }));
-  } catch (error) {
-    // Silent fallback
-  }
-
-  let currentIndex = 0;
-  let isHovering = false;
-  let timeoutId = null;
-  let hasShownEnglish = false;
-
-  const cycleText = () => {
-    if (isHovering) return;
-
-    if (languages[currentIndex].lang === 'English' && hasShownEnglish) {
-      currentIndex = (currentIndex + 1) % languages.length;
-    }
-
-    welcomeText.classList.remove('fade-in');
-    welcomeText.classList.add('fade-out');
-    setTimeout(() => {
-      welcomeText.textContent = languages[currentIndex].text || 'Welcome';
-      welcomeText.classList.remove('fade-out');
-      welcomeText.classList.add('fade-in');
-      if (languages[currentIndex].lang === 'English') {
-        hasShownEnglish = true;
-      }
-      currentIndex = (currentIndex + 1) % languages.length;
-      timeoutId = setTimeout(cycleText, window.MENU_CONFIG.WELCOME_INTERVAL);
-    }, 500);
+/**
+ * @method animate
+ * @description Toggles visibility randomly in an infinite loop
+ */
+window.GridParticle.prototype.animate = function() {
+  var self = this;
+  var toggleVisibility = function() {
+    var isVisible = self.element.style.opacity === '1';
+    self.element.style.opacity = isVisible ? '0' : '1';
+    var delay = window.MENU_CONFIG.PARTICLE_INTERVAL_MIN + Math.random() * (window.MENU_CONFIG.PARTICLE_COUNT_MAX - window.MENU_CONFIG.PARTICLE_INTERVAL_MIN);
+    setTimeout(toggleVisibility, delay);
   };
+  var initialDelay = Math.random() * window.MENU_CONFIG.PARTICLE_COUNT_MAX;
+  setTimeout(toggleVisibility, initialDelay);
+};
 
-  welcomeText.textContent = languages[0].text || 'Welcome';
-  welcomeText.classList.add('fade-in');
-  timeoutId = setTimeout(cycleText, window.MENU_CONFIG.WELCOME_INTERVAL);
+/**
+ * @function window.initWelcomeCarousel
+ * @description Initializes the welcome text carousel with language cycling
+ */
+window.initWelcomeCarousel = function() {
+  setTimeout(function() {
+    var welcomeText = document.getElementById('welcomeText');
+    var menuWheel = document.getElementById('wheelMenu');
+    if (!welcomeText || !menuWheel) return;
 
-  menuWheel.querySelectorAll('g[role="link"]').forEach(sector => {
-    sector.addEventListener('mouseenter', () => {
-      isHovering = true;
-      clearTimeout(timeoutId);
+    welcomeText.textContent = 'Loading...';
+
+    var languages = window.MENU_CONFIG.FALLBACK_LANGUAGES;
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', 'assets/data/languages.xml', true);
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === 4 && xhr.status === 200) {
+        var xmlDoc = xhr.responseXML;
+        var languageNodes = xmlDoc.getElementsByTagName('language');
+        if (languageNodes.length > 0) {
+          languages = Array.prototype.map.call(languageNodes, function(node) {
+            return {
+              lang: node.getAttribute('lang'),
+              text: node.getAttribute('text') || 'Welcome'
+            };
+          });
+        }
+      }
+    };
+    xhr.send();
+
+    var currentIndex = 0;
+    var isHovering = false;
+    var timeoutId = null;
+    var hasShownEnglish = false;
+
+    var cycleText = function() {
+      if (isHovering) return;
+
+      if (languages[currentIndex].lang === 'English' && hasShownEnglish) {
+        currentIndex = (currentIndex + 1) % languages.length;
+      }
+
       welcomeText.classList.remove('fade-in');
       welcomeText.classList.add('fade-out');
-      setTimeout(() => {
-        const labelMatch = sector.getAttribute('aria-label').match(/Navigate to (\w+) section/);
-        welcomeText.textContent = labelMatch ? labelMatch[1] : '';
-        welcomeText.classList.remove('fade-out');
-        welcomeText.classList.add('fade-in');
-      }, 500);
-    });
-
-    sector.addEventListener('mouseleave', () => {
-      isHovering = false;
-      welcomeText.classList.remove('fade-in');
-      welcomeText.classList.add('fade-out');
-      setTimeout(() => {
+      setTimeout(function() {
         welcomeText.textContent = languages[currentIndex].text || 'Welcome';
         welcomeText.classList.remove('fade-out');
         welcomeText.classList.add('fade-in');
+        if (languages[currentIndex].lang === 'English') {
+          hasShownEnglish = true;
+        }
+        currentIndex = (currentIndex + 1) % languages.length;
         timeoutId = setTimeout(cycleText, window.MENU_CONFIG.WELCOME_INTERVAL);
       }, 500);
-    });
-  });
+    };
+
+    welcomeText.textContent = languages[0].text || 'Welcome';
+    welcomeText.classList.add('fade-in');
+    timeoutId = setTimeout(cycleText, window.MENU_CONFIG.WELCOME_INTERVAL);
+
+    var sectors = menuWheel.querySelectorAll('g[role="link"]');
+    for (var i = 0; i < sectors.length; i++) {
+      sectors[i].addEventListener('mouseenter', function() {
+        isHovering = true;
+        clearTimeout(timeoutId);
+        welcomeText.classList.remove('fade-in');
+        welcomeText.classList.add('fade-out');
+        var sector = this;
+        setTimeout(function() {
+          var labelMatch = sector.getAttribute('aria-label').match(/Navigate to (\w+) section/);
+          welcomeText.textContent = labelMatch ? labelMatch[1] : '';
+          welcomeText.classList.remove('fade-out');
+          welcomeText.classList.add('fade-in');
+        }, 500);
+      });
+
+      sectors[i].addEventListener('mouseleave', function() {
+        isHovering = false;
+        welcomeText.classList.remove('fade-in');
+        welcomeText.classList.add('fade-out');
+        setTimeout(function() {
+          welcomeText.textContent = languages[currentIndex].text || 'Welcome';
+          welcomeText.classList.remove('fade-out');
+          welcomeText.classList.add('fade-in');
+          timeoutId = setTimeout(cycleText, window.MENU_CONFIG.WELCOME_INTERVAL);
+        }, 500);
+      });
+    }
+  }, 100);
 };
 
-/** @function window.initRadialMenu */
-window.initRadialMenu = function () {
-  const svgElement = document.getElementById('radialMenu');
-  const menuWheel = document.getElementById('wheelMenu');
+/**
+ * @function window.initRadialMenu
+ * @description Initializes the radial menu with sectors, masked grid, and holographic effects
+ */
+window.initRadialMenu = function() {
+  var svgElement = document.getElementById('radialMenu');
+  var menuWheel = document.getElementById('wheelMenu');
   if (!svgElement || !menuWheel) return;
 
-  const sectorAngle = 360 / window.MENU_CONFIG.NAVIGATION_LINKS.length;
-  const sectorPositions = window.MENU_CONFIG.NAVIGATION_LINKS.map((_, i) => {
-    const start = 270 + i * sectorAngle;
-    const end = start + sectorAngle;
-    const labelAngle = (start + end) / 2;
+  var sectorAngle = 360 / window.MENU_CONFIG.NAVIGATION_LINKS.length;
+  var sectorPositions = window.MENU_CONFIG.NAVIGATION_LINKS.map(function(_, i) {
+    var start = 270 + i * sectorAngle;
+    var end = start + sectorAngle;
+    var labelAngle = (start + end) / 2;
     return {
       p1: window.polarToCartesian(window.MENU_CONFIG.CENTER_X, window.MENU_CONFIG.CENTER_Y, window.MENU_CONFIG.OUTER_RADIUS, end),
       p2: window.polarToCartesian(window.MENU_CONFIG.CENTER_X, window.MENU_CONFIG.CENTER_Y, window.MENU_CONFIG.OUTER_RADIUS, start),
       p3: window.polarToCartesian(window.MENU_CONFIG.CENTER_X, window.MENU_CONFIG.CENTER_Y, window.MENU_CONFIG.INNER_RADIUS, start),
       p4: window.polarToCartesian(window.MENU_CONFIG.CENTER_X, window.MENU_CONFIG.CENTER_Y, window.MENU_CONFIG.INNER_RADIUS, end),
       iconPos: window.polarToCartesian(window.MENU_CONFIG.CENTER_X, window.MENU_CONFIG.CENTER_Y, (window.MENU_CONFIG.INNER_RADIUS + window.MENU_CONFIG.OUTER_RADIUS) / 2, labelAngle),
-      start,
-      end
+      start: start,
+      end: end
     };
   });
 
-  const fragment = document.createDocumentFragment();
-  sectorPositions.forEach((pos, i) => {
+  var fragment = document.createDocumentFragment();
+  sectorPositions.forEach(function(pos, i) {
     window.createNavigationSector(pos, window.MENU_CONFIG.NAVIGATION_LINKS[i], window.MENU_CONFIG.SECTOR_FILL, fragment);
   });
   menuWheel.appendChild(fragment);
 
-  menuWheel.addEventListener('click', (event) => {
-    const sector = event.target.closest('g');
+  menuWheel.addEventListener('click', function(event) {
+    var sector = event.target.closest('g');
     if (sector) {
       sector.classList.add('mouse-active');
-      const labelMatch = sector.getAttribute('aria-label').match(/Navigate to (\w+) section/);
+      var labelMatch = sector.getAttribute('aria-label').match(/Navigate to (\w+) section/);
       if (labelMatch) {
-        window.location.href = `#${labelMatch[1].toLowerCase()}`;
+        window.location.href = '#' + labelMatch[1].toLowerCase();
       }
     }
   });
 
-  menuWheel.addEventListener('keydown', (event) => {
-    const sector = event.target.closest('g');
+  menuWheel.addEventListener('keydown', function(event) {
+    var sector = event.target.closest('g');
     if (sector && event.key === 'Enter') {
       sector.classList.remove('mouse-active');
-      const labelMatch = sector.getAttribute('aria-label').match(/Navigate to (\w+) section/);
+      var labelMatch = sector.getAttribute('aria-label').match(/Navigate to (\w+) section/);
       if (labelMatch) {
-        window.location.href = `#${labelMatch[1].toLowerCase()}`;
+        window.location.href = '#' + labelMatch[1].toLowerCase();
       }
     }
   });
 
-  menuWheel.addEventListener('blur', (event) => {
-    const sector = event.target.closest('g');
+  menuWheel.addEventListener('blur', function(event) {
+    var sector = event.target.closest('g');
     if (sector) {
       sector.classList.remove('mouse-active');
     }
   }, true);
 
-  const defsBackground = document.createElementNS(window.MENU_SVG_NS, 'defs');
-  const gradient = document.createElementNS(window.MENU_SVG_NS, 'radialGradient');
+  var defsBackground = document.createElementNS(window.MENU_SVG_NS, 'defs');
+  var gradient = document.createElementNS(window.MENU_SVG_NS, 'radialGradient');
   gradient.setAttribute('id', 'backgroundGradient');
   gradient.setAttribute('cx', '50%');
   gradient.setAttribute('cy', '50%');
@@ -267,12 +290,12 @@ window.initRadialMenu = function () {
   gradient.setAttribute('fx', '50%');
   gradient.setAttribute('fy', '50%');
 
-  const stop1 = document.createElementNS(window.MENU_SVG_NS, 'stop');
+  var stop1 = document.createElementNS(window.MENU_SVG_NS, 'stop');
   stop1.setAttribute('offset', '0%');
   stop1.setAttribute('stop-color', 'rgb(180, 220, 255)');
   stop1.setAttribute('stop-opacity', '0.0');
 
-  const stop2 = document.createElementNS(window.MENU_SVG_NS, 'stop');
+  var stop2 = document.createElementNS(window.MENU_SVG_NS, 'stop');
   stop2.setAttribute('offset', '80%');
   stop2.setAttribute('stop-color', 'rgb(180, 220, 255)');
   stop2.setAttribute('stop-opacity', '0.08');
@@ -281,19 +304,19 @@ window.initRadialMenu = function () {
   gradient.appendChild(stop2);
   defsBackground.appendChild(gradient);
 
-  const holoCoreGradient = document.createElementNS(window.MENU_SVG_NS, 'linearGradient');
+  var holoCoreGradient = document.createElementNS(window.MENU_SVG_NS, 'linearGradient');
   holoCoreGradient.setAttribute('id', 'holoCoreGradient');
   holoCoreGradient.setAttribute('x1', '0%');
   holoCoreGradient.setAttribute('y1', '0%');
   holoCoreGradient.setAttribute('x2', '0%');
   holoCoreGradient.setAttribute('y2', '100%');
 
-  const holoStop1 = document.createElementNS(window.MENU_SVG_NS, 'stop');
+  var holoStop1 = document.createElementNS(window.MENU_SVG_NS, 'stop');
   holoStop1.setAttribute('offset', '0%');
   holoStop1.setAttribute('stop-color', 'rgb(180, 220, 255)');
   holoStop1.setAttribute('stop-opacity', '0.1');
 
-  const holoStop2 = document.createElementNS(window.MENU_SVG_NS, 'stop');
+  var holoStop2 = document.createElementNS(window.MENU_SVG_NS, 'stop');
   holoStop2.setAttribute('offset', '100%');
   holoStop2.setAttribute('stop-color', 'rgb(180, 220, 255)');
   holoStop2.setAttribute('stop-opacity', '0.2');
@@ -303,7 +326,7 @@ window.initRadialMenu = function () {
   defsBackground.appendChild(holoCoreGradient);
   svgElement.appendChild(defsBackground);
 
-  const backgroundCircle = document.createElementNS(window.MENU_SVG_NS, 'circle');
+  var backgroundCircle = document.createElementNS(window.MENU_SVG_NS, 'circle');
   backgroundCircle.setAttribute('cx', window.MENU_CONFIG.CENTER_X);
   backgroundCircle.setAttribute('cy', window.MENU_CONFIG.CENTER_Y);
   backgroundCircle.setAttribute('r', 192);
@@ -312,10 +335,10 @@ window.initRadialMenu = function () {
   backgroundCircle.setAttribute('stroke-width', '2');
   menuWheel.parentNode.insertBefore(backgroundCircle, menuWheel);
 
-  const defs = document.createElementNS(window.MENU_SVG_NS, 'defs');
-  const clipPath = document.createElementNS(window.MENU_SVG_NS, 'clipPath');
+  var defs = document.createElementNS(window.MENU_SVG_NS, 'defs');
+  var clipPath = document.createElementNS(window.MENU_SVG_NS, 'clipPath');
   clipPath.setAttribute('id', 'innerCircleClip');
-  const clipCircle = document.createElementNS(window.MENU_SVG_NS, 'circle');
+  var clipCircle = document.createElementNS(window.MENU_SVG_NS, 'circle');
   clipCircle.setAttribute('cx', window.MENU_CONFIG.CENTER_X);
   clipCircle.setAttribute('cy', window.MENU_CONFIG.CENTER_Y);
   clipCircle.setAttribute('r', window.MENU_CONFIG.INNER_CIRCLE_RADIUS);
@@ -323,10 +346,10 @@ window.initRadialMenu = function () {
   defs.appendChild(clipPath);
   svgElement.appendChild(defs);
 
-  const gridOverlay = document.createElementNS(window.MENU_SVG_NS, 'g');
+  var gridOverlay = document.createElementNS(window.MENU_SVG_NS, 'g');
   gridOverlay.setAttribute('clip-path', 'url(#innerCircleClip)');
-  for (let x = -window.MENU_CONFIG.INNER_RADIUS; x <= window.MENU_CONFIG.INNER_RADIUS; x += window.MENU_CONFIG.GRID_SPACING) {
-    const line = document.createElementNS(window.MENU_SVG_NS, 'line');
+  for (var x = -window.MENU_CONFIG.INNER_RADIUS; x <= window.MENU_CONFIG.INNER_RADIUS; x += window.MENU_CONFIG.GRID_SPACING) {
+    var line = document.createElementNS(window.MENU_SVG_NS, 'line');
     line.setAttribute('x1', window.MENU_CONFIG.CENTER_X + x);
     line.setAttribute('y1', window.MENU_CONFIG.CENTER_Y - window.MENU_CONFIG.INNER_RADIUS);
     line.setAttribute('x2', window.MENU_CONFIG.CENTER_X + x);
@@ -335,8 +358,8 @@ window.initRadialMenu = function () {
     line.setAttribute('stroke-width', '1');
     gridOverlay.appendChild(line);
   }
-  for (let y = -window.MENU_CONFIG.INNER_RADIUS; y <= window.MENU_CONFIG.INNER_RADIUS; y += window.MENU_CONFIG.GRID_SPACING) {
-    const line = document.createElementNS(window.MENU_SVG_NS, 'line');
+  for (var y = -window.MENU_CONFIG.INNER_RADIUS; y <= window.MENU_CONFIG.INNER_RADIUS; y += window.MENU_CONFIG.GRID_SPACING) {
+    var line = document.createElementNS(window.MENU_SVG_NS, 'line');
     line.setAttribute('x1', window.MENU_CONFIG.CENTER_X - window.MENU_CONFIG.INNER_RADIUS);
     line.setAttribute('y1', window.MENU_CONFIG.CENTER_Y + y);
     line.setAttribute('x2', window.MENU_CONFIG.CENTER_X + window.MENU_CONFIG.INNER_RADIUS);
@@ -346,22 +369,22 @@ window.initRadialMenu = function () {
     gridOverlay.appendChild(line);
   }
 
-  const gridCenters = [];
-  for (let x = -window.MENU_CONFIG.INNER_RADIUS; x <= window.MENU_CONFIG.INNER_RADIUS; x += window.MENU_CONFIG.GRID_SPACING) {
-    for (let y = -window.MENU_CONFIG.INNER_RADIUS; y <= window.MENU_CONFIG.INNER_RADIUS; y += window.MENU_CONFIG.GRID_SPACING) {
-      const distance = Math.sqrt(x * x + y * y);
+  var gridCenters = [];
+  for (var x = -window.MENU_CONFIG.INNER_RADIUS; x <= window.MENU_CONFIG.INNER_RADIUS; x += window.MENU_CONFIG.GRID_SPACING) {
+    for (var y = -window.MENU_CONFIG.INNER_RADIUS; y <= window.MENU_CONFIG.INNER_RADIUS; y += window.MENU_CONFIG.GRID_SPACING) {
+      var distance = Math.sqrt(x * x + y * y);
       if (distance <= window.MENU_CONFIG.INNER_CIRCLE_RADIUS) {
         gridCenters.push({ x: window.MENU_CONFIG.CENTER_X + x, y: window.MENU_CONFIG.CENTER_Y + y });
       }
     }
   }
-  const particleCount = window.MENU_CONFIG.PARTICLE_COUNT_MIN + Math.floor(Math.random() * (window.MENU_CONFIG.PARTICLE_COUNT_MAX - window.MENU_CONFIG.PARTICLE_COUNT_MIN));
-  const selectedCenters = gridCenters.sort(() => Math.random() - 0.5).slice(0, particleCount);
-  selectedCenters.forEach(center => new window.GridParticle(center.x, center.y, gridOverlay));
+  var particleCount = window.MENU_CONFIG.PARTICLE_COUNT_MIN + Math.floor(Math.random() * (window.MENU_CONFIG.PARTICLE_COUNT_MAX - window.MENU_CONFIG.PARTICLE_COUNT_MIN));
+  var selectedCenters = gridCenters.sort(function() { return Math.random() - 0.5; }).slice(0, particleCount);
+  selectedCenters.forEach(function(center) { new window.GridParticle(center.x, center.y, gridOverlay); });
 
   menuWheel.appendChild(gridOverlay);
 
-  const centerCircle = document.createElementNS(window.MENU_SVG_NS, 'circle');
+  var centerCircle = document.createElementNS(window.MENU_SVG_NS, 'circle');
   centerCircle.setAttribute('cx', window.MENU_CONFIG.CENTER_X);
   centerCircle.setAttribute('cy', window.MENU_CONFIG.CENTER_Y);
   centerCircle.setAttribute('r', window.MENU_CONFIG.INNER_CIRCLE_RADIUS);
@@ -370,7 +393,7 @@ window.initRadialMenu = function () {
   centerCircle.setAttribute('stroke-width', '1');
   menuWheel.appendChild(centerCircle);
 
-  const innerFilledCircle = document.createElementNS(window.MENU_SVG_NS, 'circle');
+  var innerFilledCircle = document.createElementNS(window.MENU_SVG_NS, 'circle');
   innerFilledCircle.setAttribute('cx', window.MENU_CONFIG.CENTER_X);
   innerFilledCircle.setAttribute('cy', window.MENU_CONFIG.CENTER_Y);
   innerFilledCircle.setAttribute('r', window.MENU_CONFIG.INNER_FILLED_RADIUS);
@@ -379,9 +402,9 @@ window.initRadialMenu = function () {
   innerFilledCircle.setAttribute('class', 'inner-filled-circle');
   menuWheel.appendChild(innerFilledCircle);
 
-  const holoCoreGroup = document.createElementNS(window.MENU_SVG_NS, 'g');
+  var holoCoreGroup = document.createElementNS(window.MENU_SVG_NS, 'g');
   holoCoreGroup.setAttribute('aria-hidden', 'true');
-  const holoCore = document.createElementNS(window.MENU_SVG_NS, 'circle');
+  var holoCore = document.createElementNS(window.MENU_SVG_NS, 'circle');
   holoCore.setAttribute('cx', window.MENU_CONFIG.CENTER_X);
   holoCore.setAttribute('cy', window.MENU_CONFIG.CENTER_Y);
   holoCore.setAttribute('r', window.MENU_CONFIG.CORE_RADIUS);
@@ -390,14 +413,14 @@ window.initRadialMenu = function () {
   holoCore.setAttribute('class', 'holo-core');
   holoCoreGroup.appendChild(holoCore);
 
-  window.MENU_CONFIG.RING_RADII.forEach((r, i) => {
-    const ring = document.createElementNS(window.MENU_SVG_NS, 'circle');
+  window.MENU_CONFIG.RING_RADII.forEach(function(r, i) {
+    var ring = document.createElementNS(window.MENU_SVG_NS, 'circle');
     ring.setAttribute('cx', window.MENU_CONFIG.CENTER_X);
     ring.setAttribute('cy', window.MENU_CONFIG.CENTER_Y);
     ring.setAttribute('r', r);
     ring.setAttribute('fill', 'url(#holoCoreGradient)');
     ring.setAttribute('stroke', 'none');
-    ring.setAttribute('class', `holo-ring ring-${i}`);
+    ring.setAttribute('class', 'holo-ring ring-' + i);
     holoCoreGroup.appendChild(ring);
   });
   menuWheel.appendChild(holoCoreGroup);
