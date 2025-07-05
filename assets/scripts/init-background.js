@@ -4,17 +4,14 @@
  * Orchestrates modular components for live environment stability.
  */
 
-import { Particle, PARTICLE_CONFIG } from './particle-system.js';
-import { renderGrid } from './grid-renderer.js';
-
-/** @constant {number} TARGET_FPS - Target frames per second for animations */
-const TARGET_FPS = 30;
+/** @constant {number} window.TARGET_FPS - Target frames per second for animations */
+window.TARGET_FPS = 30;
 
 /**
- * @function initBackground
+ * @function window.initBackground
  * @description Sets up canvases and starts particle and grid animations
  */
-function initBackground() {
+window.initBackground = function () {
   const gridCanvas = document.getElementById('gridCanvas');
   const particleCanvas = document.getElementById('particleCanvas');
   if (!gridCanvas || !particleCanvas) return;
@@ -36,9 +33,9 @@ function initBackground() {
   let particleId = 0;
 
   for (let depth = 0.3; depth <= 1.0; depth += 0.2) {
-    const count = Math.floor(PARTICLE_CONFIG.MAX_PARTICLES * depth);
+    const count = Math.floor(window.PARTICLE_CONFIG.MAX_PARTICLES * depth);
     for (let i = 0; i < count; i++) {
-      particles.push(new Particle(depth, particleId, width, height));
+      particles.push(new window.Particle(depth, particleId, width, height));
       particleId++;
     }
   }
@@ -48,7 +45,7 @@ function initBackground() {
   function animate() {
     const now = performance.now();
     const delta = now - lastTime;
-    const frameInterval = 1000 / TARGET_FPS;
+    const frameInterval = 1000 / window.TARGET_FPS;
 
     if (delta >= frameInterval) {
       ctx.clearRect(0, 0, width, height);
@@ -62,7 +59,7 @@ function initBackground() {
     requestAnimationFrame(animate);
   }
 
-  renderGrid(gridCanvas);
+  window.renderGrid(gridCanvas);
   animate();
 
   window.addEventListener('resize', () => {
@@ -78,6 +75,6 @@ function initBackground() {
       particle.height = height;
     });
   });
-}
+};
 
-window.addEventListener('load', initBackground);
+window.addEventListener('load', window.initBackground);
